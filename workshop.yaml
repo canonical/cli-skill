@@ -1,0 +1,7 @@
+name: design
+base: ubuntu@24.04
+sdks:
+  - name: vscode-remote
+    channel: noble/stable
+  - name: project-mcps
+  - name: project-skills

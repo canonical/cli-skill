@@ -1,0 +1,4 @@
+mkdir .logs
+npx @penpot/mcp@beta >> .logs/penpot-mcp.log &
+npx figma-developer-mcp --figma-api-key=FIGMA_API_KEY --stdio >> .logs/figma-developer-mcp.log &
+

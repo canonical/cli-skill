@@ -1,0 +1,4 @@
+apt-get update
+snap install node
+npm install -g @penpot/mcp@beta
+npm install -g figma-developer-mcp
