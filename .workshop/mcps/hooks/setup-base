@@ -4,8 +4,8 @@ npm install -g corepack
 npm install -g @penpot/mcp@beta
 npm install -g figma-developer-mcp
 
-mkdir -p /home/workshop/.config/Code/User
-cat > /home/workshop/.config/Code/User/mcp.json << 'EOF'
+mkdir -p /home/workshop/.vscode-server/data/User
+cat > /home/workshop/.vscode-server/data/User/mcp.json << 'EOF'
 {
 	"servers": {
 		"penpot-remote": {
