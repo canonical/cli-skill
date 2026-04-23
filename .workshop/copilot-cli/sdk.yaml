@@ -1,0 +1,32 @@
+name: copilot-cli
+title: GitHub Copilot CLI SDK
+version: "1.0.10"
+summary: GitHub Copilot CLI - AI-powered coding assistant for the terminal
+description: |
+  This SDK provides the GitHub Copilot CLI for AI-assisted coding within a
+  workshop. The agent is sandboxed in the workshop container. Credentials are
+  persisted between workshop updates.
+license: https://docs.github.com/en/site-policy/github-terms/github-pre-release-license-terms
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+    build-on: [amd64]
+    build-for: [amd64]
+
+plugs:
+  copilot-config:
+    interface: mount
+    workshop-target: /home/workshop/.copilot
+
+parts:
+  copilot-cli:
+    plugin: npm
+    source: https://registry.npmjs.org/@github/copilot/-/copilot-1.0.10.tgz
+    source-type: tar
+    npm-include-node: true
+    npm-node-version: 22.22.1
+
+  workshop-prompt:
+    plugin: dump
+    source: workshop-prompt.md
+    source-type: file

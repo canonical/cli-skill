@@ -1,0 +1,15 @@
+#!/usr/bin/bash
+
+if [[ ! -f "${SDK}/bin/copilot" ]]; then
+#  workshopctl set-health --code="copilot-not-installed" error "Copilot CLI not installed."
+  exit 0
+fi
+
+# Optional: Check if it's on the PATH for the workshop user (like opencode does)
+# This confirms setup-base worked and the user environment is correct.
+if ! sudo -u workshop --login which copilot >/dev/null 2>&1; then
+#  workshopctl set-health --code="copilot-not-in-path" error "Copilot CLI not available on the \$PATH."
+  exit 0
+fi
+
+workshopctl set-health okay

@@ -1,0 +1,6 @@
+apt-get -qq update 
+apt-get -qq install direnv -y
+
+cat <<EOF >/etc/profile.d/direnv.sh
+export PATH="${SDK}/bin:\$PATH"
+EOF

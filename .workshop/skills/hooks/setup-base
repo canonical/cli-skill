@@ -1,3 +1,5 @@
-mkdir .github
-mkdir .github/skills
-git clone https://github.com/canonical/design-skills .github/skills/canonical-design
+apt-get -qq update
+apt-get -qq install gh -y
+mkdir -p /home/workshop/.github/skills
+gh auth login
+gh repo clone https://github.com/canonical/design-skills /home/workshop/.github/skills/canonical-design || echo "Pulling skills from github failed. Mount your ssh key"

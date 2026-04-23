@@ -1,4 +1,5 @@
-mkdir .logs
+mkdir -p .logs
 npx @penpot/mcp@beta >> .logs/penpot-mcp.log &
-npx figma-developer-mcp --figma-api-key=FIGMA_API_KEY --stdio >> .logs/figma-developer-mcp.log &
+# run this from vs code as the api key isn't known at install time
+# npx figma-developer-mcp --figma-api-key=$FIGMA_API_KEY --stdio >> .logs/figma-developer-mcp.log &
 

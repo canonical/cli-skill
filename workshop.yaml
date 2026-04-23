@@ -2,6 +2,8 @@ name: design
 base: ubuntu@24.04
 sdks:
   - name: vscode-remote
-    channel: noble/stable
+    channel: latest/stable
+  - name: project-direnv
+  - name: project-copilot-cli
   - name: project-mcps
   - name: project-skills
