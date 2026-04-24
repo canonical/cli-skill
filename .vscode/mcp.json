@@ -1,14 +1,21 @@
-mkdir -p .logs
-npx @penpot/mcp@beta >> .logs/penpot-mcp.log &
-# run this from vs code as the api key isn't known at install time
-# npx figma-developer-mcp --figma-api-key=$FIGMA_API_KEY --stdio >> .logs/figma-developer-mcp.log &
-
-mkdir -p /home/workshop/.vscode-server/data/User
-cat > /home/workshop/.vscode-server/data/User/mcp.json << 'EOF'
 {
+	"inputs": [
+		{
+			"type": "promptString",
+			"id": "penpot-token",
+			"description": "Penpot access token",
+			"password": true
+		},
+		{
+			"type": "promptString",
+			"id": "figma-api-key",
+			"description": "Figma API key",
+			"password": true
+		}
+	],
 	"servers": {
 		"penpot-remote": {
-			"url": "https://test-mcp.penpot.dev/mcp/stream?userToken=",
+			"url": "https://test-mcp.penpot.dev/mcp/stream?userToken=${input:penpot-token}",
 			"type": "http"
 		},
 		"figma": {
@@ -27,7 +34,7 @@ cat > /home/workshop/.vscode-server/data/User/mcp.json << 'EOF'
 					"args": [
 						"-y",
 						"figma-developer-mcp",
-						"--figma-api-key=YOUR-KEY",
+						"--figma-api-key=${input:figma-api-key}",
 						"--stdio"
 					]
 				}
@@ -46,4 +53,3 @@ cat > /home/workshop/.vscode-server/data/User/mcp.json << 'EOF'
 	},
 	"inputs": []
 }
-EOF
