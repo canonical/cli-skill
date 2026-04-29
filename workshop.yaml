@@ -24,5 +24,9 @@ sdks:
   - name: project-mcps
 actions:
   fetch-skills: |
-    gh auth login
-    gh repo clone https://github.com/canonical/design-skills /home/workshop/.github/skills/canonical-design
+    if [ -d /home/workshop/.copilot/skills/.git ]; then
+      git -C /home/workshop/.copilot/skills pull
+    else
+      gh auth login
+      gh repo clone https://github.com/canonical/design-skills /home/workshop/.copilot/skills
+    fi

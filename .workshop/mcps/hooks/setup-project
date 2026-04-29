@@ -1,5 +1,5 @@
 # Install MCP server packages (idempotent — npm skips if already present)
-npm install --prefer-offline @penpot/mcp@beta figma-developer-mcp
+npm install --prefer-offline @penpot/mcp figma-developer-mcp
 
 # Start the local Penpot MCP server as a systemd user service
 install -D --mode=644 /dev/stdin ~/.config/systemd/user/penpot-mcp.service <<'UNIT'
@@ -7,8 +7,8 @@ install -D --mode=644 /dev/stdin ~/.config/systemd/user/penpot-mcp.service <<'UN
 Description=Penpot MCP Server
 
 [Service]
-ExecStart=/bin/bash -lc 'npx @penpot/mcp@beta'
-WorkingDirectory=/project
+ExecStart=/bin/bash -lc 'npx @penpot/mcp'
+WorkingDirectory=/home/workshop
 Restart=on-failure
 RestartSec=3
 
