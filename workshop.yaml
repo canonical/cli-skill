@@ -30,3 +30,5 @@ actions:
       gh auth login
       gh repo clone https://github.com/canonical/design-skills /home/workshop/.copilot/skills
     fi
+  fetch-canonical-skills: |
+    npx skills add canonical/skills
