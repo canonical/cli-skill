@@ -1,6 +1,2 @@
-snap install node --classic
-npm install -g npm
-npm install -g corepack
-npm install -g @penpot/mcp@beta
-npm install -g figma-developer-mcp
-
+apt-get -qq update
+apt-get -qq install gh -y

@@ -1,7 +1,0 @@
-name: skills
-base: ubuntu@24.04
-
-plugs:
-  ssh-keys:
-    interface: mount
-    workshop-target: /home/workshop/.ssh
