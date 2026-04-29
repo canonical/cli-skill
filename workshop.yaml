@@ -3,6 +3,6 @@ base: ubuntu@24.04
 sdks:
   - name: vscode-remote
     channel: latest/stable
-  - name: project-copilot-cli
+  - name: copilot
   - name: project-mcps
   - name: project-skills
