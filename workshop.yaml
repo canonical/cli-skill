@@ -1,8 +1,28 @@
 name: design
 base: ubuntu@24.04
 sdks:
+  - name: system
+    plugs:
+      penpot:
+        interface: tunnel
+        endpoint: 4400
+      penpot-http:
+        interface: tunnel
+        endpoint: 4401
+      penpot-websocket:
+        interface: tunnel
+        endpoint: 4402
+      penpot-repl:
+        interface: tunnel
+        endpoint: 4403
   - name: vscode-remote
     channel: latest/stable
   - name: copilot
+    channel: latest/stable
+  - name: node
+    channel: 22/stable
   - name: project-mcps
-  - name: project-skills
+actions:
+  fetch-skills: |
+    gh auth login
+    gh repo clone https://github.com/canonical/design-skills /home/workshop/.github/skills/canonical-design

@@ -1,8 +1,0 @@
-#!/usr/bin/bash
-
-snap install node --classic
-npm install -g @github/copilot
-
-cat <<EOF >/etc/profile.d/copilot-cli.sh
-export PATH="${SDK}/bin:\$PATH"
-EOF

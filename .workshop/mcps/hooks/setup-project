@@ -1,8 +1,25 @@
-mkdir -p .logs
-npx @penpot/mcp@beta >> .logs/penpot-mcp.log &
-# run this from vs code as the api key isn't known at install time
-# npx figma-developer-mcp --figma-api-key=$FIGMA_API_KEY --stdio >> .logs/figma-developer-mcp.log &
+# Install MCP server packages (idempotent — npm skips if already present)
+npm install --prefer-offline @penpot/mcp@beta figma-developer-mcp
 
+# Start the local Penpot MCP server as a systemd user service
+install -D --mode=644 /dev/stdin ~/.config/systemd/user/penpot-mcp.service <<'UNIT'
+[Unit]
+Description=Penpot MCP Server
+
+[Service]
+ExecStart=/bin/bash -lc 'npx @penpot/mcp@beta'
+WorkingDirectory=/project
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
+UNIT
+
+systemctl --user daemon-reload
+systemctl --user enable --now penpot-mcp
+
+# Configure VS Code MCP servers
 mkdir -p /home/workshop/.vscode-server/data/User
 cat > /home/workshop/.vscode-server/data/User/mcp.json << 'EOF'
 {
@@ -20,25 +37,15 @@ cat > /home/workshop/.vscode-server/data/User/mcp.json << 'EOF'
 			"type": "http"
 		},
 		"figma-developer-mcp": {
-			"servers": {
-				"Framelink_Figma_MCP": {
-					"type": "stdio",
-					"command": "npx",
-					"args": [
-						"-y",
-						"figma-developer-mcp",
-						"--figma-api-key=YOUR-KEY",
-						"--stdio"
-					]
-				}
-			}
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"figma-developer-mcp",
+				"--figma-api-key=${FIGMA_API_KEY:-YOUR-KEY}",
+				"--stdio"
+			]
 		},
-		/*
-		"figma-developer-mcp-as-aservice": {
-			"url": "http://127.0.0.1:3333/mcp",
-			"type": "http"
-		},
-		*/
 		"atlassian": {
 			"url": "https://mcp.atlassian.com/v1/mcp",
 			"type": "http"
