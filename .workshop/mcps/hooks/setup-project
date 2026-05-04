@@ -49,6 +49,29 @@ cat > /home/workshop/.vscode-server/data/User/mcp.json << 'EOF'
 		"atlassian": {
 			"url": "https://mcp.atlassian.com/v1/mcp",
 			"type": "http"
+		},
+		"deep-thinker": {
+			"type": "stdio",
+			"command": "npx", 
+			"args": [
+				"-y", "deep-thinker"
+				]
+		},
+		"shannon-thinking": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"server-shannon-thinking@latest"
+			]
+  		},
+		"mcp-sequentialthinking-tools": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["-y", "mcp-sequentialthinking-tools"],
+			"env": {
+				"MAX_HISTORY_SIZE": "1000"
+			}
 		}
 	},
 	"inputs": []
