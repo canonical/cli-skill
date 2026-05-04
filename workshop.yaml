@@ -19,8 +19,12 @@ sdks:
     channel: latest/stable
   - name: copilot
     channel: latest/stable
+  - name: opencode
+    channel: latest/stable
   - name: node
     channel: 22/stable
+  - name: uv
+    channel: latest/stable
   - name: project-mcps
 actions:
   fetch-skills: |
