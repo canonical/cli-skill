@@ -25,7 +25,7 @@ cat > /home/workshop/.vscode-server/data/User/mcp.json << 'EOF'
 {
 	"servers": {
 		"penpot-remote": {
-			"url": "https://test-mcp.penpot.dev/mcp/stream?userToken=",
+			"url": "https://mcp.penpot.dev/mcp/stream?userToken=${input:penpot-token}",
 			"type": "http"
 		},
 		"figma": {
@@ -42,7 +42,7 @@ cat > /home/workshop/.vscode-server/data/User/mcp.json << 'EOF'
 			"args": [
 				"-y",
 				"figma-developer-mcp",
-				"--figma-api-key=${FIGMA_API_KEY:-YOUR-KEY}",
+				"--figma-api-key=${input:figma-api-key}",
 				"--stdio"
 			]
 		},
@@ -50,6 +50,13 @@ cat > /home/workshop/.vscode-server/data/User/mcp.json << 'EOF'
 			"url": "https://mcp.atlassian.com/v1/mcp",
 			"type": "http"
 		},
+		"coda": {
+			"url": "https://coda.io/apis/mcp",
+			"type": "http",
+			"headers": {
+				"Authorization": "${input:coda-api-key}"
+			}
+		}
 		"deep-thinker": {
 			"type": "stdio",
 			"command": "npx", 
@@ -74,6 +81,25 @@ cat > /home/workshop/.vscode-server/data/User/mcp.json << 'EOF'
 			}
 		}
 	},
-	"inputs": []
+	"inputs": [
+		{
+			"type": "promptString",
+			"id": "penpot-token",
+			"description": "Penpot access token",
+			"password": true
+		},
+		{
+			"type": "promptString",
+			"id": "figma-api-key",
+			"description": "Figma API key, go to Settings -> Security -> Personal access tokens",
+			"password": true
+		},
+		{
+			"type": "promptString",
+			"id": "coda-api-key",
+			"description": "Coda API key, go to Accound settings -> API connections",
+			"password": true
+		}
+	]
 }
 EOF
