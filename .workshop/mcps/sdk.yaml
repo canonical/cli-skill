@@ -14,3 +14,7 @@ slots:
   penpot-repl:
     interface: tunnel
     endpoint: 4403
+
+plugs:
+  ssh-agent:
+    interface: ssh-agent

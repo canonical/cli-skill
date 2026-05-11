@@ -21,8 +21,10 @@ sdks:
     channel: latest/stable
   - name: opencode
     channel: latest/stable
+  - name: pi-coding-agent
+    channel: latest/edge
   - name: node
-    channel: 22/stable
+    channel: latest/stable
   - name: uv
     channel: latest/stable
   - name: project-mcps
@@ -36,3 +38,7 @@ actions:
     fi
   fetch-canonical-skills: |
     npx skills add canonical/skills
+
+connections:
+  - plug: mcps:ssh-agent
+    slot: system:ssh-agent
