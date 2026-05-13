@@ -237,6 +237,9 @@ When discussing tradeoffs, explicitly compare alternatives and call out:
 - analyze verb semantics
 - compare verb meanings using FrameNet
 - semantic difference between verbs
+- give-feedback
+- interview about skill experience
+- file skill issues
 
 ---
 
@@ -258,13 +261,13 @@ Before running any command in this phase:
 
 Proceed once you have enough context to reason about the command set structure.
 
-**Missing source fallback**: If direct command registration code is unavailable (e.g., a Go or Rust binary submodule is not checked out), reconstruct the command surface from README files, packaging manifests (snapcraft.yaml, Makefile, etc.), completion scripts, tests, hooks, and shell wrappers. Explicitly state the confidence level of inferred commands and note which sources were used.
+**Missing source fallback**: If the source code for the CLI is unavailable, STOP and ask the user to provide it. If libraries in command registration code is unavailable (e.g., a Go or Rust binary submodule is not checked out), reconstruct the command surface from README files, packaging manifests (snapcraft.yaml, Makefile, etc.), completion scripts, tests, hooks, and shell wrappers. Explicitly state the confidence level of inferred commands and note which sources were used.
 
 ### Scale Awareness
 
 Before starting analysis, count the total commands in the CLI:
 
-- **< 15 commands**: Compact mode. Sections 03 (Semantic Domain Clustering), 04 (Symmetry Audit), and 05 (Confusion-Pair Audit) may be combined into a single file named `03-05-clustering-symmetry-confusion.md` (+ `.html`). HTML generation is optional for tables with fewer than 15 rows. Focus analytical depth on verb-noun decomposition and pattern classification.
+- **< 15 commands**: Compact mode. HTML generation is optional for tables with fewer than 15 rows. Focus analytical depth on verb-noun decomposition and pattern classification.
 - **15–50 commands**: Standard mode. All sections, all files.
 - **> 50 commands**: Full mode. All sections, all files. Consider splitting domain clusters into sub-documents if a single domain exceeds 30 commands.
 
@@ -284,8 +287,8 @@ This applies to every section of every command in this phase. Partial output is 
 
 Every step that produces recommendations (naming, renaming, structural changes, deprecation plans, etc.) **must** first read and incorporate the specifications in:
 
-- `.github/skills/cli-review/standard/README.md` — Canonical CLI standards (grammar, vocabulary, verb choice, flag conventions, formatting). Recommendations must conform to these standards; if a recommendation would conflict, note the conflict and justify the deviation.
-- `.github/skills/cli-review/deprecation/README.md` — CLI command set versioning and deprecation (stability expectations, transition paths, deprecation notices). Any recommendation that changes, removes, or renames an existing command must follow the deprecation process described here.
+- `.github/skills/cli-review/resources/standard.md` — Canonical CLI standards (grammar, vocabulary, verb choice, flag conventions, formatting). Recommendations must conform to these standards; if a recommendation would conflict, note the conflict and justify the deviation.
+- `.github/skills/cli-review/resources/deprecation.md` — CLI command set versioning and deprecation (stability expectations, transition paths, deprecation notices). Any recommendation that changes, removes, or renames an existing command must follow the deprecation process described here.
 
 **Mandatory gate — do this before writing any recommendations:**
 
@@ -708,3 +711,37 @@ Create `1-command-design/frame-analysis.md` with:
 2. Key findings — verb groups that share frames (synonym risk), verb pairs in related frames (confusion risk)
 3. Recommendations — which verbs to consolidate, rename, or keep as-is, grounded in frame semantics
 4. CLI-specific gaps — verbs requiring manual frame definitions and their implications
+
+---
+
+### Command: give-feedback
+
+Use this workflow when the user says `give-feedback` or after completing all analysis and design workflows. This is always the **last step** in a full skill run. It interviews the agent about its experience following the skill, identifies usability problems, and files GitHub issues for actionable improvements.
+
+#### Purpose
+
+Capture structured UX feedback from the agent's perspective on how well the skill instructions worked in practice. Surface friction points, ambiguities, and failures that should be fixed in the skill itself.
+
+#### Process
+
+Read the full interview protocol and issue-filing instructions from:
+
+```
+.github/skills/cli-review/resources/feedback.md
+```
+
+Follow that protocol exactly. It defines:
+- Prerequisites
+- Interview steps (Opening → Agent Profile → Target Tasks → Four Core UX Questions → Problem Table → Additional Observations)
+- Severity definitions
+- GitHub issue format and filing rules (repository: `canonical/cli-skill`)
+
+#### Output File
+
+Create `feedback.md` in the output root directory (same level as `0-analysis/`) with the full interview transcript structured by the sections in the protocol.
+
+#### Response Format
+
+1. Interview summary — key themes from the self-interview
+2. Issues filed — list of GitHub issues created with links
+3. Positive signals — what worked well (to preserve in future skill iterations)

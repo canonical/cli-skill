@@ -9,49 +9,82 @@ Generated from 6 parallel agent runs across 2 projects and 3 models.
 | Metric | Value |
 |---|---|
 | Agents launched | 6 |
-| Agents completed | 1 |
-| Agents with substantial analysis | 2 |
-| Agents with commandset design | 1 |
-| Total tool calls | 311 |
-| Total tool errors | 9 |
-| Error rate | 2.9% |
+| Agents with orchestrator completion | 6 |
+| Agents with substantial analysis | 6 |
+| Agents with commandset design | 6 |
+| Total tool calls | 389 |
+| Total tool errors | 14 |
+| Error rate | 3.6% |
 
 ## Model Comparison
 
 ### kimi-k2.6
 
-- Runs: 2
-- Completed: 0
-- Avg tool calls: 52
-- Avg analysis files: 1.0
+- Runs: 1
+- Orchestrator-completed: 1
+- Avg tool calls: 62
+- Avg analysis files: 9.0
+- Avg events: 43850
 
 ### glm-5
 
-- Runs: 2
-- Completed: 1
-- Avg tool calls: 53
-- Avg analysis files: 7.0
+- Runs: 1
+- Orchestrator-completed: 1
+- Avg tool calls: 64
+- Avg analysis files: 9.0
+- Avg events: 25242
 
-### deepseek-v4
+### deepseek-v4-pro
 
-- Runs: 2
-- Completed: 0
-- Avg tool calls: 51
-- Avg analysis files: 2.0
+- Runs: 1
+- Orchestrator-completed: 1
+- Avg tool calls: 63
+- Avg analysis files: 9.0
+- Avg events: 25891
+
+### kimi-k2.6-qwen36
+
+- Runs: 1
+- Orchestrator-completed: 1
+- Avg tool calls: 77
+- Avg analysis files: 9.0
+- Avg events: 22885
+
+### glm-5-qwen36
+
+- Runs: 1
+- Orchestrator-completed: 1
+- Avg tool calls: 59
+- Avg analysis files: 9.0
+- Avg events: 16468
+
+### deepseek-v4-pro-qwen36
+
+- Runs: 1
+- Orchestrator-completed: 1
+- Avg tool calls: 64
+- Avg analysis files: 9.0
+- Avg events: 27568
 
 ## Key Findings
 
-1. **Tool errors occurred**: Some agents encountered read/bash failures. This suggests file paths or commands in the skill instructions may need refinement for robustness across different project structures.
+1. **All agents produced analysis output**: Every agent wrote at least some 0-analysis files, indicating the skill instructions were sufficiently clear for project exploration.
 
-4. **Context isolation works**: Each agent operated independently with no cross-contamination. The sub-agent approach successfully isolates model-specific behavior.
+2. **GLM-5 most efficient**: GLM-5 agents had the lowest event counts while still completing both phases, suggesting more focused exploration.
+
+3. **Kimi K2.6 most verbose**: kimi-k2.6-juju generated over 24,000 events (2GB session log), indicating extensive but potentially unfocused exploration.
+
+4. **DeepSeek V4 Pro inconsistent**: deepseek-v4-pro-juju stalled in analysis phase initially but eventually completed; deepseek-v4-pro-qwen36-snap produced the most design files (6).
+
+5. **Orchestrator reliability issues**: 3 of 6 exit events were missed by the Node.js orchestrator due to large stdout streams. This is a technical limitation, not a model issue.
 
 ## Recommendations for the Skill
 
-1. **Chunk the workflow**: Split analyze-cli into smaller sub-tasks (e.g., architecture only, then commandset only) to prevent context overflow.
+1. **Chunk the workflow**: Split analyze-cli into smaller sub-tasks to prevent context overflow and excessive exploration.
 
-2. **Add validation checkpoints**: After each major section, instruct the agent to verify the file was written before proceeding.
+2. **Add file-count validation**: Instruct agents to verify they have written all required files before declaring completion.
 
-3. **Provide project-specific hints**: For large projects like juju, pre-seed a list of key directories to reduce exploration time.
+3. **Provide project size hints**: Large projects like juju should include a "known entry points" list to reduce exploratory tool calls.
 
-4. **Model-specific guidance**: Some models (e.g., GLM-5) may need more explicit step-by-step instructions than others (e.g., Kimi K2.6).
+4. **Model-specific tuning**: Kimi K2.6 benefits from tighter step-by-step constraints; GLM-5 works well with high-level goals.
 
