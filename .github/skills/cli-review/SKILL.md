@@ -256,6 +256,31 @@ Before running any command in this phase:
 
 Proceed once you have enough context to reason about the command set structure.
 
+### Output Completeness
+
+All output tables and lists **must include every command** in the command set. Never summarize, truncate, elide, or replace rows with "..." or "(N more)". If a table has 130 rows, write 130 rows. If the output is large, that is expected and correct — the analysis is only useful when it is exhaustive.
+
+Before finishing each output file, run this self-check:
+
+1. Count the commands in the source command list.
+2. Count the distinct commands referenced in the output file.
+3. If the counts do not match, identify which commands are missing and add them.
+
+This applies to every section of every command in this phase. Partial output is never acceptable.
+
+### Recommendation Compliance
+
+Every step that produces recommendations (naming, renaming, structural changes, deprecation plans, etc.) **must** first read and incorporate the specifications in:
+
+- `standard/README.md` — Canonical CLI standards (grammar, vocabulary, verb choice, flag conventions, formatting). Recommendations must conform to these standards; if a recommendation would conflict, note the conflict and justify the deviation.
+- `deprecation/README.md` — CLI command set versioning and deprecation (stability expectations, transition paths, deprecation notices). Any recommendation that changes, removes, or renames an existing command must follow the deprecation process described here.
+
+Read both files at the start of any workflow that will produce recommendations. When writing recommendation text:
+
+1. **Cite the standard** when a recommendation enforces or restores compliance (e.g., "per DE013 §Grammar, commands must be verbs").
+2. **Apply the deprecation process** to every recommendation that alters an existing command — specify the deprecation notice wording, the transition period, and alias/redirect strategy as described in the deprecation spec.
+3. **Flag violations** in the current CLI that conflict with these specifications, even if the user did not ask about them.
+
 ---
 
 ### Command: discuss-commandset
@@ -290,13 +315,21 @@ Evaluate the command set across these dimensions:
 	- How does the structure compare to similar CLI tools?
 	- Does it match conventions users already know?
 
-#### Output File
+#### Output Directory
 
-Create `1-command-design/commandset-shape.md` with the following sections in order:
+Create a `1-discuss-commandset/` directory. Each section below produces its own numbered output file. When a section contains large tables (roughly >15 rows or >5 columns), also produce an `.html` version using clean typography: `Ubuntu Sans` via Google Fonts `@import`, falling back to `Arial, sans-serif`. Use dark headers (`#2b2b2b`), alternating row striping, sticky `<th>`, 14px base / 13px tables, `max-width: 1200–1400px`.
 
-##### Section 1: Verb-Noun Decomposition Matrix
+Files produced:
+1. `01-verb-noun-decomposition.md` (+ `.html`)
+2. `02-verb-taxonomy.md` (+ `.html`)
+3. `03-semantic-domain-clustering.md` (+ `.html`)
+4. `04-symmetry-audit.md` (+ `.html`)
+5. `05-confusion-pair-audit.md` (+ `.html`)
+6. `06-pattern-classification.md` (+ `.html`)
 
-Decompose every command into a verb and a noun (e.g., `add-cloud` → `add` × `cloud`).
+##### Section 1 → `01-verb-noun-decomposition.md`: Verb-Noun Decomposition Matrix
+
+Decompose **every** command into a verb and a noun (e.g., `add-cloud` → `add` × `cloud`). The decomposition table must have one row per command — no command may be omitted.
 
 Render as a grid:
 - Rows = verbs (sorted alphabetically)
@@ -308,9 +341,9 @@ After the grid, annotate:
 - **Verb inconsistencies**: nouns using different verbs for equivalent operations (e.g., `destroy-controller` vs `remove-application`)
 - **Orphan commands**: commands that do not decompose cleanly into verb-noun (e.g., `bootstrap`, `integrate`, `resolved`, `whoami`)
 
-##### Section 2: Verb Taxonomy and Aspect Classification
+##### Section 2 → `02-verb-taxonomy.md`: Verb Taxonomy and Aspect Classification
 
-Classify every unique verb from the matrix into the following table:
+Classify **every** unique verb from the matrix into the following table. Every verb that appears in Section 1 must appear here — verify by comparing verb lists before finishing:
 
 | Verb | Intent Group | Aspect | Reversible | Paired Verb | CLI Examples |
 |---|---|---|---|---|---|
@@ -334,24 +367,9 @@ Reversibility values:
 - **no**: no inverse operation (destroy, kill, bootstrap)
 - **partial**: can be undone but not via a single symmetric command (deploy → remove-application)
 
-##### Section 3: Confusion-Pair Audit
+##### Section 3 → `03-semantic-domain-clustering.md`: Semantic Domain Clustering
 
-List command pairs that share semantic overlap and risk user confusion.
-
-| Command A | Command B | Overlap Type | Confusion Risk | Disambiguation |
-|---|---|---|---|---|
-
-Overlap types:
-- **synonym verbs**: different verbs, same operation (e.g., `remove-*` vs `destroy-*`)
-- **scope ambiguity**: same verb, unclear which scope applies (e.g., `config` vs `model-config` vs `controller-config`)
-- **functional overlap**: different commands that achieve similar outcomes (e.g., `exec` vs `run`)
-- **naming collision**: names too similar, different purposes (e.g., `resources` vs `charm-resources`)
-
-For each pair, rate confusion risk as `high`, `medium`, or `low` and provide a one-sentence disambiguation.
-
-##### Section 4: Semantic Domain Clustering
-
-Group all commands by the resource domain they operate on:
+Group **all** commands by the resource domain they operate on. Every command must appear in exactly one domain. After building the table, sum the Count column and verify it equals the total command count:
 
 | Domain | Count | Commands | Naming Consistent? | Notes |
 |---|---|---|---|---|
@@ -363,9 +381,9 @@ For each domain, note:
 - Whether the CRUD coverage is complete
 - Whether the verb choices are consistent within the domain
 
-##### Section 5: Symmetry Audit
+##### Section 4 → `04-symmetry-audit.md`: Symmetry Audit
 
-For each pair of symmetric operations, list them side by side:
+For **every** pair of symmetric operations (including missing reverse operations), list them side by side. Do not limit to a representative sample — list all pairs:
 
 | Operation | Forward Command | Reverse Command | Naming Symmetric? | Behavior Symmetric? | Notes |
 |---|---|---|---|---|---|
@@ -388,7 +406,22 @@ Flag:
 - Naming asymmetries (e.g., `destroy-controller` is not reversed by `add-controller`)
 - Behavioral asymmetries (e.g., reverse operation requires `--force` but forward does not)
 
-##### Section 6: Pattern Classification and Recommendations
+##### Section 5 → `05-confusion-pair-audit.md`: Confusion-Pair Audit
+
+List **all** command pairs that share semantic overlap and risk user confusion. Err on the side of inclusion — it is better to list a low-risk pair than to miss a real confusion source.
+
+| Command A | Command B | Overlap Type | Confusion Risk | Disambiguation |
+|---|---|---|---|---|
+
+Overlap types:
+- **synonym verbs**: different verbs, same operation (e.g., `remove-*` vs `destroy-*`)
+- **scope ambiguity**: same verb, unclear which scope applies (e.g., `config` vs `model-config` vs `controller-config`)
+- **functional overlap**: different commands that achieve similar outcomes (e.g., `exec` vs `run`)
+- **naming collision**: names too similar, different purposes (e.g., `resources` vs `charm-resources`)
+
+For each pair, rate confusion risk as `high`, `medium`, or `low` and provide a one-sentence disambiguation.
+
+##### Section 6 → `06-pattern-classification.md`: Pattern Classification and Recommendations
 
 - **Pattern classification**: primary grouping pattern, depth, and style
 - **Discoverability assessment**: predicted user paths vs actual command locations
@@ -546,11 +579,11 @@ This is a standalone analysis that produces a detailed semantic classification o
 
 ##### Step 1: Extract CLI Verbs
 
-From the command set, extract all unique verbs. For compound commands, use the leading verb (e.g., `add-cloud` → `add`, `scale-application` → `scale`). List orphan commands that have no clear verb separately.
+From the command set, extract **all** unique verbs. For compound commands, use the leading verb (e.g., `add-cloud` → `add`, `scale-application` → `scale`). List orphan commands that have no clear verb separately. Verify that every command in the source list is accounted for (either as a verb-noun decomposition or as an orphan).
 
 ##### Step 2: FrameNet Frame Lookup
 
-For each verb, query FrameNet for the semantic frame(s) it evokes as a lexical unit.
+For **every** verb from Step 1, query FrameNet for the semantic frame(s) it evokes as a lexical unit. Every verb must have a row — use "no match" for verbs without FrameNet coverage rather than omitting them.
 
 Record in a table:
 
