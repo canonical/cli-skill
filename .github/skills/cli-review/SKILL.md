@@ -138,17 +138,19 @@ Create `0-analysis` and write these files.
 
 ### Build Order
 
-Generate analysis files in this order to maximize reuse:
+Generate analysis files in this order to maximize reuse. You **must** use these exact filenames:
 
-1. `architecture.md`
-2. `commandset.md`
-3. `argument-structure.md`
-4. `configuration-model.md`
-5. `output-contracts.md`
-6. `error-model-and-exit-codes.md`
-7. `safety-model.md`
-8. `extensibility-model.md`
-9. `documentation-quality-gaps.md`
+```
+0-analysis/architecture.md
+0-analysis/commandset.md
+0-analysis/argument-structure.md
+0-analysis/configuration-model.md
+0-analysis/output-contracts.md
+0-analysis/error-model-and-exit-codes.md
+0-analysis/safety-model.md
+0-analysis/extensibility-model.md
+0-analysis/documentation-quality-gaps.md
+```
 
 ### Analysis Checklist
 
@@ -238,10 +240,10 @@ When discussing tradeoffs, explicitly compare alternatives and call out:
 
 ---
 
-## Command Design Phase: 1-command-design
+## Command Design Phase
 
 This phase provides structured workflows for discussing and evolving the shape of a CLI's command set.
-It produces documents in a `1-command-design/` directory.
+It produces documents in subdirectories under the output root (e.g., `1-discuss-commandset/`, `1-command-design/`).
 
 ### Context Resolution
 
@@ -256,9 +258,19 @@ Before running any command in this phase:
 
 Proceed once you have enough context to reason about the command set structure.
 
+**Missing source fallback**: If direct command registration code is unavailable (e.g., a Go or Rust binary submodule is not checked out), reconstruct the command surface from README files, packaging manifests (snapcraft.yaml, Makefile, etc.), completion scripts, tests, hooks, and shell wrappers. Explicitly state the confidence level of inferred commands and note which sources were used.
+
+### Scale Awareness
+
+Before starting analysis, count the total commands in the CLI:
+
+- **< 15 commands**: Compact mode. Sections 03 (Semantic Domain Clustering), 04 (Symmetry Audit), and 05 (Confusion-Pair Audit) may be combined into a single file named `03-05-clustering-symmetry-confusion.md` (+ `.html`). HTML generation is optional for tables with fewer than 15 rows. Focus analytical depth on verb-noun decomposition and pattern classification.
+- **15–50 commands**: Standard mode. All sections, all files.
+- **> 50 commands**: Full mode. All sections, all files. Consider splitting domain clusters into sub-documents if a single domain exceeds 30 commands.
+
 ### Output Completeness
 
-All output tables and lists **must include every command** in the command set. Never summarize, truncate, elide, or replace rows with "..." or "(N more)". If a table has 130 rows, write 130 rows. If the output is large, that is expected and correct — the analysis is only useful when it is exhaustive.
+All output tables and lists **must include every command** in the command set. Never summarize, truncate, elide, or replace rows with "..." or "(N more)". If a table has 130 rows, write 130 rows. If the output is large, that is expected and correct — the analysis is only useful when it is exhaustive. For matrices, pair audits, and cluster tables, the coverage obligation is the same: every command must appear directly or be explicitly accounted for as an orphan/outlier.
 
 Before finishing each output file, run this self-check:
 
@@ -272,14 +284,26 @@ This applies to every section of every command in this phase. Partial output is 
 
 Every step that produces recommendations (naming, renaming, structural changes, deprecation plans, etc.) **must** first read and incorporate the specifications in:
 
-- `standard/README.md` — Canonical CLI standards (grammar, vocabulary, verb choice, flag conventions, formatting). Recommendations must conform to these standards; if a recommendation would conflict, note the conflict and justify the deviation.
-- `deprecation/README.md` — CLI command set versioning and deprecation (stability expectations, transition paths, deprecation notices). Any recommendation that changes, removes, or renames an existing command must follow the deprecation process described here.
+- `.github/skills/cli-review/standard/README.md` — Canonical CLI standards (grammar, vocabulary, verb choice, flag conventions, formatting). Recommendations must conform to these standards; if a recommendation would conflict, note the conflict and justify the deviation.
+- `.github/skills/cli-review/deprecation/README.md` — CLI command set versioning and deprecation (stability expectations, transition paths, deprecation notices). Any recommendation that changes, removes, or renames an existing command must follow the deprecation process described here.
 
-Read both files at the start of any workflow that will produce recommendations. When writing recommendation text:
+**Mandatory gate — do this before writing any recommendations:**
+
+1. Stop. Read both files listed above in full.
+2. Summarize the key constraints from each file in working notes (not output files).
+3. Only then proceed to write recommendation text.
+
+When writing recommendation text:
 
 1. **Cite the standard** when a recommendation enforces or restores compliance (e.g., "per DE013 §Grammar, commands must be verbs").
 2. **Apply the deprecation process** to every recommendation that alters an existing command — specify the deprecation notice wording, the transition period, and alias/redirect strategy as described in the deprecation spec.
 3. **Flag violations** in the current CLI that conflict with these specifications, even if the user did not ask about them.
+
+**Compliance self-check** — before finalizing any recommendation-bearing file:
+
+1. For each recommendation, verify it cites a specific standard section. If not, add the citation.
+2. For each rename or removal, verify it includes a transition period, deprecation warning text, and alias/redirect strategy. If not, add them.
+3. For each existing violation found, verify it is flagged even if the user did not ask about it. If not, add the flag.
 
 ---
 
@@ -319,13 +343,16 @@ Evaluate the command set across these dimensions:
 
 Create a `1-discuss-commandset/` directory. Each section below produces its own numbered output file. When a section contains large tables (roughly >15 rows or >5 columns), also produce an `.html` version using clean typography: `Ubuntu Sans` via Google Fonts `@import`, falling back to `Arial, sans-serif`. Use dark headers (`#2b2b2b`), alternating row striping, sticky `<th>`, 14px base / 13px tables, `max-width: 1200–1400px`.
 
-Files produced:
-1. `01-verb-noun-decomposition.md` (+ `.html`)
-2. `02-verb-taxonomy.md` (+ `.html`)
-3. `03-semantic-domain-clustering.md` (+ `.html`)
-4. `04-symmetry-audit.md` (+ `.html`)
-5. `05-confusion-pair-audit.md` (+ `.html`)
-6. `06-pattern-classification.md` (+ `.html`)
+You **must** use these exact filenames:
+
+```
+1-discuss-commandset/01-verb-noun-decomposition.md  (+.html)
+1-discuss-commandset/02-verb-taxonomy.md             (+.html)
+1-discuss-commandset/03-semantic-domain-clustering.md (+.html)
+1-discuss-commandset/04-symmetry-audit.md             (+.html)
+1-discuss-commandset/05-confusion-pair-audit.md       (+.html)
+1-discuss-commandset/06-pattern-classification.md     (+.html)
+```
 
 ##### Section 1 → `01-verb-noun-decomposition.md`: Verb-Noun Decomposition Matrix
 
