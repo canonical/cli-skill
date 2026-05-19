@@ -5,4 +5,5 @@ node_modules
 juju
 qwen36-snap
 **/*session.jsonl
+**/session.jsonl
 session.jsonl
