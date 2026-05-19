@@ -4,3 +4,5 @@ node_modules
 .pnpm-store
 juju
 qwen36-snap
+**/*session.jsonl
+session.jsonl
