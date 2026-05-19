@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03–05 — Domain Clustering, Symmetry, Confusion Pairs | qwen36</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;700&display=swap');
+body { font-family: 'Ubuntu Sans', Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 2rem; font-size: 14px; color: #333; }
+h1 { color: #2b2b2b; border-bottom: 2px solid #e0e0e0; padding-bottom: 0.5rem; }
+h2 { color: #2b2b2b; margin-top: 2rem; }
+h3 { color: #444; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 1rem 0; }
+th { background: #2b2b2b; color: #fff; padding: 8px 12px; text-align: left; position: sticky; top: 0; }
+td { padding: 6px 12px; border-bottom: 1px solid #e0e0e0; }
+tr:nth-child(even) { background: #f8f8f8; }
+tr:hover { background: #eef; }
+code { background: #f0f0f0; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+.risk-high { color: #c00; font-weight: bold; }
+.risk-medium { color: #b60; font-weight: bold; }
+.risk-low { color: #080; }
+.note { background: #fffde7; padding: 0.8rem; border-left: 3px solid #f5c518; margin: 1rem 0; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>03–05 — Semantic Domain Clustering, Symmetry Audit, and Confusion-Pair Audit</h1>
+<div class="note">Combined per compact mode rule (< 15 commands).</div>
+
+<h2>Semantic Domain Clustering</h2>
+<table>
+<thead><tr><th>Domain</th><th>Count</th><th>Commands</th><th>Naming Consistent?</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Engine management</td><td>3</td><td><code>list-engines</code>, <code>show-engine</code>, <code>use-engine</code></td><td>✓ Yes</td><td>Complete set</td></tr>
+<tr><td>Configuration</td><td>3</td><td><code>get</code>, <code>set</code>, <code>unset</code></td><td>✓ Yes</td><td>Per DE013</td></tr>
+<tr><td>System observation</td><td>3</td><td><code>status</code>, <code>show-machine</code>, <code>version</code></td><td>Partial</td><td>Mixed bare/verb-noun</td></tr>
+<tr><td>User interaction</td><td>2</td><td><code>chat</code>, <code>webui</code></td><td>✗ No</td><td>Different grammar</td></tr>
+<tr><td>Maintenance</td><td>1</td><td><code>prune-cache</code></td><td>n/a</td><td>Isolated</td></tr>
+<tr><td>Hidden/internal</td><td>3</td><td><code>run</code>, <code>serve-webui</code>, <code>debug</code></td><td>Partial</td><td>Internal use</td></tr>
+</tbody>
+</table>
+
+<h2>Symmetry Audit</h2>
+<table>
+<thead><tr><th>Operation</th><th>Forward</th><th>Reverse</th><th>Naming Symmetric?</th><th>Behavior Symmetric?</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Set config</td><td><code>set key=value</code></td><td><code>unset key</code></td><td>✓</td><td>✓</td><td>Clean pair</td></tr>
+<tr><td>Select engine</td><td><code>use-engine</code></td><td>—</td><td>n/a</td><td>n/a</td><td>Selector, no inverse needed</td></tr>
+<tr><td>Install components</td><td><code>use-engine</code></td><td><code>prune-cache</code></td><td>✗</td><td>Partial</td><td>Asymmetric naming</td></tr>
+<tr><td>Start server</td><td><code>snap start</code></td><td><code>snap stop</code></td><td>✓ (snap)</td><td>✓</td><td>Delegated to snap</td></tr>
+<tr><td>Open webui</td><td><code>webui</code></td><td>—</td><td>n/a</td><td>n/a</td><td>Browser responsibility</td></tr>
+<tr><td>Start chat</td><td><code>chat</code></td><td>(Ctrl+C)</td><td>n/a</td><td>n/a</td><td>Interactive exit</td></tr>
+</tbody>
+</table>
+
+<h2>Confusion-Pair Audit</h2>
+<table>
+<thead><tr><th>Command A</th><th>Command B</th><th>Overlap Type</th><th>Risk</th><th>Disambiguation</th></tr></thead>
+<tbody>
+<tr><td><code>status</code></td><td><code>show-engine</code></td><td>scope ambiguity</td><td class="risk-medium">medium</td><td><code>status</code> = health; <code>show-engine</code> = manifest details</td></tr>
+<tr><td><code>get</code></td><td><code>show-engine</code></td><td>scope ambiguity</td><td class="risk-medium">medium</td><td><code>get</code> = config keys; <code>show-engine</code> = engine spec</td></tr>
+<tr><td><code>prune-cache</code></td><td><code>use-engine --fix</code></td><td>functional overlap</td><td class="risk-medium">medium</td><td><code>prune</code> removes unused; <code>fix</code> ensures required present</td></tr>
+<tr><td><code>show-engine</code></td><td><code>list-engines</code></td><td>functional overlap</td><td class="risk-low">low</td><td>Single detail vs. all summary</td></tr>
+<tr><td><code>chat</code></td><td><code>webui</code></td><td>functional overlap</td><td class="risk-low">low</td><td>Terminal vs. browser interface</td></tr>
+<tr><td><code>version</code></td><td><code>status</code></td><td>scope ambiguity</td><td class="risk-low">low</td><td><code>version</code> = release info only; <code>status</code> = runtime state</td></tr>
+<tr><td><code>set</code></td><td><code>use-engine</code></td><td>functional overlap</td><td class="risk-low">low</td><td><code>set</code> = user config; <code>use-engine</code> = engine selection + config</td></tr>
+</tbody>
+</table>
+
+</body>
+</html>

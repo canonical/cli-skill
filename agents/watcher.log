@@ -1,0 +1,50 @@
+Watcher started. Checking every 30 seconds...
+[2026-05-13T11:47:04.019Z] 1/6 agents done. Regenerating reports...
+Generating reports from current agent state...
+Wrote /project/agents/feedback.md
+Wrote /project/agents/insights.md
+Done.
+[2026-05-13T11:54:04.418Z] 2/6 agents done. Regenerating reports...
+Generating reports from current agent state...
+node:fs:440
+    return binding.readFileUtf8(path, stringToFlags(options.flag));
+                   ^
+
+Error: Cannot create a string longer than 0x1fffffe8 characters
+    at Object.readFileSync (node:fs:440:20)
+    at parseSession (/project/generate-reports.js:14:20)
+    at Array.map (<anonymous>)
+    at generateFeedback (/project/generate-reports.js:45:26)
+    at main (/project/generate-reports.js:196:3)
+    at Object.<anonymous> (/project/generate-reports.js:201:1)
+    at Module._compile (node:internal/modules/cjs/loader:1705:14)
+    at Object..js (node:internal/modules/cjs/loader:1838:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12) {
+  code: 'ERR_STRING_TOO_LONG'
+}
+
+Node.js v22.22.1
+[2026-05-13T11:55:34.488Z] 3/6 agents done. Regenerating reports...
+Generating reports from current agent state...
+node:fs:440
+    return binding.readFileUtf8(path, stringToFlags(options.flag));
+                   ^
+
+Error: Cannot create a string longer than 0x1fffffe8 characters
+    at Object.readFileSync (node:fs:440:20)
+    at parseSession (/project/generate-reports.js:14:20)
+    at Array.map (<anonymous>)
+    at generateFeedback (/project/generate-reports.js:45:26)
+    at main (/project/generate-reports.js:196:3)
+    at Object.<anonymous> (/project/generate-reports.js:201:1)
+    at Module._compile (node:internal/modules/cjs/loader:1705:14)
+    at Object..js (node:internal/modules/cjs/loader:1838:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12) {
+  code: 'ERR_STRING_TOO_LONG'
+}
+
+Node.js v22.22.1
+[2026-05-13T12:00:34.766Z] 6/6 agents done. Regenerating reports...
+[2026-05-13T12:00:34.768Z] All agents complete. Final reports generated.

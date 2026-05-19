@@ -1,0 +1,373 @@
+{
+  "primary_grouping_pattern_flat_verb-noun_with_noun-only_list_exceptions": [
+    {
+      "Pattern": "Verb-noun compound",
+      "Count": "~90",
+      "Examples": "add-cloud, remove-unit, show-secret, update-credential"
+    },
+    {
+      "Pattern": "Noun-only (list/show shorthand)",
+      "Count": "~20",
+      "Examples": "machines, controllers, secrets, status"
+    },
+    {
+      "Pattern": "Verb-only (implicit noun)",
+      "Count": "~25",
+      "Examples": "deploy, expose, refresh, trust, migrate"
+    },
+    {
+      "Pattern": "Orphan/special",
+      "Count": "~15",
+      "Examples": "bootstrap, config, juju, switch, whoami"
+    }
+  ],
+  "naming_convention_depth": [
+    {
+      "Depth": "Single word",
+      "Example": "deploy, status, config",
+      "Frequency": "Common"
+    },
+    {
+      "Depth": "Two words (verb-noun)",
+      "Example": "add-cloud, show-model",
+      "Frequency": "Most common"
+    },
+    {
+      "Depth": "Three words",
+      "Example": "show-secret-backend, update-storage-pool, help-action-commands",
+      "Frequency": "Moderate"
+    },
+    {
+      "Depth": "Four words",
+      "Example": "enable-destroy-controller",
+      "Frequency": "Rare"
+    }
+  ],
+  "de013_compliance_assessment": [
+    {
+      "DE013 Rule": "Commands are verbs",
+      "Juju Compliance": "Partial",
+      "Notes": "~45 commands are verb-only or verb-noun; ~20 are noun-only lists; ~15 are orphans"
+    },
+    {
+      "DE013 Rule": "Use plural nouns for listing",
+      "Juju Compliance": "Yes",
+      "Notes": "machines, controllers, secrets, users, clouds follow this"
+    },
+    {
+      "DE013 Rule": "Use status over show-status",
+      "Juju Compliance": "Yes",
+      "Notes": "status is correctly used"
+    },
+    {
+      "DE013 Rule": "Use show for details",
+      "Juju Compliance": "Partial",
+      "Notes": "Many show- commands exist, but some use noun-only (info, dashboard)"
+    },
+    {
+      "DE013 Rule": "Verb-noun when verbs alone insufficient",
+      "Juju Compliance": "Partial",
+      "Notes": "Most commands follow this, but many verb-only commands have implicit nouns"
+    },
+    {
+      "DE013 Rule": "At most one sublevel",
+      "Juju Compliance": "N/A",
+      "Notes": "Juju uses flat namespace; no sublevels at all"
+    }
+  ],
+  "comparison_to_de013_common_commands": [
+    {
+      "DE013 Standard": "tool init",
+      "Juju Equivalent": "bootstrap",
+      "Deviation?": "Minor — bootstrap is domain-specific"
+    },
+    {
+      "DE013 Standard": "tool list",
+      "Juju Equivalent": "models, controllers, machines",
+      "Deviation?": "Yes — Juju uses plural nouns instead of list-"
+    },
+    {
+      "DE013 Standard": "tool show <id>",
+      "Juju Equivalent": "show-application, show-model",
+      "Deviation?": "Yes — Juju prefixes with show-"
+    },
+    {
+      "DE013 Standard": "tool status",
+      "Juju Equivalent": "status",
+      "Deviation?": "No"
+    },
+    {
+      "DE013 Standard": "tool foobar-status",
+      "Juju Equivalent": "N/A",
+      "Deviation?": "N/A"
+    },
+    {
+      "DE013 Standard": "tool start/stop",
+      "Juju Equivalent": "N/A",
+      "Deviation?": "Juju manages lifecycle via deploy/remove/scale"
+    },
+    {
+      "DE013 Standard": "tool enable/disable",
+      "Juju Equivalent": "enable-command, disable-user",
+      "Deviation?": "Partial — inconsistent noun pairing"
+    },
+    {
+      "DE013 Standard": "tool get/set/unset",
+      "Juju Equivalent": "config, model-config, set-constraints",
+      "Deviation?": "Yes — no unset, get is implicit"
+    },
+    {
+      "DE013 Standard": "tool create-foo",
+      "Juju Equivalent": "create-backup, create-storage-pool",
+      "Deviation?": "Partial — Juju mostly uses add-"
+    },
+    {
+      "DE013 Standard": "tool delete-foo",
+      "Juju Equivalent": "remove-, destroy-, kill-",
+      "Deviation?": "Yes — three different deletion verbs"
+    },
+    {
+      "DE013 Standard": "tool update-foo",
+      "Juju Equivalent": "update-, refresh",
+      "Deviation?": "Partial — refresh is domain-specific"
+    }
+  ],
+  "predicted_vs_actual_paths": [
+    {
+      "User Intent": "List all clouds",
+      "Predicted Command": "juju list-clouds",
+      "Actual Command": "juju clouds",
+      "Discoverability Issue": "User must know noun-only convention"
+    },
+    {
+      "User Intent": "Show cloud details",
+      "Predicted Command": "juju cloud <name>",
+      "Actual Command": "juju show-cloud <name>",
+      "Discoverability Issue": "DE013 would prefer juju cloud <name>"
+    },
+    {
+      "User Intent": "Add a relation",
+      "Predicted Command": "juju add-relation",
+      "Actual Command": "juju integrate",
+      "Discoverability Issue": "add-relation was removed in favor of integrate"
+    },
+    {
+      "User Intent": "Remove a relation",
+      "Predicted Command": "juju remove-relation",
+      "Actual Command": "juju remove-relation",
+      "Discoverability Issue": "OK, but inconsistent with integrate"
+    },
+    {
+      "User Intent": "Create a model",
+      "Predicted Command": "juju create-model",
+      "Actual Command": "juju add-model",
+      "Discoverability Issue": "add is used instead of create"
+    },
+    {
+      "User Intent": "Delete a model",
+      "Predicted Command": "juju delete-model",
+      "Actual Command": "juju destroy-model",
+      "Discoverability Issue": "destroy instead of delete or remove"
+    },
+    {
+      "User Intent": "Delete a controller",
+      "Predicted Command": "juju delete-controller",
+      "Actual Command": "juju destroy-controller",
+      "Discoverability Issue": "Same issue"
+    },
+    {
+      "User Intent": "Force delete controller",
+      "Predicted Command": "juju destroy-controller --force",
+      "Actual Command": "juju kill-controller",
+      "Discoverability Issue": "Separate command instead of flag"
+    },
+    {
+      "User Intent": "Update application charm",
+      "Predicted Command": "juju update-application",
+      "Actual Command": "juju refresh",
+      "Discoverability Issue": "Domain-specific verb"
+    },
+    {
+      "User Intent": "List firewall rules",
+      "Predicted Command": "juju list-firewall-rules",
+      "Actual Command": "juju firewall-rules",
+      "Discoverability Issue": "Noun-only list"
+    },
+    {
+      "User Intent": "Show firewall rules",
+      "Predicted Command": "juju show-firewall-rules",
+      "Actual Command": "juju firewall-rules",
+      "Discoverability Issue": "Same command for list and show"
+    },
+    {
+      "User Intent": "List disabled commands",
+      "Predicted Command": "juju list-disabled-commands",
+      "Actual Command": "juju disabled-commands",
+      "Discoverability Issue": "Noun-only list"
+    },
+    {
+      "User Intent": "Show backup details",
+      "Predicted Command": "juju show-backup",
+      "Actual Command": "N/A",
+      "Discoverability Issue": "No show-backup command exists"
+    },
+    {
+      "User Intent": "Remove a backup",
+      "Predicted Command": "juju remove-backup",
+      "Actual Command": "N/A",
+      "Discoverability Issue": "No remove-backup command exists"
+    },
+    {
+      "User Intent": "List operations",
+      "Predicted Command": "juju list-operations",
+      "Actual Command": "juju operations",
+      "Discoverability Issue": "Noun-only list"
+    },
+    {
+      "User Intent": "Show operation details",
+      "Predicted Command": "juju show-operation",
+      "Actual Command": "juju show-operation",
+      "Discoverability Issue": "OK"
+    },
+    {
+      "User Intent": "List tasks",
+      "Predicted Command": "juju list-tasks",
+      "Actual Command": "N/A",
+      "Discoverability Issue": "Tasks shown via show-task or operations"
+    },
+    {
+      "User Intent": "Cancel an operation",
+      "Predicted Command": "juju cancel-operation",
+      "Actual Command": "juju cancel-task",
+      "Discoverability Issue": "Operation vs task terminology mismatch"
+    }
+  ],
+  "vs_kubectl": [
+    {
+      "Aspect": "Hierarchy",
+      "kubectl": "verb resource (e.g., kubectl get pods)",
+      "Juju": "Flat (juju show-unit)"
+    },
+    {
+      "Aspect": "Resource types",
+      "kubectl": "Explicit (pods, services, deployments)",
+      "Juju": "Implicit or embedded in command name"
+    },
+    {
+      "Aspect": "CRUD verbs",
+      "kubectl": "get, create, apply, delete, patch",
+      "Juju": "Fragmented (show, add, deploy, remove, destroy, update, refresh)"
+    },
+    {
+      "Aspect": "Namespace scoping",
+      "kubectl": "-n namespace",
+      "Juju": "-m model (similar)"
+    },
+    {
+      "Aspect": "Output formats",
+      "kubectl": "-o yaml/json/wide",
+      "Juju": "--format yaml/json/tabular (similar)"
+    }
+  ],
+  "vs_aws_cli": [
+    {
+      "Aspect": "Hierarchy",
+      "AWS CLI": "service command (e.g., aws ec2 describe-instances)",
+      "Juju": "Flat"
+    },
+    {
+      "Aspect": "Verb consistency",
+      "AWS CLI": "describe, create, delete, update across services",
+      "Juju": "Inconsistent verb choice per domain"
+    },
+    {
+      "Aspect": "Discovery",
+      "AWS CLI": "Service-oriented help",
+      "Juju": "Flat alphabetical list"
+    }
+  ],
+  "vs_snap": [
+    {
+      "Aspect": "Primary objects",
+      "snap": "Snaps",
+      "Juju": "Applications, models, controllers, clouds"
+    },
+    {
+      "Aspect": "Grammar",
+      "snap": "snap <verb> [<snap>]",
+      "Juju": "juju <verb-noun> [<args>]"
+    },
+    {
+      "Aspect": "List command",
+      "snap": "snap list",
+      "Juju": "juju models, juju controllers (plural nouns)"
+    },
+    {
+      "Aspect": "Info command",
+      "snap": "snap info <snap>",
+      "Juju": "juju show-application <app>"
+    }
+  ],
+  "tradeoff_summary": [
+    {
+      "Recommendation": "1. Consolidate deletion verbs",
+      "Breaking Change?": "Yes",
+      "Migration Cost": "High",
+      "User Benefit": "High"
+    },
+    {
+      "Recommendation": "2. Converge on create",
+      "Breaking Change?": "Yes",
+      "Migration Cost": "Medium",
+      "User Benefit": "High"
+    },
+    {
+      "Recommendation": "3. Add explicit noun aliases",
+      "Breaking Change?": "No",
+      "Migration Cost": "None",
+      "User Benefit": "Medium"
+    },
+    {
+      "Recommendation": "4. Add unset commands",
+      "Breaking Change?": "No",
+      "Migration Cost": "None",
+      "User Benefit": "Medium"
+    },
+    {
+      "Recommendation": "5. Rename resolved",
+      "Breaking Change?": "Minor",
+      "Migration Cost": "Low",
+      "User Benefit": "Low"
+    },
+    {
+      "Recommendation": "6. Config cross-references",
+      "Breaking Change?": "No",
+      "Migration Cost": "None",
+      "User Benefit": "Medium"
+    },
+    {
+      "Recommendation": "7. Cross-model help topic",
+      "Breaking Change?": "No",
+      "Migration Cost": "None",
+      "User Benefit": "Medium"
+    },
+    {
+      "Recommendation": "8. list- aliases",
+      "Breaking Change?": "No",
+      "Migration Cost": "None",
+      "User Benefit": "Low"
+    },
+    {
+      "Recommendation": "9. show- aliases",
+      "Breaking Change?": "No",
+      "Migration Cost": "None",
+      "User Benefit": "Low"
+    },
+    {
+      "Recommendation": "10. Debug command clarity",
+      "Breaking Change?": "No",
+      "Migration Cost": "None",
+      "User Benefit": "Low"
+    }
+  ]
+}

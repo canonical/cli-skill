@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>04 Symmetry Audit</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+    body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #1f1f1f; margin: 0; background: #f6f7f8; }
+    main { max-width: 1280px; margin: 0 auto; padding: 32px 24px 48px; background: #fff; }
+    h1, h2 { color: #2b2b2b; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0 24px; }
+    th, td { border: 1px solid #d7d7d7; padding: 8px 10px; vertical-align: top; text-align: left; }
+    th { position: sticky; top: 0; background: #2b2b2b; color: #fff; }
+    tbody tr:nth-child(even) { background: #f3f4f6; }
+    code { font-family: 'Ubuntu Sans', Arial, sans-serif; background: #f1f1f1; padding: 1px 4px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>04 Symmetry Audit</h1>
+  <p>This audit includes all six leaf commands. Because the command set is small, most symmetry findings are about missing reverse operations rather than mismatched existing pairs.</p>
+  <table>
+    <thead>
+      <tr><th>Operation</th><th>Forward Command</th><th>Reverse Command</th><th>Naming Symmetric?</th><th>Behavior Symmetric?</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Engine selection</td><td><code>qwen36 use-engine &lt;engine&gt;</code></td><td>none</td><td>No</td><td>No</td><td>There is no explicit <code>unset-engine</code>, <code>reset-engine</code>, or <code>auto-engine</code> inverse. <code>--auto</code> is a mode on the same command rather than a reverse operation.</td></tr>
+      <tr><td>Engine observation vs engine mutation</td><td><code>qwen36 show-engine</code></td><td><code>qwen36 use-engine &lt;engine&gt;</code></td><td>No</td><td>No</td><td>These commands are complementary, not inverse. One inspects state; the other changes it.</td></tr>
+      <tr><td>Config mutation vs config observation</td><td><code>qwen36 set &lt;key&gt;=&lt;value&gt;</code></td><td><code>qwen36 get &lt;key&gt;</code></td><td>Partially</td><td>Partially</td><td>Common and useful pair, but <code>get</code> is not a true inverse because it does not restore prior state.</td></tr>
+      <tr><td>Config restoration</td><td><code>qwen36 set &lt;key&gt;=&lt;value&gt;</code></td><td>none</td><td>No</td><td>No</td><td>No <code>unset</code> command is documented, so there is no direct route back to defaults.</td></tr>
+      <tr><td>Interactive session entry</td><td><code>qwen36 chat</code></td><td>none</td><td>No</td><td>No</td><td>Session termination is shell-driven rather than command-driven.</td></tr>
+      <tr><td>Shell completion generation</td><td><code>qwen36 completion bash</code></td><td>none</td><td>No</td><td>No</td><td>Generation is one-way. No install/remove/manage complement is exposed.</td></tr>
+    </tbody>
+  </table>
+  <p>Self-check: every leaf command appears at least once in the table.</p>
+
+  <h2>Findings</h2>
+  <p>The only meaningful near-pair is <code>get</code> and <code>set</code>. The engine domain is asymmetrical: users can set and inspect the current engine but cannot list supported engines or restore defaults explicitly. The CLI is not overburdened with forced symmetry, which is good, but it does need one missing complement: <code>unset</code> for config.</p>
+
+  <h2>Recommendation Compliance Notes</h2>
+  <p>Per DE013, <code>get</code>/<code>set</code> already match Canonical's standard command vocabulary; adding <code>unset</code> would improve symmetry without renaming anything. That is the safest additive improvement because it can land in a minor release without breaking scripts. Any attempt to rename <code>show-engine</code> or <code>use-engine</code> should follow the full one-cycle deprecation process described in the deprecation specification.</p>
+</main>
+</body>
+</html>

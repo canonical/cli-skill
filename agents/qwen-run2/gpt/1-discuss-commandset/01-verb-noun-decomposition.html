@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01. Verb-Noun Decomposition Matrix</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+:root {
+  --bg: #f5f6f7;
+  --panel: #ffffff;
+  --text: #1f2328;
+  --muted: #5b6470;
+  --border: #d7dce2;
+  --head: #2b2b2b;
+  --stripe: #f1f4f7;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Ubuntu Sans', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+h1, h2 {
+  margin: 0 0 12px;
+}
+p { margin: 0 0 14px; }
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 0 0 20px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+th, td {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+  text-align: left;
+}
+th {
+  background: var(--head);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+tbody tr:nth-child(even) { background: var(--stripe); }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.small { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="panel">
+    <h1>01. Verb-Noun Decomposition Matrix</h1>
+    <p>Total commands analyzed: <strong>7</strong>. This section accounts for every command, including outliers that do not decompose cleanly.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Command Accounting</h2>
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Decomposed verb</th><th>Decomposed noun</th><th>Status</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>qwen36 chat</code></td><td><code>chat</code></td><td>none</td><td>orphan</td><td>Bare conversational verb with no explicit object noun.</td></tr>
+        <tr><td><code>qwen36 use-engine</code></td><td><code>use</code></td><td><code>engine</code></td><td>decomposed</td><td>Verb-noun compound.</td></tr>
+        <tr><td><code>qwen36 show-engine</code></td><td><code>show</code></td><td><code>engine</code></td><td>decomposed</td><td>Verb-noun compound.</td></tr>
+        <tr><td><code>qwen36 get</code></td><td><code>get</code></td><td><code>config</code></td><td>decomposed</td><td>The object is implicit in the required key argument.</td></tr>
+        <tr><td><code>qwen36 set</code></td><td><code>set</code></td><td><code>config</code></td><td>decomposed</td><td>The object is implicit in the required assignment argument.</td></tr>
+        <tr><td><code>qwen36 completion bash</code></td><td><code>completion</code></td><td><code>shell</code></td><td>decomposed</td><td>Meta-command for shell completion generation.</td></tr>
+        <tr><td><code>qwen36.server</code></td><td>none</td><td>none</td><td>orphan</td><td>Snap service entrypoint outside the normal grammar.</td></tr>
+      </tbody>
+    </table>
+    <p class="small">Coverage check: 5 matrix commands + 2 orphans = 7 commands accounted for.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Verb x Noun Grid</h2>
+    <table>
+      <thead>
+        <tr><th>Verb \ Noun</th><th>engine</th><th>config</th><th>shell</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>completion</code></td><td>-</td><td>-</td><td>yes</td></tr>
+        <tr><td><code>get</code></td><td>-</td><td>yes</td><td>-</td></tr>
+        <tr><td><code>set</code></td><td>-</td><td>yes</td><td>-</td></tr>
+        <tr><td><code>show</code></td><td>yes</td><td>-</td><td>-</td></tr>
+        <tr><td><code>use</code></td><td>yes</td><td>-</td><td>-</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Incomplete Sets</h2>
+    <table>
+      <thead>
+        <tr><th>Noun</th><th>Present commands</th><th>Missing expected operations</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>engine</code></td><td><code>use-engine</code>, <code>show-engine</code></td><td><code>list-engines</code>, <code>engine</code> or <code>engine-status</code>, reset/unset form</td><td>The engine domain has selection and inspection, but no explicit status/reset/list symmetry.</td></tr>
+        <tr><td><code>config</code></td><td><code>get</code>, <code>set</code></td><td><code>unset</code>, enumeration form</td><td>DE013 names <code>get/set/unset</code> as the common trio.</td></tr>
+        <tr><td><code>shell</code></td><td><code>completion bash</code></td><td>documented install/removal flow, other shell targets</td><td>The shell-integration domain is single-command and undocumented.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Verb Inconsistencies And Orphans</h2>
+    <table>
+      <thead>
+        <tr><th>Domain</th><th>Current pattern</th><th>Inconsistency</th><th>Effect</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>engine</td><td><code>use-engine</code>, <code>show-engine</code></td><td><code>use</code> is underspecified and <code>show-*</code> is not the preferred DE013 form.</td><td>The pair works, but it is not a tight vocabulary set.</td></tr>
+        <tr><td>config</td><td><code>get</code>, <code>set</code></td><td>Bare verbs omit the object noun while engine commands include it.</td><td>The CLI mixes bare verbs and verb-noun compounds.</td></tr>
+        <tr><td>shell integration</td><td><code>completion bash</code></td><td>Meta-command grammar differs from task verbs.</td><td>Acceptable, but clearly a separate command family.</td></tr>
+        <tr><td>service runtime</td><td><code>qwen36.server</code></td><td>Service name sits outside the normal hierarchy.</td><td>Operationally necessary for snap, but not a model for future user commands.</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Orphans:</strong> <code>qwen36 chat</code> is a bare conversational verb; <code>qwen36.server</code> is a service identifier rather than a normal CLI command.</p>
+  </div>
+</main>
+</body>
+</html>

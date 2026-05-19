@@ -1,0 +1,89 @@
+{
+  "client_store": [
+    {
+      "File": "controllers.yaml",
+      "Purpose": "Controller endpoints, CA certificates, API ports"
+    },
+    {
+      "File": "models.yaml",
+      "Purpose": "Model metadata per controller (name, UUID, type, owner)"
+    },
+    {
+      "File": "accounts.yaml",
+      "Purpose": "User credentials, macaroon data per controller"
+    },
+    {
+      "File": "cookies/",
+      "Purpose": "HTTP cookie jar for macaroon authentication"
+    },
+    {
+      "File": "ssh/",
+      "Purpose": "Cached SSH keys and knownhosts"
+    },
+    {
+      "File": "aliases",
+      "Purpose": "User-defined command aliases"
+    },
+    {
+      "File": "public-clouds.yaml",
+      "Purpose": "Cached public cloud definitions"
+    }
+  ],
+  "environment_variables": [
+    {
+      "Variable": "JUJUCONTROLLER",
+      "Effect": "Default controller name"
+    },
+    {
+      "Variable": "JUJUMODEL",
+      "Effect": "Default model name (format: [controller:]<model>)"
+    },
+    {
+      "Variable": "JUJUDATA",
+      "Effect": "Overrides ~/.local/share/juju path"
+    },
+    {
+      "Variable": "JUJULOGGINGCONFIG",
+      "Effect": "Default logging configuration"
+    },
+    {
+      "Variable": "JUJUFEATUREFLAGS",
+      "Effect": "Enables feature flags (e.g., developer-mode)"
+    },
+    {
+      "Variable": "JUJUUSERDOMAIN",
+      "Effect": "Preferred domain for SSO/macaroon discharge"
+    },
+    {
+      "Variable": "NOCOLOR",
+      "Effect": "Disables colored output"
+    }
+  ],
+  "configuration_file_formats": [
+    {
+      "Config Type": "Cloud definitions",
+      "Format": "YAML",
+      "Location": "~/.local/share/juju/clouds.yaml"
+    },
+    {
+      "Config Type": "Credentials",
+      "Format": "YAML",
+      "Location": "~/.local/share/juju/credentials.yaml"
+    },
+    {
+      "Config Type": "Bootstrap config",
+      "Format": "YAML",
+      "Location": "User-provided file"
+    },
+    {
+      "Config Type": "Model config",
+      "Format": "Key=Value",
+      "Location": "Controller database (queried via API)"
+    },
+    {
+      "Config Type": "Controller config",
+      "Format": "Key=Value",
+      "Location": "Controller database"
+    }
+  ]
+}

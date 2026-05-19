@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>03 Semantic Domain Clustering</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+    body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #1f1f1f; margin: 0; background: #f6f7f8; }
+    main { max-width: 1280px; margin: 0 auto; padding: 32px 24px 48px; background: #fff; }
+    h1, h2, h3 { color: #2b2b2b; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0 24px; }
+    th, td { border: 1px solid #d7d7d7; padding: 8px 10px; vertical-align: top; text-align: left; }
+    th { position: sticky; top: 0; background: #2b2b2b; color: #fff; }
+    tbody tr:nth-child(even) { background: #f3f4f6; }
+    code { font-family: 'Ubuntu Sans', Arial, sans-serif; background: #f1f1f1; padding: 1px 4px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>03 Semantic Domain Clustering</h1>
+  <p>Every leaf command appears in exactly one domain. Source command count: 6. Sum of domain counts below: 6.</p>
+  <table>
+    <thead>
+      <tr><th>Domain</th><th>Count</th><th>Commands</th><th>Naming Consistent?</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>conversation</td><td>1</td><td><code>qwen36 chat</code></td><td>Yes</td><td>Single interactive command. No CRUD expectation.</td></tr>
+      <tr><td>engine</td><td>2</td><td><code>qwen36 use-engine</code>, <code>qwen36 show-engine</code></td><td>Mostly</td><td>Noun is consistent, but observation uses <code>show-*</code>, which DE013 treats as second-best to noun shorthand or <code>*-status</code>. CRUD coverage is partial: choose and inspect exist; list/reset do not.</td></tr>
+      <tr><td>configuration</td><td>2</td><td><code>qwen36 get</code>, <code>qwen36 set</code></td><td>Yes</td><td>Strongest domain in the CLI. Standard read/write pair, but no <code>unset</code>.</td></tr>
+      <tr><td>shell integration</td><td>1</td><td><code>qwen36 completion bash</code></td><td>No</td><td>Domain is valid, but the command shape is noun-led and only one shell target is evidenced.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Domain Analysis</h2>
+  <h3>conversation</h3>
+  <p>Noun form: implicit rather than explicit. CRUD coverage: not applicable. Verb consistency: one command only.</p>
+  <h3>engine</h3>
+  <p>Noun form: explicit and stable as <code>engine</code>. CRUD coverage: incomplete. Verb consistency: acceptable but not ideal because <code>show-engine</code> conflicts with DE013 observation guidance.</p>
+  <h3>configuration</h3>
+  <p>Noun form: implicit config domain derived from keys. CRUD coverage: mostly useful, but no <code>unset</code>. Verb consistency: high.</p>
+  <h3>shell integration</h3>
+  <p>Noun form: explicit in semantics, but not in user-facing grammar. CRUD coverage: not applicable. Verb consistency: low because the top-level literal is a noun.</p>
+
+  <h2>Findings</h2>
+  <p>The command set clusters cleanly into four domains, which is appropriate for a small CLI. Configuration and engine management are the core domains. The shell-integration domain is underdeveloped and underdocumented. No command currently helps users discover supported engine names from within the CLI itself.</p>
+
+  <h2>Recommendation Compliance Notes</h2>
+  <p>Per DE013, the engine domain is the most obvious place to improve naming consistency, with <code>show-engine</code> as the candidate for eventual normalization. Per the deprecation spec, any rename should be additive first, with the old command retained for at least one cycle and removed only in a major release.</p>
+</main>
+</body>
+</html>

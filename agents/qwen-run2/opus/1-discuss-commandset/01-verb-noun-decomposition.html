@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 — Verb-Noun Decomposition Matrix — qwen36</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #1a1a1a; max-width: 1400px; margin: 0 auto; padding: 2rem; background: #fafafa; }
+h1 { font-size: 1.6rem; margin-bottom: 1.5rem; color: #2b2b2b; }
+h2 { font-size: 1.2rem; margin: 2rem 0 1rem; color: #2b2b2b; }
+h3 { font-size: 1rem; margin: 1.5rem 0 0.75rem; color: #333; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 1.5rem; }
+th { background: #2b2b2b; color: #fff; font-weight: 500; padding: 10px 12px; text-align: left; position: sticky; top: 0; z-index: 1; }
+td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; }
+tr:nth-child(even) td { background: #f5f5f5; }
+tr:hover td { background: #e8f0fe; }
+code { background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+p { margin-bottom: 0.75rem; }
+</style>
+</head>
+<body>
+<h1>Verb-Noun Decomposition Matrix</h1>
+
+<h2>Decomposition Table</h2>
+<table>
+<thead><tr><th>Command</th><th>Verb</th><th>Noun</th></tr></thead>
+<tbody>
+<tr><td><code>chat</code></td><td>chat</td><td><em>(implicit: model/session)</em></td></tr>
+<tr><td><code>use-engine</code></td><td>use</td><td>engine</td></tr>
+<tr><td><code>show-engine</code></td><td>show</td><td>engine</td></tr>
+<tr><td><code>get</code></td><td>get</td><td><em>(config key)</em></td></tr>
+<tr><td><code>set</code></td><td>set</td><td><em>(config key)</em></td></tr>
+<tr><td><code>completion</code></td><td>completion</td><td><em>(shell)</em></td></tr>
+</tbody>
+</table>
+
+<h2>Verb × Noun Grid</h2>
+<table>
+<thead><tr><th></th><th>engine</th><th>config</th><th>shell</th><th>session</th></tr></thead>
+<tbody>
+<tr><td><strong>chat</strong></td><td>—</td><td>—</td><td>—</td><td>✓</td></tr>
+<tr><td><strong>use</strong></td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td><strong>show</strong></td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td><strong>get</strong></td><td>—</td><td>✓</td><td>—</td><td>—</td></tr>
+<tr><td><strong>set</strong></td><td>—</td><td>✓</td><td>—</td><td>—</td></tr>
+<tr><td><strong>completion</strong></td><td>—</td><td>—</td><td>✓</td><td>—</td></tr>
+</tbody>
+</table>
+
+<h2>Annotations</h2>
+
+<h3>Incomplete CRUD Sets</h3>
+<table>
+<thead><tr><th>Noun</th><th>Available Verbs</th><th>Missing Verbs</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>engine</td><td>use, show</td><td>list, add, remove</td><td>No way to list available engines; no add/remove (engines are snap components)</td></tr>
+<tr><td>config</td><td>get, set</td><td>unset, list</td><td>No <code>unset</code> to restore defaults; no <code>list</code> to show all keys</td></tr>
+<tr><td>shell (completion)</td><td>completion</td><td>—</td><td>Single-purpose, no lifecycle needed</td></tr>
+<tr><td>session (chat)</td><td>chat</td><td>—</td><td>Single-purpose, interactive only</td></tr>
+</tbody>
+</table>
+
+<h3>Verb Inconsistencies</h3>
+<table>
+<thead><tr><th>Issue</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td><code>use</code> vs <code>set</code></td><td><code>use-engine</code> selects the engine (a kind of "set"), but <code>set</code> is reserved for config keys. The verb <code>use</code> implies ongoing state rather than a point-in-time write.</td></tr>
+<tr><td><code>show</code> vs <code>get</code></td><td><code>show-engine</code> displays engine info (YAML dump), while <code>get</code> retrieves a single config value. Per DE013 §Commonly Used Commands, this is correct.</td></tr>
+<tr><td><code>completion</code> is a noun</td><td>The command uses a noun as the command name rather than a verb. Per DE013, commands should be verbs.</td></tr>
+</tbody>
+</table>
+
+<h3>Orphan Commands</h3>
+<table>
+<thead><tr><th>Command</th><th>Issue</th></tr></thead>
+<tbody>
+<tr><td><code>completion</code></td><td>Does not decompose into verb-noun; it is a noun used as a command.</td></tr>
+<tr><td><code>chat</code></td><td>Semi-orphan — both a verb and a noun, doesn't act on a named resource type.</td></tr>
+</tbody>
+</table>
+
+</body>
+</html>

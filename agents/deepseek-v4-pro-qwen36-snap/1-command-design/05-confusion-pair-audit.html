@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05 — Confusion-Pair Audit</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap');
+body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; max-width: 1400px; margin: 2rem auto; padding: 0 2rem; color: #2b2b2b; background: #fff; }
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.2rem; margin-top: 2rem; }
+h3 { font-size: 1rem; margin-top: 1.5rem; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 1rem 0; }
+th { background: #2b2b2b; color: #fff; padding: 8px 10px; text-align: left; position: sticky; top: 0; }
+td { padding: 6px 10px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+tr:nth-child(even) td { background: #f9f9f9; }
+tr.risk-high td { border-left: 4px solid #c62828; }
+tr.risk-medium td { border-left: 4px solid #e65100; }
+tr.risk-low td { border-left: 4px solid #f9a825; }
+.risk-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 12px; font-weight: bold; }
+.high { background: #ffcdd2; color: #c62828; }
+.medium { background: #ffe0b2; color: #e65100; }
+.low { background: #fff9c4; color: #f57f17; }
+</style>
+</head>
+<body>
+<h1>05 — Confusion-Pair Audit</h1>
+
+<table>
+<thead><tr><th>Command A</th><th>Command B</th><th>Overlap Type</th><th>Confusion Risk</th><th>Disambiguation</th></tr></thead>
+<tbody>
+<tr class="risk-high">
+<td><code>list-engines</code></td><td><code>show-engine</code></td><td>scope ambiguity</td><td><span class="risk-badge high">high</span></td>
+<td>list-engines = all engines in table with scores; show-engine = one engine in detail YAML/JSON. Verb distinction (list vs show) is correct per DE013 but requires learned convention.</td>
+</tr>
+<tr class="risk-high">
+<td><code>chat</code></td><td><code>debug chat</code></td><td>naming collision</td><td><span class="risk-badge high">high</span></td>
+<td>Both named "chat" with different interfaces: top-level auto-detects engine; debug requires explicit --base-url. Users expect debug variant to be "same + debugging."</td>
+</tr>
+<tr class="risk-high">
+<td><code>webui</code></td><td><code>serve-webui</code></td><td>functional overlap</td><td><span class="risk-badge high">high</span></td>
+<td>webui launches browser; serve-webui serves files. Both relate to "web UI" but one is consumer, one is provider. Names don't make this clear.</td>
+</tr>
+<tr class="risk-high">
+<td><code>serve-webui</code></td><td><code>debug serve-webui</code></td><td>naming collision</td><td><span class="risk-badge high">high</span></td>
+<td>Two serve-webui commands in different namespaces with different flag sets and defaults. Relationship unclear.</td>
+</tr>
+<tr class="risk-medium">
+<td><code>use-engine</code></td><td><code>debug select-engine</code></td><td>functional overlap</td><td><span class="risk-badge medium">medium</span></td>
+<td>Both involve engine selection. use-engine applies; select-engine only tests. "Select" vs "use" distinction not obvious.</td>
+</tr>
+<tr class="risk-medium">
+<td><code>prune-cache</code></td><td><code>use-engine</code></td><td>functional overlap</td><td><span class="risk-badge medium">medium</span></td>
+<td>prune-cache removes components; use-engine installs them. Inverse-ish operations with no cross-reference. Risk of pruning then reinstalling.</td>
+</tr>
+<tr class="risk-medium">
+<td><code>get</code></td><td><code>show-engine</code></td><td>functional overlap</td><td><span class="risk-badge medium">medium</span></td>
+<td>get shows config values; show-engine shows engine details including configs. Users may use wrong command for config inspection.</td>
+</tr>
+<tr class="risk-medium">
+<td><code>status</code></td><td><code>show-engine</code></td><td>functional overlap</td><td><span class="risk-badge medium">medium</span></td>
+<td>status shows engine name as one field; show-engine shows full engine details. Users may use one when they need the other.</td>
+</tr>
+<tr class="risk-low">
+<td><code>status</code></td><td><code>get</code></td><td>functional overlap</td><td><span class="risk-badge low">low</span></td>
+<td>Both surface endpoint/model info in different formats.</td>
+</tr>
+<tr class="risk-low">
+<td><code>set</code></td><td><code>use-engine</code></td><td>functional overlap</td><td><span class="risk-badge low">low</span></td>
+<td>Both change configuration. set modifies individual keys; use-engine applies full engine defaults.</td>
+</tr>
+<tr class="risk-low">
+<td><code>run</code></td><td><code>chat</code></td><td>functional overlap</td><td><span class="risk-badge low">low</span></td>
+<td>Both execute in engine environment. run is generic; chat is specific chat client.</td>
+</tr>
+<tr class="risk-low">
+<td><code>show-engine</code></td><td><code>show-machine</code></td><td>naming collision</td><td><span class="risk-badge low">low</span></td>
+<td>Both start with "show-" + singular noun. Engine vs machine are semantically distinct.</td>
+</tr>
+<tr class="risk-low">
+<td><code>list-engines</code></td><td><code>show-machine</code></td><td>scope ambiguity</td><td><span class="risk-badge low">low</span></td>
+<td>Both produce hardware-related output from different angles.</td>
+</tr>
+<tr class="risk-low">
+<td><code>status</code></td><td><code>version</code></td><td>functional overlap</td><td><span class="risk-badge low">low</span></td>
+<td>Neither takes arguments. Both show read-only system information.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Confusion Risk Summary</h2>
+<table>
+<thead><tr><th>Risk Level</th><th>Count</th><th>Pairs</th></tr></thead>
+<tbody>
+<tr class="risk-high"><td><span class="risk-badge high">High</span></td><td>4</td><td>list-engines/show-engine, chat/debug chat, webui/serve-webui, serve-webui/debug serve-webui</td></tr>
+<tr class="risk-medium"><td><span class="risk-badge medium">Medium</span></td><td>4</td><td>use-engine/debug select-engine, prune-cache/use-engine, get/show-engine, status/show-engine</td></tr>
+<tr class="risk-low"><td><span class="risk-badge low">Low</span></td><td>6</td><td>status/get, set/use-engine, run/chat, show-engine/show-machine, list-engines/show-machine, status/version</td></tr>
+</tbody>
+</table>
+
+<h2>Key Findings</h2>
+<ol>
+<li><strong>Debug namespace creates confusion</strong> (2 high-risk pairs): Debug variants mirror top-level commands with different semantics.</li>
+<li><strong>list vs show convention gap</strong>: Standard per DE013 but unintuitive for novice users.</li>
+<li><strong>webui vs serve-webui</strong>: Functionally complementary but names don't convey relationship.</li>
+<li><strong>prune-cache and use-engine unlinked</strong>: Inverse-ish operations with no cross-reference.</li>
+<li><strong>Overlapping information sources</strong>: get, show-engine, and status all surface similar info.</li>
+</ol>
+</body>
+</html>

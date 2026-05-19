@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>02 Verb Taxonomy</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+    body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #1f1f1f; margin: 0; background: #f6f7f8; }
+    main { max-width: 1280px; margin: 0 auto; padding: 32px 24px 48px; background: #fff; }
+    h1, h2 { color: #2b2b2b; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0 24px; }
+    th, td { border: 1px solid #d7d7d7; padding: 8px 10px; vertical-align: top; text-align: left; }
+    th { position: sticky; top: 0; background: #2b2b2b; color: #fff; }
+    tbody tr:nth-child(even) { background: #f3f4f6; }
+    code { font-family: 'Ubuntu Sans', Arial, sans-serif; background: #f1f1f1; padding: 1px 4px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>02 Verb Taxonomy</h1>
+  <p>This section classifies the six verbs implied by the six leaf commands. Source verb count: 6. Output verb count: 6.</p>
+  <table>
+    <thead>
+      <tr><th>Verb</th><th>Intent Group</th><th>Aspect</th><th>Reversible</th><th>Paired Verb</th><th>CLI Examples</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>chat</code></td><td>execution</td><td>atelic</td><td>no</td><td>none</td><td><code>qwen36 chat</code></td></tr>
+      <tr><td><code>generate</code></td><td>execution</td><td>telic</td><td>no</td><td>none</td><td><code>qwen36 completion bash</code></td></tr>
+      <tr><td><code>get</code></td><td>observation</td><td>punctual</td><td>partial</td><td><code>set</code></td><td><code>qwen36 get http.port</code></td></tr>
+      <tr><td><code>set</code></td><td>mutation</td><td>punctual</td><td>partial</td><td><code>get</code></td><td><code>qwen36 set http.port=8326</code></td></tr>
+      <tr><td><code>show</code></td><td>observation</td><td>punctual</td><td>no</td><td>none</td><td><code>qwen36 show-engine</code></td></tr>
+      <tr><td><code>use</code></td><td>mutation</td><td>punctual</td><td>partial</td><td>none</td><td><code>qwen36 use-engine cpu</code>, <code>qwen36 use-engine --auto</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Notes By Verb</h2>
+  <table>
+    <thead>
+      <tr><th>Verb</th><th>Assessment</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>chat</code></td><td>Clear for interactive use, but it does not tell the user whether the command starts a local client, a local server session, or a remote session.</td></tr>
+      <tr><td><code>generate</code></td><td>Semantic, not literal. The literal surface is <code>completion</code>, which is noun-led.</td></tr>
+      <tr><td><code>get</code></td><td>Strong fit for config observation. Aligned with DE013 common commands.</td></tr>
+      <tr><td><code>set</code></td><td>Strong fit for config mutation. Aligned with DE013 common commands.</td></tr>
+      <tr><td><code>show</code></td><td>Understandable, but DE013 explicitly prefers noun shorthand or <code>*-status</code> over <code>show-*</code> for observation commands.</td></tr>
+      <tr><td><code>use</code></td><td>Understandable, but slightly vague. It selects an engine rather than merely "using" one transiently.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Taxonomy Findings</h2>
+  <p>The command set leans heavily on observation and mutation, which matches the CLI's role as a control plane. <code>get</code> and <code>set</code> are the best-aligned verbs in the set. <code>show</code> and noun-led <code>completion</code> are the main standards mismatches. <code>use</code> is workable, but if the command family grows, <code>select-engine</code> would be semantically sharper than <code>use-engine</code>; the improvement is not large enough to justify breaking users without a broader redesign.</p>
+
+  <h2>Recommendation Compliance Notes</h2>
+  <p>Per DE013, any future cleanup should prefer canonical verbs and avoid noun-led command groups. Per the deprecation specification, if <code>show-engine</code> or <code>use-engine</code> were ever renamed, the next minor release should keep the old form working with a warning, and the next major release should remove it with exit code 2 and a replacement hint.</p>
+</main>
+</body>
+</html>

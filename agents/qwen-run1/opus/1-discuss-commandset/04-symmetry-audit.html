@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 — Symmetry Audit</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333; max-width: 1400px; margin: 0 auto; padding: 2rem; background: #fafafa; }
+h1 { font-size: 1.8rem; color: #2b2b2b; margin-bottom: 1.5rem; border-bottom: 2px solid #2b2b2b; padding-bottom: 0.5rem; }
+h2 { font-size: 1.3rem; color: #2b2b2b; margin: 2rem 0 1rem; }
+p { margin: 0.5rem 0; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 13px; }
+th { background: #2b2b2b; color: #fff; padding: 10px 12px; text-align: left; position: sticky; top: 0; z-index: 1; }
+td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+tr:nth-child(even) td { background: #f5f5f5; }
+tr:hover td { background: #e8f0fe; }
+code { background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+.missing { color: #c62828; font-weight: 500; }
+.ok { color: #2e7d32; }
+.check { background: #d4edda; border-left: 4px solid #28a745; padding: 0.75rem 1rem; margin: 1rem 0; }
+</style>
+</head>
+<body>
+<h1>04 — Symmetry Audit</h1>
+
+<h2>All Symmetric Operation Pairs</h2>
+<table>
+<tr><th>#</th><th>Operation</th><th>Forward Command</th><th>Reverse Command</th><th>Naming Symmetric?</th><th>Behavior Symmetric?</th><th>Notes</th></tr>
+<tr><td>1</td><td>Read/write config</td><td><code>get &lt;key&gt;</code></td><td><code>set &lt;key&gt;=&lt;value&gt;</code></td><td class="ok">Yes</td><td>Partial</td><td>Different arg syntax. No <code>unset</code> to fully reverse.</td></tr>
+<tr><td>2</td><td>Select/deselect engine</td><td><code>use-engine &lt;name&gt;</code></td><td class="missing"><em>(missing)</em></td><td>N/A</td><td>N/A</td><td>No reverse. Can only switch to different engine.</td></tr>
+<tr><td>3</td><td>Show/hide engine</td><td><code>show-engine</code></td><td><em>(N/A — read-only)</em></td><td>N/A</td><td>N/A</td><td>Read-only, no reverse needed.</td></tr>
+<tr><td>4</td><td>Start/stop chat</td><td><code>chat</code></td><td><em>(Ctrl+C / EOF)</em></td><td>N/A</td><td>N/A</td><td>Interactive session, terminated by signal.</td></tr>
+</table>
+
+<h2>Missing Reverse Operations</h2>
+<table>
+<tr><th>Forward Command</th><th>Expected Reverse</th><th>Status</th><th>Impact</th></tr>
+<tr><td><code>set &lt;key&gt;=&lt;value&gt;</code></td><td><code>unset &lt;key&gt;</code></td><td class="missing">Missing</td><td>Cannot restore defaults without knowing original value</td></tr>
+<tr><td><code>use-engine &lt;name&gt;</code></td><td><code>disable-engine</code></td><td class="missing">Missing</td><td>Cannot deactivate engine (may be intentional)</td></tr>
+</table>
+
+<h2>Naming Asymmetries</h2>
+<table>
+<tr><th>Pair</th><th>Asymmetry</th><th>Severity</th></tr>
+<tr><td><code>get</code> / <code>set</code></td><td>Different arg formats: <code>get &lt;key&gt;</code> vs <code>set &lt;key&gt;=&lt;value&gt;</code></td><td>Low</td></tr>
+<tr><td><code>show-engine</code> / <code>use-engine</code></td><td>Different verbs for same noun (appropriate: observe vs mutate)</td><td>None</td></tr>
+</table>
+
+<h2>Behavioral Asymmetries</h2>
+<table>
+<tr><th>Pair</th><th>Asymmetry</th><th>Notes</th></tr>
+<tr><td><code>get</code> / <code>set</code></td><td><code>set</code> has <code>--package</code> flag; <code>get</code> has no equivalent</td><td>Cannot distinguish package vs user values when reading</td></tr>
+<tr><td><code>use-engine &lt;name&gt;</code> / <code>use-engine --auto</code></td><td>Manual uses positional arg; auto uses flag</td><td>Feels like two operations in one command</td></tr>
+</table>
+
+<div class="check">
+<strong>Self-Check:</strong> All 6 commands (chat, use-engine, show-engine, get, set, completion) analyzed. ✓
+</div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 — Semantic Domain Clustering — qwen36</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #1a1a1a; max-width: 1400px; margin: 0 auto; padding: 2rem; background: #fafafa; }
+h1 { font-size: 1.6rem; margin-bottom: 1.5rem; color: #2b2b2b; }
+h2 { font-size: 1.2rem; margin: 2rem 0 1rem; color: #2b2b2b; }
+h3 { font-size: 1rem; margin: 1.5rem 0 0.75rem; color: #333; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 1.5rem; }
+th { background: #2b2b2b; color: #fff; font-weight: 500; padding: 10px 12px; text-align: left; position: sticky; top: 0; z-index: 1; }
+td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+tr:nth-child(even) td { background: #f5f5f5; }
+tr:hover td { background: #e8f0fe; }
+code { background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+p { margin-bottom: 0.75rem; }
+em { color: #555; }
+</style>
+</head>
+<body>
+<h1>Semantic Domain Clustering</h1>
+
+<h2>Domain Table</h2>
+<table>
+<thead><tr><th>Domain</th><th>Count</th><th>Commands</th><th>Naming Consistent?</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Engine</td><td>2</td><td><code>use-engine</code>, <code>show-engine</code></td><td>Yes — both use <code>-engine</code> suffix</td><td>Missing <code>list-engines</code> or <code>engines</code> per DE013 plural-noun pattern. No add/remove since engines are snap components.</td></tr>
+<tr><td>Configuration</td><td>2</td><td><code>get</code>, <code>set</code></td><td>Yes — standard get/set pair</td><td>Missing <code>unset</code> per DE013. No <code>list</code> to show all keys.</td></tr>
+<tr><td>Interaction</td><td>1</td><td><code>chat</code></td><td>N/A (single command)</td><td>Primary user-facing command. No non-interactive mode.</td></tr>
+<tr><td>Shell Integration</td><td>1</td><td><code>completion</code></td><td>N/A (single command)</td><td>Noun-as-command pattern. Only <code>bash</code> supported.</td></tr>
+</tbody>
+</table>
+<p><strong>Total commands: 6</strong> (verified: use-engine + show-engine + get + set + chat + completion = 6 ✓)</p>
+
+<h2>Domain Analysis</h2>
+
+<h3>Engine Domain</h3>
+<table>
+<thead><tr><th>Aspect</th><th>Assessment</th></tr></thead>
+<tbody>
+<tr><td>CRUD coverage</td><td>show (read) and use (update/select) only. No create, delete, or list.</td></tr>
+<tr><td>Verb consistency</td><td><code>use</code> and <code>show</code> are semantically appropriate.</td></tr>
+<tr><td>Gap</td><td>No way to list available engines or their hardware requirements from the CLI.</td></tr>
+</tbody>
+</table>
+
+<h3>Configuration Domain</h3>
+<table>
+<thead><tr><th>Aspect</th><th>Assessment</th></tr></thead>
+<tbody>
+<tr><td>CRUD coverage</td><td>get (read) and set (write). Missing unset (delete/restore) and list (enumerate).</td></tr>
+<tr><td>Verb consistency</td><td>Perfect — <code>get</code>/<code>set</code> is the DE013-standard pair.</td></tr>
+<tr><td>Gap</td><td>No way to enumerate valid keys. No way to restore a key to its default value.</td></tr>
+</tbody>
+</table>
+
+<h3>Interaction Domain</h3>
+<table>
+<thead><tr><th>Aspect</th><th>Assessment</th></tr></thead>
+<tbody>
+<tr><td>CRUD coverage</td><td>N/A — single-purpose interactive command.</td></tr>
+<tr><td>Verb consistency</td><td><code>chat</code> is clear and unambiguous.</td></tr>
+<tr><td>Gap</td><td>No non-interactive mode for scripting.</td></tr>
+</tbody>
+</table>
+
+<h3>Shell Integration Domain</h3>
+<table>
+<thead><tr><th>Aspect</th><th>Assessment</th></tr></thead>
+<tbody>
+<tr><td>CRUD coverage</td><td>N/A — utility command.</td></tr>
+<tr><td>Verb consistency</td><td><code>completion</code> is a noun (minor DE013 deviation, widely accepted).</td></tr>
+<tr><td>Gap</td><td>Only <code>bash</code> supported. No <code>zsh</code>, <code>fish</code>, or <code>powershell</code>.</td></tr>
+</tbody>
+</table>
+
+</body>
+</html>

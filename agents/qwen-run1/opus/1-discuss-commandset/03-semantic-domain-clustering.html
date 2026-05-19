@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 — Semantic Domain Clustering</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333; max-width: 1400px; margin: 0 auto; padding: 2rem; background: #fafafa; }
+h1 { font-size: 1.8rem; color: #2b2b2b; margin-bottom: 1.5rem; border-bottom: 2px solid #2b2b2b; padding-bottom: 0.5rem; }
+h2 { font-size: 1.3rem; color: #2b2b2b; margin: 2rem 0 1rem; }
+h3 { font-size: 1.1rem; color: #444; margin: 1.5rem 0 0.5rem; }
+p { margin: 0.5rem 0; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 13px; }
+th { background: #2b2b2b; color: #fff; padding: 10px 12px; text-align: left; position: sticky; top: 0; z-index: 1; }
+td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+tr:nth-child(even) td { background: #f5f5f5; }
+tr:hover td { background: #e8f0fe; }
+code { background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+ul { margin: 0.5rem 0 0.5rem 1.5rem; }
+li { margin: 0.3rem 0; }
+.check { background: #d4edda; border-left: 4px solid #28a745; padding: 0.75rem 1rem; margin: 1rem 0; }
+</style>
+</head>
+<body>
+<h1>03 — Semantic Domain Clustering</h1>
+
+<h2>Domain Assignment (6 commands total)</h2>
+<table>
+<tr><th>Domain</th><th>Count</th><th>Commands</th><th>Naming Consistent?</th><th>Notes</th></tr>
+<tr><td><strong>Engine</strong></td><td>2</td><td><code>use-engine</code>, <code>show-engine</code></td><td>Yes (both use <code>-engine</code> suffix)</td><td>Missing list/discovery command. No full CRUD.</td></tr>
+<tr><td><strong>Configuration</strong></td><td>2</td><td><code>get</code>, <code>set</code></td><td>Yes (standard get/set pair)</td><td>Missing <code>unset</code>/<code>reset</code>. No "list all" command.</td></tr>
+<tr><td><strong>Inference</strong></td><td>1</td><td><code>chat</code></td><td>N/A (single command)</td><td>Primary user workflow. Bare verb.</td></tr>
+<tr><td><strong>Shell Integration</strong></td><td>1</td><td><code>completion</code></td><td>N/A (single command)</td><td>Utility. Functions as noun.</td></tr>
+</table>
+
+<div class="check">
+<strong>Self-Check:</strong> Sum of Count = 2 + 2 + 1 + 1 = 6. Total commands = 6. ✓
+</div>
+
+<h2>CRUD Coverage by Domain</h2>
+<table>
+<tr><th>Domain</th><th>Create</th><th>Read</th><th>Update</th><th>Delete</th><th>List</th></tr>
+<tr><td>Engine</td><td>N/A</td><td><code>show-engine</code> ✓</td><td><code>use-engine</code> ✓</td><td>N/A</td><td>✗ Missing</td></tr>
+<tr><td>Configuration</td><td><code>set</code> ✓</td><td><code>get</code> ✓</td><td><code>set</code> ✓</td><td>✗ Missing</td><td>✗ Missing</td></tr>
+<tr><td>Inference</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td></tr>
+<tr><td>Shell Integration</td><td>N/A</td><td><code>completion</code> ✓</td><td>N/A</td><td>N/A</td><td>N/A</td></tr>
+</table>
+
+<h2>Cross-Domain Observations</h2>
+<ul>
+<li>No lifecycle commands (appropriate — snap manages lifecycle)</li>
+<li>No access/auth commands (appropriate — local server, no auth)</li>
+<li>Small and focused: 6 commands, 4 domains</li>
+<li>Missing: a <code>status</code> command bridging engine + server + component state</li>
+</ul>
+</body>
+</html>

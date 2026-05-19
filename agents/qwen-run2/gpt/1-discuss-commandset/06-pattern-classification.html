@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>06. Pattern Classification And Recommendations</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+:root {
+  --bg: #f5f6f7;
+  --panel: #ffffff;
+  --text: #1f2328;
+  --muted: #5b6470;
+  --border: #d7dce2;
+  --head: #2b2b2b;
+  --stripe: #f1f4f7;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Ubuntu Sans', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+h1, h2 { margin: 0 0 12px; }
+p { margin: 0 0 14px; }
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 0 0 20px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+th, td {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+  text-align: left;
+}
+th {
+  background: var(--head);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+tbody tr:nth-child(even) { background: var(--stripe); }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.small { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="panel">
+    <h1>06. Pattern Classification And Recommendations</h1>
+    <p>Primary pattern: flat verb-led CLI with a small number of verb-noun compounds. Secondary patterns: one nested meta-command and one service/runtime outlier.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Command Classification</h2>
+    <table>
+      <thead>
+        <tr><th>Command</th><th>Pattern</th><th>Depth</th><th>Fits current style?</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>qwen36 chat</code></td><td>bare verb</td><td>1</td><td>yes</td><td>Friendly user task verb, outside the administrative vocabulary of the rest.</td></tr>
+        <tr><td><code>qwen36 use-engine</code></td><td>verb-noun compound</td><td>1</td><td>partial</td><td>Shared noun is good; <code>use</code> is semantically weaker than <code>set</code>.</td></tr>
+        <tr><td><code>qwen36 show-engine</code></td><td>verb-noun compound</td><td>1</td><td>partial</td><td>Shared noun is good; <code>show-*</code> is weaker than DE013-preferred forms.</td></tr>
+        <tr><td><code>qwen36 get</code></td><td>bare verb</td><td>1</td><td>yes</td><td>Strong fit with standard config vocabulary.</td></tr>
+        <tr><td><code>qwen36 set</code></td><td>bare verb</td><td>1</td><td>yes</td><td>Strong fit with standard config vocabulary.</td></tr>
+        <tr><td><code>qwen36 completion bash</code></td><td>meta-command with shell target</td><td>2</td><td>yes</td><td>Common shell-integration pattern.</td></tr>
+        <tr><td><code>qwen36.server</code></td><td>service entrypoint</td><td>parallel surface</td><td>no</td><td>Snap operational surface, not ideal precedent for end-user grammar.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Discoverability Assessment</h2>
+    <table>
+      <thead>
+        <tr><th>User intent</th><th>Predicted command</th><th>Actual command</th><th>Assessment</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>start chatting</td><td><code>qwen36 chat</code></td><td><code>qwen36 chat</code></td><td>good</td></tr>
+        <tr><td>switch to GPU</td><td><code>qwen36 set-engine cuda</code> or <code>qwen36 use-engine cuda</code></td><td><code>qwen36 use-engine cuda</code></td><td>good once learned</td></tr>
+        <tr><td>inspect current engine</td><td><code>qwen36 engine</code>, <code>qwen36 engine-status</code>, or <code>qwen36 show-engine</code></td><td><code>qwen36 show-engine</code></td><td>acceptable, but not ideal per DE013</td></tr>
+        <tr><td>read one config value</td><td><code>qwen36 get http.port</code></td><td><code>qwen36 get http.port</code></td><td>good if the key is known</td></tr>
+        <tr><td>restore a config default</td><td><code>qwen36 unset http.port</code></td><td>missing</td><td>poor</td></tr>
+        <tr><td>inspect daemon health</td><td><code>qwen36 status</code></td><td>external snap tooling</td><td>poor</td></tr>
+        <tr><td>enable shell completion</td><td><code>qwen36 completion bash</code></td><td><code>qwen36 completion bash</code></td><td>acceptable, but undocumented</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Ecosystem Comparison</h2>
+    <table>
+      <thead>
+        <tr><th>Tool</th><th>Dominant pattern</th><th>Relevant comparison to qwen36</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>snap</code></td><td>flat verbs with some noun-oriented inspection commands</td><td>qwen36 already inherits snap mental models for config and service operations, but only partially exposes them.</td></tr>
+        <tr><td><code>ollama</code></td><td>flat verbs such as <code>run</code>, <code>serve</code>, <code>show</code>, <code>list</code></td><td>qwen36 is similarly small, but splits client, config, and daemon concepts more sharply.</td></tr>
+        <tr><td><code>multipass</code></td><td>flat verbs with precise admin vocabulary</td><td>multipass shows that a small CLI can keep verbs precise without adding hierarchy.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Recommendations</h2>
+    <table>
+      <thead>
+        <tr><th>Priority</th><th>Recommendation</th><th>Rationale</th><th>Backward compatibility</th><th>Migration cost</th><th>Deprecation-compliant plan</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Add <code>qwen36 unset &lt;key&gt;</code></td><td>DE013 names <code>get/set/unset</code> as the standard config trio.</td><td>safe, additive</td><td>low</td><td>No deprecation needed; add help and docs in the next minor release.</td></tr>
+        <tr><td>2</td><td>Introduce <code>qwen36 set-engine</code> as the canonical alias for <code>qwen36 use-engine</code></td><td>DE013 favors precise verbs; <code>set-engine</code> aligns with the existing <code>set</code> vocabulary.</td><td>old command can keep working during transition</td><td>medium</td><td>Next minor: add alias and warning. Next major: remove old name with exit code 2. Next+1 major: remove fallback message.</td></tr>
+        <tr><td>3</td><td>Introduce <code>qwen36 engine</code> as the canonical inspect alias for <code>qwen36 show-engine</code></td><td>DE013 prefers <code>foobar</code> over <code>show-foobar</code> for a specific secondary object.</td><td>old command can keep working during transition</td><td>medium</td><td>Next minor: add alias and warning. Next major: remove old form with exit code 2. Next+1 major: clean up fallback messaging.</td></tr>
+        <tr><td>4</td><td>Add <code>qwen36 status</code> for daemon and engine readiness</td><td>DE013 prefers <code>status</code> for current tool state and it reduces role confusion.</td><td>safe, additive</td><td>medium</td><td>No deprecation needed; add in a minor release.</td></tr>
+        <tr><td>5</td><td>Keep the overall flat hierarchy</td><td>The command set is too small to justify a deeper subgroup structure.</td><td>preserves current scripts and mental model</td><td>low</td><td>No change needed unless the command set grows substantially.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

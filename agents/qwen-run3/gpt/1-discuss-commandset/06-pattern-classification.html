@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>qwen36 Pattern Classification</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+:root { --bg:#f6f7f9; --fg:#1f2937; --muted:#5b6472; --panel:#ffffff; --line:#d8dee8; --head:#25364a; --headfg:#ffffff; --stripe:#f1f5f9; }
+html,body { margin:0; padding:0; background:var(--bg); color:var(--fg); font:14px/1.5 'Ubuntu Sans', sans-serif; }
+main { max-width:1280px; margin:0 auto; padding:24px; }
+section { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:18px; }
+h1,h2,p,ol { margin:0 0 12px; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th,td { border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+th { position:sticky; top:0; background:var(--head); color:var(--headfg); }
+tbody tr:nth-child(even) { background:var(--stripe); }
+code { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12px; }
+.note { color:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+<section>
+<h1>Pattern Classification And Recommendations</h1>
+<p>The qwen36 CLI is a compact flat command set with one hidden debug namespace. Its strongest pattern is the config cluster <code>get</code>, <code>set</code>, and <code>unset</code>. Its weakest pattern is the interaction and engine surface, where noun-led <code>webui</code> and the split vocabulary of public <code>use-engine</code> versus hidden <code>select-engine</code> pull the grammar in different directions.</p>
+</section>
+<section>
+<h2>Pattern Classification</h2>
+<table>
+<thead><tr><th>Property</th><th>Assessment</th></tr></thead>
+<tbody>
+<tr><td>Primary grouping pattern</td><td>flat top-level command set</td></tr>
+<tr><td>Secondary grouping pattern</td><td>one hidden namespace: <code>debug</code></td></tr>
+<tr><td>Dominant grammar</td><td>verb-led commands with a few noun exceptions</td></tr>
+<tr><td>Strongest family</td><td><code>get</code> / <code>set</code> / <code>unset</code></td></tr>
+<tr><td>Weakest family</td><td><code>chat</code> / <code>webui</code> plus <code>use-engine</code> vs hidden <code>select-engine</code></td></tr>
+</tbody>
+</table>
+</section>
+<section>
+<h2>Recommendations</h2>
+<ol>
+<li>Fix the product-surface mismatch before renaming anything: either enable <code>chat</code> and <code>webui</code> in the shipped snap or remove them from public docs until they are enabled.</li>
+<li>Add <code>engines</code> as a public alias for <code>list-engines</code>. Per DE013 grammar, plural-noun shorthand is preferred for listing secondary objects.</li>
+<li>Introduce <code>select-engine</code> as the preferred public name and begin deprecating <code>use-engine</code>. Per DE013 grammar, command verbs should be clear and even.</li>
+<li>Introduce a verb-led launcher such as <code>open-webui</code> and deprecate <code>webui</code>. Per DE013 grammar, commands should be verbs.</li>
+<li>Add <code>reset-engine</code> or <code>clear-engine</code> as a reverse operation for engine choice.</li>
+</ol>
+<p class="note">Deprecation-sensitive recommendations above assume the required staged transition: add the new command in the next minor release, warn on the old form for at least one full release cycle, and remove the old name only in the next major release with exit code 2 and a replacement hint.</p>
+</section>
+<section>
+<h2>Tradeoffs</h2>
+<table>
+<thead><tr><th>Recommendation</th><th>Backward Compat</th><th>Scriptability</th><th>Human Readability</th><th>Migration Cost</th></tr></thead>
+<tbody>
+<tr><td>fix feature exposure</td><td>excellent</td><td>improves because docs match reality</td><td>major improvement</td><td>low</td></tr>
+<tr><td>add <code>engines</code> alias</td><td>excellent</td><td>neutral to positive</td><td>positive</td><td>very low</td></tr>
+<tr><td>add <code>select-engine</code> and deprecate <code>use-engine</code></td><td>good if alias kept</td><td>positive after transition</td><td>positive</td><td>low-medium</td></tr>
+<tr><td>add <code>open-webui</code> and deprecate <code>webui</code></td><td>good if alias kept</td><td>neutral</td><td>positive</td><td>low</td></tr>
+<tr><td>add <code>reset-engine</code></td><td>excellent</td><td>positive</td><td>positive</td><td>medium</td></tr>
+</tbody>
+</table>
+</section>
+</main>
+</body>
+</html>

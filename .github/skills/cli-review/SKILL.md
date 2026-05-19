@@ -78,13 +78,59 @@ command -v uv >/dev/null 2>&1 || {
 
 If installation requires elevated privileges or interactive approval, ask concise permission questions and proceed once approved.
 
+### JSON Table Exports
+
+Every markdown file that contains tables **must** also have a corresponding `.json` file with the same base name. This makes the structured data machine-readable and available for downstream processing.
+
+**How to produce JSON exports:**
+
+1. After writing any `.md` file that contains tables, run the helper script:
+   ```bash
+   python3 .github/skills/cli-review/scripts/mdtables_to_json.py 0-analysis/commandset.md
+   ```
+   This produces `0-analysis/commandset.json` automatically.
+
+2. If a file contains **multiple tables**, the JSON will be an object with each table keyed by its preceding heading (slugified). If a file has only **one table**, the JSON is a plain array of objects.
+
+3. Include the `.json` file in the same directory as its `.md` source. The final output must contain pairs like:
+   ```
+   0-analysis/commandset.md      + 0-analysis/commandset.json
+   0-analysis/argument-structure.md + 0-analysis/argument-structure.json
+   1-discuss-commandset/01-verb-noun-decomposition.md + 01-verb-noun-decomposition.json
+   ```
+
+**Self-check before finishing:**
+- For every `.md` file you wrote that contains a `|` table, verify a `.json` file with the same basename exists in the same directory.
+- If the script is unavailable, produce the JSON manually by converting each table row to a JSON object with column headers as keys.
+
+**Validation step — must run before declaring complete:**
+
+After generating each `.json` file, validate it against the source `.md` using:
+```bash
+python3 .github/skills/cli-review/scripts/validate_json_tables.py \
+  0-analysis/commandset.md 0-analysis/commandset.json
+```
+
+The validator checks:
+1. JSON is parseable
+2. Number of tables in markdown matches JSON
+3. Row counts match per table
+4. All markdown column headers appear in JSON objects
+5. No JSON rows have empty values for required fields
+
+If validation fails, fix the JSON (or regenerate it) and re-run the validator until it passes. Do not declare the analysis complete while any JSON file fails validation.
+
 ### Output Directory And Files
 
 Create `0-analysis` and write these files.
 
-#### Required Core Files
+#### Phase 1: Structure Discovery
 
-- `architecture.md`
+Goal: Map the CLI surface area — architecture, commands, and arguments.
+
+Files to produce (in order):
+
+1. `architecture.md`
 	- Short summary of the tech stack.
 	- Architecture style used by the CLI. Include one primary style and optional secondary style.
 	- Typical styles to classify against:
@@ -98,59 +144,104 @@ Create `0-analysis` and write these files.
 		- Hexagonal (ports/adapters)
 		- Command bus architecture
 
-- `commandset.md`
+2. `commandset.md`
 	- Full list of CLI commands and hierarchy (top-level and subcommands).
 	- For each command include:
 		- Name
 		- Short description of what it does (based on docs/help)
 		- Description of how it works (based on code path and key functions/modules)
 
-- `argument-structure.md`
+3. `argument-structure.md`
 	- Complete map of all commands and all possible arguments.
 	- Include argument metadata when available: required/optional, default, type, accepted values, aliases, env var mapping.
 	- Start with an introduction that highlights common argument patterns.
 	- Add a dedicated section titled `Special arguments` describing structural exceptions and non-standard patterns.
 
-#### Additional Analysis Files
+**Phase 1 checkpoint**: Verify that `0-analysis/architecture.md`, `0-analysis/commandset.md`, and `0-analysis/argument-structure.md` all exist and are non-empty. Do not proceed to Phase 2 until all three files are written.
 
-- `configuration-model.md`
+#### Phase 2: Behavioral Analysis
+
+Goal: Analyze runtime behavior, contracts, and safety properties.
+
+**Before starting Phase 2**, re-read your Phase 1 outputs (`architecture.md`, `commandset.md`, `argument-structure.md`) to load them into context. Reference specific commands and arguments from those files rather than re-exploring the codebase from scratch.
+
+Files to produce (in order):
+
+4. `configuration-model.md`
 	- Describe config sources and precedence: flags, env vars, config files, defaults.
 	- Note command-specific overrides and any surprising precedence behavior.
 
-- `output-contracts.md`
+5. `output-contracts.md`
 	- Describe output formats by command (human-readable and machine-readable).
 	- Document stability expectations for output fields and parseability guidance.
 
-- `error-model-and-exit-codes.md`
+6. `error-model-and-exit-codes.md`
 	- Map error categories to representative messages and exit codes.
 	- Include per-command or per-command-group differences.
 
-- `safety-model.md`
+7. `safety-model.md`
 	- Describe destructive operations, confirmations, dry-run support, force flags, and recovery behavior.
 
-- `extensibility-model.md`
+**Phase 2 checkpoint**: Verify that all four Phase 2 files exist in `0-analysis/` and are non-empty. Do not proceed to Phase 3 until confirmed.
+
+#### Phase 3: Meta-Analysis and Design
+
+Goal: Synthesize findings from Phase 1 and Phase 2 into higher-order insights and command set design.
+
+**Before starting Phase 3**, re-read your Phase 1 and Phase 2 outputs to load them into context. Use findings from those files as the basis for extensibility analysis, documentation gap identification, and commandset design.
+
+Files to produce (in order):
+
+8. `extensibility-model.md`
 	- Explain how new commands or plugins are added.
 	- Document registration paths, command discovery, middleware/hooks, and extension boundaries.
 
-- `documentation-quality-gaps.md`
+9. `documentation-quality-gaps.md`
 	- Compare docs/help output with code behavior.
 	- List mismatches, missing examples, outdated guidance, and ambiguity.
 
+**Phase 3 checkpoint**: Verify that all 9 `0-analysis/` files exist and are non-empty. Once confirmed, immediately proceed to the `discuss-commandset` workflow (create `1-command-design/commandset-shape.md`). Do not stop after analysis — the commandset design is a required deliverable.
+
 ### Build Order
 
-Generate analysis files in this order to maximize reuse. You **must** use these exact filenames:
+Generate analysis files in three phases. Complete each phase and verify outputs before starting the next. You **must** use these exact filenames:
 
+**Phase 1 — Structure Discovery:**
 ```
 0-analysis/architecture.md
 0-analysis/commandset.md
 0-analysis/argument-structure.md
+```
+
+**Phase 2 — Behavioral Analysis:**
+```
 0-analysis/configuration-model.md
 0-analysis/output-contracts.md
 0-analysis/error-model-and-exit-codes.md
 0-analysis/safety-model.md
+```
+
+**Phase 3 — Meta-Analysis:**
+```
 0-analysis/extensibility-model.md
 0-analysis/documentation-quality-gaps.md
 ```
+
+### Project Hints (optional)
+
+For large projects, providing known entry points dramatically reduces exploratory tool calls. If you know the project, add a hints block before starting analysis:
+
+- **Command registration entry point**: e.g., the file where top-level commands are registered.
+- **Help/docs generation**: e.g., a command or Makefile target that dumps CLI help text.
+- **Config loading path**: e.g., the module that resolves config file + env + flags.
+
+Example for juju:
+- Command registration: `cmd/juju/commands/main.go`
+- Plugin system: `cmd/juju/commands/plugin.go`
+- Command framework: `cmd/cmd/`
+- Generate docs: `go run ./cmd/juju documentation --split --no-index --out /tmp/juju-cli-docs`
+
+When hints are available, start Phase 1 exploration from these files instead of scanning the entire repository.
 
 ### Analysis Checklist
 
@@ -349,13 +440,15 @@ Create a `1-discuss-commandset/` directory. Each section below produces its own 
 You **must** use these exact filenames:
 
 ```
-1-discuss-commandset/01-verb-noun-decomposition.md  (+.html)
-1-discuss-commandset/02-verb-taxonomy.md             (+.html)
-1-discuss-commandset/03-semantic-domain-clustering.md (+.html)
-1-discuss-commandset/04-symmetry-audit.md             (+.html)
-1-discuss-commandset/05-confusion-pair-audit.md       (+.html)
-1-discuss-commandset/06-pattern-classification.md     (+.html)
+1-discuss-commandset/01-verb-noun-decomposition.md  (+.html +.json)
+1-discuss-commandset/02-verb-taxonomy.md             (+.html +.json)
+1-discuss-commandset/03-semantic-domain-clustering.md (+.html +.json)
+1-discuss-commandset/04-symmetry-audit.md             (+.html +.json)
+1-discuss-commandset/05-confusion-pair-audit.md       (+.html +.json)
+1-discuss-commandset/06-pattern-classification.md     (+.html +.json)
 ```
+
+For every `.md` file, also produce a `.json` file with the same base name containing the table data as JSON arrays/objects. Use the helper script `mdtables_to_json.py` or write the JSON manually.
 
 ##### Section 1 → `01-verb-noun-decomposition.md`: Verb-Noun Decomposition Matrix
 

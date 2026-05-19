@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02 — Verb Taxonomy | qwen36</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;700&display=swap');
+body { font-family: 'Ubuntu Sans', Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 2rem; font-size: 14px; color: #333; }
+h1 { color: #2b2b2b; border-bottom: 2px solid #e0e0e0; padding-bottom: 0.5rem; }
+h2 { color: #2b2b2b; margin-top: 2rem; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 1rem 0; }
+th { background: #2b2b2b; color: #fff; padding: 8px 12px; text-align: left; position: sticky; top: 0; }
+td { padding: 6px 12px; border-bottom: 1px solid #e0e0e0; }
+tr:nth-child(even) { background: #f8f8f8; }
+tr:hover { background: #eef; }
+code { background: #f0f0f0; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>02 — Verb Taxonomy and Aspect Classification</h1>
+
+<table>
+<thead><tr><th>Verb</th><th>Intent Group</th><th>Aspect</th><th>Reversible</th><th>Paired Verb</th><th>CLI Examples</th></tr></thead>
+<tbody>
+<tr><td>show</td><td>observation</td><td>punctual</td><td>n/a</td><td>—</td><td><code>show-engine</code>, <code>show-machine</code></td></tr>
+<tr><td>list</td><td>observation</td><td>punctual</td><td>n/a</td><td>—</td><td><code>list-engines</code></td></tr>
+<tr><td>get</td><td>observation</td><td>punctual</td><td>n/a</td><td>—</td><td><code>get [key]</code></td></tr>
+<tr><td>set</td><td>mutation</td><td>punctual</td><td>yes</td><td>unset</td><td><code>set key=value</code></td></tr>
+<tr><td>unset</td><td>mutation</td><td>punctual</td><td>yes</td><td>set</td><td><code>unset key</code></td></tr>
+<tr><td>use</td><td>mutation</td><td>punctual</td><td>partial</td><td>—</td><td><code>use-engine cpu</code></td></tr>
+<tr><td>prune</td><td>lifecycle</td><td>telic</td><td>no</td><td>—</td><td><code>prune-cache</code></td></tr>
+<tr><td>chat</td><td>execution</td><td>atelic</td><td>n/a</td><td>—</td><td><code>chat</code></td></tr>
+<tr><td>launch</td><td>execution</td><td>punctual</td><td>n/a</td><td>—</td><td><code>webui</code> (implicit)</td></tr>
+<tr><td>run</td><td>execution</td><td>atelic</td><td>n/a</td><td>—</td><td><code>run</code> (hidden)</td></tr>
+<tr><td>serve</td><td>execution</td><td>atelic</td><td>n/a</td><td>—</td><td><code>serve-webui</code> (hidden)</td></tr>
+<tr><td>debug</td><td>observation</td><td>atelic</td><td>n/a</td><td>—</td><td><code>debug</code> (hidden)</td></tr>
+</tbody>
+</table>
+
+<h2>Intent Group Distribution</h2>
+<table>
+<thead><tr><th>Intent Group</th><th>Count</th><th>Verbs</th></tr></thead>
+<tbody>
+<tr><td>observation</td><td>4</td><td>show, list, get, debug</td></tr>
+<tr><td>mutation</td><td>3</td><td>set, unset, use</td></tr>
+<tr><td>execution</td><td>4</td><td>chat, launch, run, serve</td></tr>
+<tr><td>lifecycle</td><td>1</td><td>prune</td></tr>
+</tbody>
+</table>
+
+</body>
+</html>

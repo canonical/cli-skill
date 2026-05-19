@@ -1,0 +1,21 @@
+Spawning 6 agents...
+[START] kimi-k2.6-juju -> /project/agents/kimi-k2.6-juju
+[START] glm-5-juju -> /project/agents/glm-5-juju
+[START] deepseek-v4-pro-juju -> /project/agents/deepseek-v4-pro-juju
+[START] kimi-k2.6-qwen36-snap -> /project/agents/kimi-k2.6-qwen36-snap
+[START] glm-5-qwen36-snap -> /project/agents/glm-5-qwen36-snap
+[START] deepseek-v4-pro-qwen36-snap -> /project/agents/deepseek-v4-pro-qwen36-snap
+[DONE] glm-5-qwen36-snap exit=0
+[DONE] kimi-k2.6-qwen36-snap exit=0
+[DONE] glm-5-juju exit=0
+[DONE] deepseek-v4-pro-qwen36-snap exit=0
+[DONE] kimi-k2.6-juju exit=0
+[DONE] deepseek-v4-pro-juju exit=0
+
+=== SUMMARY ===
+kimi-k2.6-juju: exit=0, produced_files=yes
+glm-5-juju: exit=0, produced_files=yes
+deepseek-v4-pro-juju: exit=0, produced_files=yes
+kimi-k2.6-qwen36-snap: exit=0, produced_files=yes
+glm-5-qwen36-snap: exit=0, produced_files=yes
+deepseek-v4-pro-qwen36-snap: exit=0, produced_files=yes

@@ -1,0 +1,130 @@
+[
+  {
+    "Command": "add-cloud",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "add-credential",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "add-k8s",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "add-unit",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "add-user",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "bootstrap",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "config",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "constraints",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "consume",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "controllers",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "credentials",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "debug-log",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "destroy-controller",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "disable-user",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "download",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "expose",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "find",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "grant",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "grant-cloud",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "remove-application",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "remove-cloud",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "remove-credential",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "remove-relation",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "remove-saas",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "remove-unit",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "resume-relation",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "suspend-relation",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "trust",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "unexpose",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "update-credential",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "upgrade-controller",
+    "Has Purpose?": "No"
+  },
+  {
+    "Command": "upgrade-model",
+    "Has Purpose?": "No"
+  }
+]

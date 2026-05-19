@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03. Semantic Domain Clustering</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+:root {
+  --bg: #f5f6f7;
+  --panel: #ffffff;
+  --text: #1f2328;
+  --muted: #5b6470;
+  --border: #d7dce2;
+  --head: #2b2b2b;
+  --stripe: #f1f4f7;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Ubuntu Sans', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+h1, h2 { margin: 0 0 12px; }
+p { margin: 0 0 14px; }
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 0 0 20px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+th, td {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+  text-align: left;
+}
+th {
+  background: var(--head);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+tbody tr:nth-child(even) { background: var(--stripe); }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.small { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="panel">
+    <h1>03. Semantic Domain Clustering</h1>
+    <p>Total commands analyzed: <strong>7</strong>. Every command appears in exactly one domain.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Domain Table</h2>
+    <table>
+      <thead>
+        <tr><th>Domain</th><th>Count</th><th>Commands</th><th>Naming Consistent?</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>conversation</td><td>1</td><td><code>qwen36 chat</code></td><td>yes</td><td>Interactive user workflow.</td></tr>
+        <tr><td>engine</td><td>2</td><td><code>qwen36 use-engine</code>, <code>qwen36 show-engine</code></td><td>partial</td><td>Shared noun, but not an ideal DE013 verb pair.</td></tr>
+        <tr><td>configuration</td><td>2</td><td><code>qwen36 get</code>, <code>qwen36 set</code></td><td>mostly</td><td>Clear inspect/mutate pair, missing <code>unset</code>.</td></tr>
+        <tr><td>shell integration</td><td>1</td><td><code>qwen36 completion bash</code></td><td>yes</td><td>Shell-completion generator.</td></tr>
+        <tr><td>service runtime</td><td>1</td><td><code>qwen36.server</code></td><td>no</td><td>Operational service entrypoint outside the normal hierarchy.</td></tr>
+      </tbody>
+    </table>
+    <p class="small">Count check: 1 + 2 + 2 + 1 + 1 = 7 commands.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Domain Notes</h2>
+    <table>
+      <thead>
+        <tr><th>Domain</th><th>Noun form</th><th>Coverage</th><th>Verb consistency</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>conversation</td><td>implicit</td><td>not applicable</td><td>acceptable for an activity command</td></tr>
+        <tr><td>engine</td><td>explicit <code>engine</code></td><td>partial lifecycle only</td><td>understandable, but can be tighter</td></tr>
+        <tr><td>configuration</td><td>implicit config object</td><td>partial: read/write only</td><td>strong within the domain</td></tr>
+        <tr><td>shell integration</td><td>explicit shell target</td><td>single-command domain</td><td>acceptable meta-command grammar</td></tr>
+        <tr><td>service runtime</td><td>service name</td><td>externally managed by snap</td><td>not applicable inside the user CLI</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Key Observations</h2>
+    <p>1. The engine domain is the strongest noun-led cluster and therefore the best candidate for naming cleanup.</p>
+    <p>2. The configuration domain already has the right core verbs, but it lacks the full DE013 trio and discoverability aids.</p>
+    <p>3. The tiny overall command count argues for incremental vocabulary fixes rather than a deep hierarchy refactor.</p>
+  </div>
+</main>
+</body>
+</html>

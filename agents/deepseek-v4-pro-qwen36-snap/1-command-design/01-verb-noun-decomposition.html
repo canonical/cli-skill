@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 — Verb-Noun Decomposition Matrix</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap');
+body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; max-width: 1400px; margin: 2rem auto; padding: 0 2rem; color: #2b2b2b; background: #fff; }
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.2rem; margin-top: 2rem; }
+h3 { font-size: 1rem; margin-top: 1.5rem; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 1rem 0; }
+th { background: #2b2b2b; color: #fff; padding: 8px 10px; text-align: left; position: sticky; top: 0; }
+td { padding: 6px 10px; border-bottom: 1px solid #e0e0e0; }
+tr:nth-child(even) td { background: #f9f9f9; }
+.check { text-align: center; color: #2e7d32; font-weight: bold; }
+.dash { text-align: center; color: #999; }
+</style>
+</head>
+<body>
+<h1>01 — Verb-Noun Decomposition Matrix</h1>
+
+<h2>Decomposition Grid</h2>
+<table>
+<thead>
+<tr><th>Verb</th><th>config</th><th>engine</th><th>machine</th><th>cache</th><th>version</th><th>status</th><th>ui</th><th>chat</th><th>model</th><th>subprocess</th></tr>
+</thead>
+<tbody>
+<tr><td>chat</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>get</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>list</td><td class="dash">—</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>prune</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>run</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td></tr>
+<tr><td>select</td><td class="dash">—</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>serve</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>set</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>show</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>status</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>unset</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>use</td><td class="dash">—</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>validate</td><td class="dash">—</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>version</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+<tr><td>webui</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td></tr>
+</tbody>
+</table>
+
+<h2>Annotations</h2>
+
+<h3>Incomplete CRUD Sets</h3>
+<ul>
+<li><strong>config</strong>: Has <code>get</code> (read), <code>set</code> (create/update), <code>unset</code> (delete). <strong>CRUD complete</strong> ✅.</li>
+<li><strong>engine</strong>: Has <code>list</code>, <code>show</code>, <code>use</code>, <code>validate</code>, <code>select</code>. <strong>Missing</strong>: <code>remove-engine</code> (deactivation).</li>
+<li><strong>cache</strong>: Has <code>prune</code> (delete). <strong>Missing</strong>: read counterpart.</li>
+<li><strong>machine</strong>: Has <code>show</code> (read). Acceptable — machine info is read-only.</li>
+<li><strong>chat</strong>: Two chat commands in different namespaces. Inconsistent.</li>
+<li><strong>ui</strong>: Three web UI commands. Over-represented domain.</li>
+</ul>
+
+<h3>Verb Inconsistencies</h3>
+<ul>
+<li><code>use-engine</code> uses <code>use</code> instead of <code>select</code> or <code>activate</code>.</li>
+<li><code>prune-cache</code> uses <code>prune</code> instead of <code>remove</code> or <code>clean</code>.</li>
+<li><code>list-engines</code> uses <code>list</code> prefix instead of bare plural <code>engines</code> per DE013.</li>
+</ul>
+
+<h3>Orphan Commands</h3>
+<table>
+<thead><tr><th>Command</th><th>Reason</th></tr></thead>
+<tbody>
+<tr><td><code>status</code></td><td>No clear noun — both verb and noun. DE013 standard exception.</td></tr>
+<tr><td><code>version</code></td><td>Noun used as command. DE013 standard exception.</td></tr>
+<tr><td><code>webui</code></td><td>Noun used as command. Should be <code>open-webui</code> per DE013.</td></tr>
+<tr><td><code>chat</code></td><td>Both verb and noun. Acceptable but informal.</td></tr>
+</tbody>
+</table>
+
+<h3>Verb Count Summary</h3>
+<table>
+<thead><tr><th>Verb</th><th>Occurrences</th><th>Commands</th></tr></thead>
+<tbody>
+<tr><td>show</td><td>2</td><td>show-engine, show-machine</td></tr>
+<tr><td>chat</td><td>2</td><td>chat, debug chat</td></tr>
+<tr><td>serve</td><td>2</td><td>serve-webui, debug serve-webui</td></tr>
+<tr><td>get</td><td>1</td><td>get</td></tr>
+<tr><td>set</td><td>1</td><td>set</td></tr>
+<tr><td>unset</td><td>1</td><td>unset</td></tr>
+<tr><td>list</td><td>1</td><td>list-engines</td></tr>
+<tr><td>use</td><td>1</td><td>use-engine</td></tr>
+<tr><td>prune</td><td>1</td><td>prune-cache</td></tr>
+<tr><td>run</td><td>1</td><td>run</td></tr>
+<tr><td>validate</td><td>1</td><td>debug validate-engines</td></tr>
+<tr><td>select</td><td>1</td><td>debug select-engine</td></tr>
+<tr><td>status</td><td>1</td><td>status</td></tr>
+<tr><td>version</td><td>1</td><td>version</td></tr>
+<tr><td>webui</td><td>1</td><td>webui</td></tr>
+</tbody>
+</table>
+<p>15 unique verbs for 18 commands.</p>
+</body>
+</html>

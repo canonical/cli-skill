@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 — Symmetry Audit — qwen36</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #1a1a1a; max-width: 1400px; margin: 0 auto; padding: 2rem; background: #fafafa; }
+h1 { font-size: 1.6rem; margin-bottom: 1.5rem; color: #2b2b2b; }
+h2 { font-size: 1.2rem; margin: 2rem 0 1rem; color: #2b2b2b; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 1.5rem; }
+th { background: #2b2b2b; color: #fff; font-weight: 500; padding: 10px 12px; text-align: left; position: sticky; top: 0; z-index: 1; }
+td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+tr:nth-child(even) td { background: #f5f5f5; }
+tr:hover td { background: #e8f0fe; }
+code { background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+p { margin-bottom: 0.75rem; }
+.severity-high { color: #c0392b; font-weight: 500; }
+.severity-medium { color: #e67e22; font-weight: 500; }
+.severity-low { color: #27ae60; font-weight: 500; }
+</style>
+</head>
+<body>
+<h1>Symmetry Audit</h1>
+
+<h2>Symmetric Operation Pairs</h2>
+<table>
+<thead><tr><th>Operation</th><th>Forward Command</th><th>Reverse Command</th><th>Naming Symmetric?</th><th>Behavior Symmetric?</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Engine selection</td><td><code>use-engine cpu</code></td><td><code>use-engine cuda</code></td><td>Yes (same cmd, different arg)</td><td>Yes</td><td>Not a true pair; same command with different targets.</td></tr>
+<tr><td>Engine observation</td><td><code>show-engine</code></td><td>—</td><td>N/A</td><td>N/A</td><td>Read-only, no reverse needed.</td></tr>
+<tr><td>Config write</td><td><code>set &lt;key&gt;=&lt;value&gt;</code></td><td><code>unset &lt;key&gt;</code> (MISSING)</td><td>N/A — reverse doesn't exist</td><td>N/A</td><td>Per DE013, <code>unset</code> should exist.</td></tr>
+<tr><td>Config read</td><td><code>get &lt;key&gt;</code></td><td><code>set &lt;key&gt;=&lt;value&gt;</code></td><td>Yes (standard pair)</td><td>Yes (read/write)</td><td>Follows DE013 standard.</td></tr>
+<tr><td>Start chat</td><td><code>chat</code></td><td>Ctrl+C / exit</td><td>N/A</td><td>N/A</td><td>User terminates via signal.</td></tr>
+<tr><td>Generate completions</td><td><code>completion bash</code></td><td>—</td><td>N/A</td><td>N/A</td><td>Utility, no reverse needed.</td></tr>
+</tbody>
+</table>
+
+<h2>Missing Reverse Operations</h2>
+<table>
+<thead><tr><th>Forward Command</th><th>Expected Reverse</th><th>Impact</th><th>Recommendation</th></tr></thead>
+<tbody>
+<tr><td><code>set &lt;key&gt;=&lt;value&gt;</code></td><td><code>unset &lt;key&gt;</code></td><td>Users cannot restore package defaults</td><td>Add <code>unset</code> command per DE013</td></tr>
+<tr><td><code>use-engine &lt;name&gt;</code></td><td>— (no formal reverse)</td><td>Acceptable</td><td>No change needed</td></tr>
+</tbody>
+</table>
+
+<h2>Behavioral Asymmetries</h2>
+<table>
+<thead><tr><th>Pair</th><th>Asymmetry</th><th>Impact</th></tr></thead>
+<tbody>
+<tr><td><code>use-engine</code> → <code>use-engine</code></td><td>Both directions prompt for confirmation. Symmetric.</td><td class="severity-low">Low</td></tr>
+<tr><td><code>set</code> → (manual restore)</td><td>Setting is instant; undoing requires knowing previous value</td><td class="severity-medium">Medium</td></tr>
+</tbody>
+</table>
+
+<h2>Summary</h2>
+<p>The only significant gap is the missing <code>unset</code> command, which breaks the DE013-standard <code>get</code>/<code>set</code>/<code>unset</code> triplet. All other operations have natural symmetry or are inherently one-directional.</p>
+
+</body>
+</html>

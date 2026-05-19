@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 — Verb-Noun Decomposition Matrix</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@400;500;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333; max-width: 1400px; margin: 0 auto; padding: 2rem; background: #fafafa; }
+h1 { font-size: 1.8rem; color: #2b2b2b; margin-bottom: 1.5rem; border-bottom: 2px solid #2b2b2b; padding-bottom: 0.5rem; }
+h2 { font-size: 1.3rem; color: #2b2b2b; margin: 2rem 0 1rem; }
+h3 { font-size: 1.1rem; color: #444; margin: 1.5rem 0 0.5rem; }
+p { margin: 0.5rem 0; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 13px; }
+th { background: #2b2b2b; color: #fff; padding: 10px 12px; text-align: left; position: sticky; top: 0; z-index: 1; }
+td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; }
+tr:nth-child(even) td { background: #f5f5f5; }
+tr:hover td { background: #e8f0fe; }
+code { background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+.grid-cell { text-align: center; font-weight: 500; }
+.grid-yes { color: #2e7d32; }
+.grid-no { color: #bbb; }
+ul { margin: 0.5rem 0 0.5rem 1.5rem; }
+li { margin: 0.3rem 0; }
+</style>
+</head>
+<body>
+<h1>01 — Verb-Noun Decomposition Matrix</h1>
+
+<h2>Command Inventory (6 commands)</h2>
+<table>
+<tr><th>#</th><th>Full Command</th><th>Verb</th><th>Noun</th></tr>
+<tr><td>1</td><td><code>chat</code></td><td>chat</td><td><em>(implicit: session)</em></td></tr>
+<tr><td>2</td><td><code>use-engine</code></td><td>use</td><td>engine</td></tr>
+<tr><td>3</td><td><code>show-engine</code></td><td>show</td><td>engine</td></tr>
+<tr><td>4</td><td><code>get</code></td><td>get</td><td><em>(configuration)</em></td></tr>
+<tr><td>5</td><td><code>set</code></td><td>set</td><td><em>(configuration)</em></td></tr>
+<tr><td>6</td><td><code>completion</code></td><td>completion</td><td><em>(shell)</em></td></tr>
+</table>
+
+<h2>Verb × Noun Grid</h2>
+<table>
+<tr><th></th><th>engine</th><th>configuration</th><th>shell</th><th>session</th></tr>
+<tr><td><strong>chat</strong></td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-yes">✓</td></tr>
+<tr><td><strong>completion</strong></td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-yes">✓</td><td class="grid-cell grid-no">—</td></tr>
+<tr><td><strong>get</strong></td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-yes">✓</td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-no">—</td></tr>
+<tr><td><strong>set</strong></td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-yes">✓</td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-no">—</td></tr>
+<tr><td><strong>show</strong></td><td class="grid-cell grid-yes">✓</td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-no">—</td></tr>
+<tr><td><strong>use</strong></td><td class="grid-cell grid-yes">✓</td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-no">—</td><td class="grid-cell grid-no">—</td></tr>
+</table>
+
+<h2>Annotations</h2>
+
+<h3>Incomplete CRUD Sets</h3>
+<p><strong>Engine domain:</strong></p>
+<ul>
+<li>Has <code>show-engine</code> (read) and <code>use-engine</code> (update/select)</li>
+<li>Missing: no <code>list-engines</code> or <code>engines</code> command to discover available engines</li>
+<li>Missing: no <code>add-engine</code> / <code>remove-engine</code> (engines are snap components)</li>
+</ul>
+<p><strong>Configuration domain:</strong></p>
+<ul>
+<li>Has <code>get</code> (read) and <code>set</code> (write)</li>
+<li>Missing: no <code>unset</code> or <code>reset</code> command to restore defaults</li>
+<li>Missing: no list-all-config command to show all current configuration</li>
+</ul>
+
+<h3>Verb Inconsistencies</h3>
+<ul>
+<li><code>use-engine</code> uses "use" as a verb for selection — non-standard in Canonical vocabulary (DE013 favors <code>enable/disable</code> or <code>set</code>)</li>
+<li><code>show-engine</code> uses "show" correctly per DE013</li>
+</ul>
+
+<h3>Orphan Commands</h3>
+<ul>
+<li><code>chat</code> — bare verb, implicit noun (acceptable for primary-type single-purpose tools per DE013)</li>
+<li><code>completion</code> — functions as a noun, not a verb; would be <code>generate-completion</code> in strict verb form</li>
+<li><code>get</code> / <code>set</code> — verbs without explicit nouns (standard pattern per DE013 for config access)</li>
+</ul>
+</body>
+</html>

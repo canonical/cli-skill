@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic Domain Clustering — Juju CLI Command Set Shape</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #f7f7f7;
+            --color-surface: #ffffff;
+            --color-text: #111111;
+            --color-text-secondary: #666666;
+            --color-border: #e5e5e5;
+            --color-accent: #e95420;
+            --color-accent-soft: #fdf0eb;
+            --color-link: #007aa6;
+            --font-main: 'Ubuntu Sans', 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: var(--font-main);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            font-size: 15px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+        .nav {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            align-items: center;
+        }
+        .nav a {
+            color: var(--color-link);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+        .nav a:hover { text-decoration: underline; }
+        .nav a.current {
+            color: var(--color-accent);
+            font-weight: 700;
+        }
+        .nav-sep { color: var(--color-border); }
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            line-height: 1.25;
+            margin-top: 2.2em;
+            margin-bottom: 0.8em;
+        }
+        h1 {
+            font-size: 2.2rem;
+            color: var(--color-accent);
+            border-bottom: 3px solid var(--color-accent);
+            padding-bottom: 12px;
+            margin-top: 0;
+        }
+        h2 {
+            font-size: 1.6rem;
+            color: #333;
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: 8px;
+        }
+        h3 { font-size: 1.25rem; color: #444; }
+        h4 { font-size: 1.1rem; color: #555; }
+        p { margin-bottom: 1em; max-width: 80ch; }
+        a { color: var(--color-link); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code {
+            font-family: 'Ubuntu Sans Mono', 'Ubuntu Mono', 'Courier New', monospace;
+            background: var(--color-accent-soft);
+            color: var(--color-accent);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #f0f0f0;
+            padding: 16px;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+        pre code { background: transparent; color: inherit; padding: 0; }
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 1.5em;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88em;
+            min-width: 600px;
+        }
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+            white-space: nowrap;
+        }
+        th {
+            background: #fafafa;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            border-bottom: 2px solid #ccc;
+        }
+        tr:hover td { background: var(--color-accent-soft); }
+        td:first-child, th:first-child { font-weight: 600; color: #333; }
+        ul, ol { margin-bottom: 1em; padding-left: 1.4em; }
+        li { margin-bottom: 0.4em; }
+        blockquote {
+            border-left: 4px solid var(--color-accent);
+            margin: 1em 0;
+            padding: 8px 16px;
+            background: var(--color-accent-soft);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            color: #444;
+        }
+        hr { border: none; border-top: 2px solid var(--color-border); margin: 2em 0; }
+        .highlight-box {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin: 1em 0;
+            box-shadow: var(--shadow);
+        }
+        @media (max-width: 768px) {
+            .container { padding: 16px 12px; }
+            h1 { font-size: 1.6rem; }
+            h2 { font-size: 1.3rem; }
+            table { font-size: 0.8em; }
+            th, td { padding: 6px 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="index.html">← Overview</a>
+            <span class="nav-sep">|</span>
+            <a href="1-verb-noun-matrix.html">1. Verb-Noun Decomposition Matrix</a>
+            <span class="nav-sep">|</span>
+            <a href="2-verb-taxonomy.html">2. Verb Taxonomy and Aspect Classification</a>
+            <span class="nav-sep">|</span>
+            <a href="3-semantic-domains.html" class="current">3. Semantic Domain Clustering</a>
+            <span class="nav-sep">|</span>
+            <a href="4-symmetry-audit.html">4. Symmetry Audit</a>
+            <span class="nav-sep">|</span>
+            <a href="5-confusion-pairs.html">5. Confusion-Pair Audit</a>
+            <span class="nav-sep">|</span>
+            <a href="6-recommendations.html">6. Pattern Classification and Recommendations</a>
+        </div>
+        <h2>Section 3: Semantic Domain Clustering</h2>
+<p>| Domain | Count | Commands | Naming Consistent? | Notes |
+|---|---|---|---|---|
+| cloud | 11 | <code>add-cloud</code>, <code>remove-cloud</code>, <code>update-cloud</code>, <code>show-cloud</code>, <code>clouds</code>, <code>regions</code>, <code>add-k8s</code>, <code>remove-k8s</code>, <code>update-k8s</code>, <code>update-public-clouds</code>, <code>autoload-credentials</code> | Mixed | Contains k8s sub-domain; <code>update-public-clouds</code> is an orphan; <code>regions</code> is list-only |
+| controller | 12 | <code>bootstrap</code>, <code>destroy-controller</code>, <code>kill-controller</code>, <code>show-controller</code>, <code>controllers</code>, <code>controller-config</code>, <code>upgrade-controller</code>, <code>register</code>, <code>unregister</code>, <code>login</code>, <code>logout</code>, <code>whoami</code>, <code>dashboard</code>, <code>enable-destroy-controller</code> | Mixed | <code>bootstrap</code> is create verb; <code>kill</code> is exceptional; <code>enable-destroy-controller</code> is unique |
+| model | 13 | <code>add-model</code>, <code>destroy-model</code>, <code>show-model</code>, <code>models</code>, <code>migrate</code>, <code>model-config</code>, <code>model-constraints</code>, <code>model-defaults</code>, <code>model-secret-backend</code>, <code>upgrade-model</code>, <code>switch</code>, <code>status</code>, <code>set-model-constraints</code> | Mixed | <code>destroy-model</code> vs <code>remove-*</code> elsewhere; <code>status</code> is a model-scoped orphan |
+| application | 16 | <code>deploy</code>, <code>remove-application</code>, <code>show-application</code>, <code>refresh</code>, <code>scale-application</code>, <code>actions</code>, <code>config</code>, <code>constraints</code>, <code>resources</code>, <code>expose</code>, <code>unexpose</code>, <code>trust</code>, <code>charm-resources</code>, <code>attach-resource</code>, <code>download</code>, <code>info</code>, <code>find</code> | Mixed | <code>deploy</code> is the primary create verb (no <code>add-application</code>); multiple noun orphans |
+| unit | 13 | <code>add-unit</code>, <code>remove-unit</code>, <code>show-unit</code>, <code>exec</code>, <code>run</code>, <code>debug-code</code>, <code>debug-hooks</code>, <code>ssh</code>, <code>scp</code>, <code>add-storage</code>, <code>attach-storage</code>, <code>detach-storage</code>, <code>resolved</code> | Mixed | <code>resolved</code> is participle-only; <code>exec</code>/<code>run</code>/<code>ssh</code> overlap in execution |
+| machine | 6 | <code>add-machine</code>, <code>remove-machine</code>, <code>show-machine</code>, <code>machines</code>, <code>retry-provisioning</code> | Yes | Clean <code>add/remove/show</code> + list; <code>retry-provisioning</code> is an outlier |
+| credential | 9 | <code>add-credential</code>, <code>remove-credential</code>, <code>show-credential</code>, <code>update-credential</code>, <code>default-credential</code>, <code>set-credential</code>, <code>credentials</code>, <code>autoload-credentials</code> | Mixed | <code>default-credential</code> uses adjective-as-verb; <code>autoload-credentials</code> is orphan verb + plural |
+| secret | 10 | <code>add-secret</code>, <code>remove-secret</code>, <code>show-secret</code>, <code>update-secret</code>, <code>grant-secret</code>, <code>revoke-secret</code>, <code>secrets</code>, <code>add-secret-backend</code>, <code>remove-secret-backend</code>, <code>show-secret-backend</code>, <code>update-secret-backend</code>, <code>secret-backends</code>, <code>model-secret-backend</code> | Yes | Strong <code>add/remove/show/update</code> + backend sub-domain |
+| space/network | 10 | <code>add-space</code>, <code>remove-space</code>, <code>show-space</code>, <code>rename-space</code>, <code>move-to-space</code>, <code>spaces</code>, <code>reload-spaces</code>, <code>subnets</code>, <code>bind</code> | Mixed | <code>reload-spaces</code> is a bare verb; <code>subnets</code> is list-only; <code>bind</code> is an orphan |
+| storage | 10 | <code>add-storage</code>, <code>remove-storage</code>, <code>show-storage</code>, <code>storage</code>, <code>attach-storage</code>, <code>detach-storage</code>, <code>create-storage-pool</code>, <code>remove-storage-pool</code>, <code>update-storage-pool</code>, <code>storage-pools</code> | Mixed | <code>create-*</code> for pool vs <code>add-*</code> for storage instance; <code>storage</code> is noun-only list |
+| offer/CMR | 10 | <code>offer</code>, <code>remove-offer</code>, <code>show-offer</code>, <code>offers</code>, <code>find-offers</code>, <code>consume</code>, <code>remove-saas</code>, <code>grant</code>, <code>revoke</code>, <code>integrate</code> | Mixed | <code>consume</code>/<code>remove-saas</code> are asymmetric; <code>integrate</code> is relation-level |
+| relation | 6 | <code>integrate</code>, <code>remove-relation</code>, <code>suspend-relation</code>, <code>resume-relation</code> | Mixed | No <code>add-relation</code> (integrate used); <code>suspend/resume</code> are well paired |
+| user | 9 | <code>add-user</code>, <code>remove-user</code>, <code>show-user</code>, <code>disable-user</code>, <code>enable-user</code>, <code>change-user-password</code>, <code>users</code> | Yes | Clean lifecycle; <code>change-user-password</code> is the only compound verb |
+| charm/resource | 8 | <code>download</code>, <code>info</code>, <code>find</code>, <code>charm-resources</code>, <code>resources</code>, <code>attach-resource</code>, <code>deploy</code> | Mixed | <code>deploy</code> pulls in from application domain; <code>info</code>/<code>find</code> are orphan observation verbs |
+| bundle | 3 | <code>deploy</code>, <code>diff-bundle</code>, <code>export-bundle</code> | Mixed | No <code>show-bundle</code> or <code>list-bundles</code>; <code>deploy</code> is shared with app domain |
+| backup | 2 | <code>create-backup</code>, <code>download-backup</code> | Mixed | Missing show/list/remove; <code>create</code> used instead of <code>add</code> |
+| task/operation | 5 | <code>cancel-task</code>, <code>show-task</code>, <code>operations</code>, <code>show-operation</code>, <code>run</code> | Mixed | No <code>list-tasks</code>; <code>run</code> overlaps with action execution |
+| firewall | 2 | <code>set-firewall-rule</code>, <code>firewall-rules</code> | Partial | <code>set</code> is used; no <code>remove-firewall-rule</code> |
+| config | 5 | <code>config</code>, <code>controller-config</code>, <code>model-config</code>, <code>model-defaults</code> | Mixed | Noun-first hybrids; inconsistent with <code>get/set/unset</code> standard |
+| action/hook help | 3 | <code>help-action-commands</code>, <code>help-hook-commands</code>, <code>show-action</code> | Yes | Well-scoped help surface |</p>
+<hr />
+
+    </div>
+</body>
+</html>

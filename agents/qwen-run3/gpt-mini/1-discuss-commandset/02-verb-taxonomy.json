@@ -1,0 +1,18 @@
+{
+  "verbs": [
+    {"verb":"status","count":1,"classification":"informational","notes":"shows overall state"},
+    {"verb":"chat","count":1,"classification":"interactive","notes":"starts chat client"},
+    {"verb":"webui","count":1,"classification":"interactive","notes":"opens browser UI"},
+    {"verb":"list","count":1,"classification":"read","notes":"lists engines"},
+    {"verb":"show","count":2,"classification":"read","notes":"engine and machine details"},
+    {"verb":"use","count":1,"classification":"mutating","notes":"selects engine"},
+    {"verb":"get","count":1,"classification":"read","notes":"configuration read"},
+    {"verb":"set","count":1,"classification":"mutating","notes":"configuration write"},
+    {"verb":"unset","count":1,"classification":"mutating","notes":"configuration delete"},
+    {"verb":"prune","count":1,"classification":"mutating/destructive","notes":"removes components"},
+    {"verb":"version","count":1,"classification":"informational","notes":"shows versions"},
+    {"verb":"run","count":1,"classification":"execution","notes":"runs subprocess"},
+    {"verb":"serve","count":1,"classification":"server","notes":"serves static files"},
+    {"verb":"debug","count":1,"classification":"diagnostic","notes":"debug helper"}
+  ]
+}

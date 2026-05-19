@@ -1,0 +1,356 @@
+{
+  "domain_table": [
+    {
+      "Domain": "action/operation",
+      "Count": "9",
+      "Commands": "actions, cancel-task, exec, operations, run, show-action, show-operation, show-task, show-task",
+      "Naming Consistent?": "Yes",
+      "Notes": "All use action/operation/task consistently. Missing: update-action, remove-action."
+    },
+    {
+      "Domain": "application",
+      "Count": "22",
+      "Commands": "add-unit, bind, config, constraints, consume, deploy, diff-bundle, expose, integrate, refresh, remove-application, remove-relation, remove-saas, remove-unit, resolved, resume-relation, scale-application, set-constraints, show-application, show-unit, suspend-relation, trust, unexpose",
+      "Naming Consistent?": "Partial",
+      "Notes": "config lacks noun. resolved is verb-only. trust is verb-only. expose/unexpose lack noun. integrate lacks noun."
+    },
+    {
+      "Domain": "backup",
+      "Count": "2",
+      "Commands": "create-backup, download-backup",
+      "Naming Consistent?": "Yes",
+      "Notes": "Small domain; missing list-backups, remove-backup."
+    },
+    {
+      "Domain": "block/protection",
+      "Count": "3",
+      "Commands": "disable-command, disabled-commands, enable-command",
+      "Naming Consistent?": "Yes",
+      "Notes": "Consistent command/command-set naming."
+    },
+    {
+      "Domain": "bootstrap/top-level",
+      "Count": "11",
+      "Commands": "bootstrap, debug-log, help-action-commands, help-hook-commands, juju, migrate, switch, sync-agent-binary, upgrade-controller, upgrade-model, version",
+      "Naming Consistent?": "No",
+      "Notes": "Miscellany of meta and global commands. No unifying pattern."
+    },
+    {
+      "Domain": "caas",
+      "Count": "3",
+      "Commands": "add-k8s, remove-k8s, update-k8s",
+      "Naming Consistent?": "Yes",
+      "Notes": "Consistent k8s noun. Missing show-k8s."
+    },
+    {
+      "Domain": "charmhub",
+      "Count": "3",
+      "Commands": "download, find, info",
+      "Naming Consistent?": "Partial",
+      "Notes": "info should be show-info per DE013, or charmhub should be the noun."
+    },
+    {
+      "Domain": "cloud",
+      "Count": "10",
+      "Commands": "add-cloud, autoload-credentials, clouds, default-credential, default-region, remove-cloud, show-cloud, update-cloud, update-public-clouds",
+      "Naming Consistent?": "Partial",
+      "Notes": "autoload-credentials uses credential noun, not cloud. default-credential and default-region are adjective-noun."
+    },
+    {
+      "Domain": "controller",
+      "Count": "11",
+      "Commands": "controller-config, controllers, destroy-controller, enable-destroy-controller, kill-controller, list-models, models, register, show-controller, unregister, upgrade-controller",
+      "Naming Consistent?": "Partial",
+      "Notes": "models and list-models are model-domain commands registered under controller package. register/unregister lack controller noun."
+    },
+    {
+      "Domain": "credential",
+      "Count": "7",
+      "Commands": "add-credential, credentials, remove-credential, set-credential, show-credential, update-credential",
+      "Naming Consistent?": "Partial",
+      "Notes": "autoload-credentials is in cloud domain. default-credential is in cloud domain. Missing update at credential granularity."
+    },
+    {
+      "Domain": "cross-model / offer",
+      "Count": "7",
+      "Commands": "consume, find-offers, offer, offers, remove-offer, show-offer",
+      "Naming Consistent?": "Partial",
+      "Notes": "consume lacks noun. integrate and remove-relation are in application domain but operate on cross-model relations."
+    },
+    {
+      "Domain": "dashboard",
+      "Count": "1",
+      "Commands": "dashboard",
+      "Naming Consistent?": "—",
+      "Notes": "Single command. Should be show-dashboard."
+    },
+    {
+      "Domain": "firewall",
+      "Count": "2",
+      "Commands": "firewall-rules, set-firewall-rule",
+      "Naming Consistent?": "Yes",
+      "Notes": "Consistent firewall-rule noun. Missing remove-firewall-rule."
+    },
+    {
+      "Domain": "machine",
+      "Count": "4",
+      "Commands": "add-machine, machines, remove-machine, show-machine",
+      "Naming Consistent?": "Yes",
+      "Notes": "Consistent machine noun. Missing update-machine."
+    },
+    {
+      "Domain": "model",
+      "Count": "14",
+      "Commands": "add-model, destroy-model, dump-db, dump-model, export-bundle, grant, grant-cloud, model-config, model-constraints, model-defaults, model-secret-backend, revoke, revoke-cloud, set-credential, set-model-constraints, show-model",
+      "Naming Consistent?": "No",
+      "Notes": "grant/revoke lack model noun. dump-db uses db noun. export-bundle uses bundle noun. Config commands fragmented."
+    },
+    {
+      "Domain": "relation",
+      "Count": "4",
+      "Commands": "integrate, remove-relation, resume-relation, suspend-relation",
+      "Naming Consistent?": "Partial",
+      "Notes": "integrate lacks noun. No show-relation or add-relation (use integrate)."
+    },
+    {
+      "Domain": "resource",
+      "Count": "3",
+      "Commands": "attach-resource, charm-resources, resources",
+      "Naming Consistent?": "Yes",
+      "Notes": "Consistent resource naming. Missing remove-resource, update-resource."
+    },
+    {
+      "Domain": "secret",
+      "Count": "7",
+      "Commands": "add-secret, grant-secret, remove-secret, revoke-secret, secrets, show-secret, update-secret",
+      "Naming Consistent?": "Yes",
+      "Notes": "Consistent secret noun. Complete CRUD."
+    },
+    {
+      "Domain": "secret-backend",
+      "Count": "6",
+      "Commands": "add-secret-backend, model-secret-backend, remove-secret-backend, secret-backends, show-secret-backend, update-secret-backend",
+      "Naming Consistent?": "Yes",
+      "Notes": "Consistent secret-backend noun. Complete CRUD."
+    },
+    {
+      "Domain": "space/network",
+      "Count": "8",
+      "Commands": "add-space, move-to-space, reload-spaces, remove-space, rename-space, show-space, spaces",
+      "Naming Consistent?": "Yes",
+      "Notes": "Consistent space noun. Missing update-space (use move/rename)."
+    },
+    {
+      "Domain": "ssh/debug",
+      "Count": "6",
+      "Commands": "debug-code, debug-hooks, scp, ssh, ssh-keys",
+      "Naming Consistent?": "Partial",
+      "Notes": "scp/ssh are passthroughs. debug-code/debug-hooks overlap semantically."
+    },
+    {
+      "Domain": "status",
+      "Count": "2",
+      "Commands": "show-status-log, status",
+      "Naming Consistent?": "Yes",
+      "Notes": "Status domain is small and consistent."
+    },
+    {
+      "Domain": "storage",
+      "Count": "11",
+      "Commands": "add-storage, attach-storage, create-storage-pool, detach-storage, import-filesystem, remove-storage, remove-storage-pool, show-storage, storage, storage-pools, update-storage-pool",
+      "Naming Consistent?": "Partial",
+      "Notes": "import-filesystem uses filesystem noun. storage and storage-pools are list commands."
+    },
+    {
+      "Domain": "subnet",
+      "Count": "1",
+      "Commands": "subnets",
+      "Naming Consistent?": "—",
+      "Notes": "Only list command. Missing add/remove/update."
+    },
+    {
+      "Domain": "unit",
+      "Count": "3",
+      "Commands": "add-unit, remove-unit, show-unit",
+      "Naming Consistent?": "Yes",
+      "Notes": "Consistent unit noun. Missing update-unit."
+    },
+    {
+      "Domain": "user",
+      "Count": "10",
+      "Commands": "add-user, change-user-password, disable-user, enable-user, login, logout, remove-user, show-user, users, whoami",
+      "Naming Consistent?": "Partial",
+      "Notes": "login/logout/whoami lack user noun. change-user-password is verbose."
+    }
+  ],
+  "domain_crud_completeness": [
+    {
+      "Domain": "action/operation",
+      "Create": "run, exec",
+      "Read": "show-action, show-operation, show-task, actions, operations",
+      "Update": "—",
+      "Delete": "cancel-task",
+      "Complete?": "Partial"
+    },
+    {
+      "Domain": "application",
+      "Create": "deploy, add-unit",
+      "Read": "show-application, show-unit, config, constraints, status",
+      "Update": "refresh, config, scale-application, bind, trust",
+      "Delete": "remove-application, remove-unit, remove-relation",
+      "Complete?": "Yes"
+    },
+    {
+      "Domain": "backup",
+      "Create": "create-backup",
+      "Read": "—",
+      "Update": "—",
+      "Delete": "—",
+      "Complete?": "No"
+    },
+    {
+      "Domain": "block/protection",
+      "Create": "—",
+      "Read": "disabled-commands",
+      "Update": "enable-command",
+      "Delete": "disable-command",
+      "Complete?": "Partial"
+    },
+    {
+      "Domain": "caas",
+      "Create": "add-k8s",
+      "Read": "—",
+      "Update": "update-k8s",
+      "Delete": "remove-k8s",
+      "Complete?": "Partial"
+    },
+    {
+      "Domain": "charmhub",
+      "Create": "download",
+      "Read": "find, info",
+      "Update": "—",
+      "Delete": "—",
+      "Complete?": "Partial"
+    },
+    {
+      "Domain": "cloud",
+      "Create": "add-cloud, autoload-credentials",
+      "Read": "clouds, show-cloud",
+      "Update": "update-cloud, update-public-clouds, default-credential, default-region",
+      "Delete": "remove-cloud",
+      "Complete?": "Yes"
+    },
+    {
+      "Domain": "controller",
+      "Create": "bootstrap, register",
+      "Read": "show-controller, controllers, models",
+      "Update": "controller-config, upgrade-controller, enable-destroy-controller",
+      "Delete": "destroy-controller, kill-controller, unregister",
+      "Complete?": "Yes"
+    },
+    {
+      "Domain": "credential",
+      "Create": "add-credential",
+      "Read": "credentials, show-credential",
+      "Update": "update-credential, set-credential, default-credential",
+      "Delete": "remove-credential",
+      "Complete?": "Yes"
+    },
+    {
+      "Domain": "cross-model / offer",
+      "Create": "offer, consume",
+      "Read": "offers, show-offer, find-offers",
+      "Update": "—",
+      "Delete": "remove-offer",
+      "Complete?": "Partial"
+    },
+    {
+      "Domain": "machine",
+      "Create": "add-machine",
+      "Read": "machines, show-machine",
+      "Update": "—",
+      "Delete": "remove-machine",
+      "Complete?": "Partial"
+    },
+    {
+      "Domain": "model",
+      "Create": "add-model",
+      "Read": "show-model, model-config, model-constraints, model-defaults, model-secret-backend, dump-model, dump-db",
+      "Update": "model-config, model-defaults, model-secret-backend, set-model-constraints, upgrade-model",
+      "Delete": "destroy-model",
+      "Complete?": "Yes"
+    },
+    {
+      "Domain": "relation",
+      "Create": "integrate",
+      "Read": "—",
+      "Update": "suspend-relation, resume-relation",
+      "Delete": "remove-relation",
+      "Complete?": "Partial"
+    },
+    {
+      "Domain": "resource",
+      "Create": "attach-resource",
+      "Read": "resources, charm-resources",
+      "Update": "—",
+      "Delete": "—",
+      "Complete?": "Partial"
+    },
+    {
+      "Domain": "secret",
+      "Create": "add-secret",
+      "Read": "secrets, show-secret",
+      "Update": "update-secret, grant-secret, revoke-secret",
+      "Delete": "remove-secret",
+      "Complete?": "Yes"
+    },
+    {
+      "Domain": "secret-backend",
+      "Create": "add-secret-backend",
+      "Read": "secret-backends, show-secret-backend",
+      "Update": "update-secret-backend, model-secret-backend",
+      "Delete": "remove-secret-backend",
+      "Complete?": "Yes"
+    },
+    {
+      "Domain": "space/network",
+      "Create": "add-space",
+      "Read": "spaces, show-space",
+      "Update": "move-to-space, rename-space, reload-spaces",
+      "Delete": "remove-space",
+      "Complete?": "Yes"
+    },
+    {
+      "Domain": "storage",
+      "Create": "add-storage, create-storage-pool, attach-storage, import-filesystem",
+      "Read": "storage, storage-pools, show-storage",
+      "Update": "update-storage-pool",
+      "Delete": "remove-storage, remove-storage-pool, detach-storage",
+      "Complete?": "Yes"
+    },
+    {
+      "Domain": "subnet",
+      "Create": "—",
+      "Read": "subnets",
+      "Update": "—",
+      "Delete": "—",
+      "Complete?": "No"
+    },
+    {
+      "Domain": "unit",
+      "Create": "add-unit",
+      "Read": "show-unit",
+      "Update": "—",
+      "Delete": "remove-unit",
+      "Complete?": "Partial"
+    },
+    {
+      "Domain": "user",
+      "Create": "add-user, login",
+      "Read": "users, show-user, whoami",
+      "Update": "change-user-password, enable-user, disable-user",
+      "Delete": "remove-user, logout",
+      "Complete?": "Yes"
+    }
+  ]
+}

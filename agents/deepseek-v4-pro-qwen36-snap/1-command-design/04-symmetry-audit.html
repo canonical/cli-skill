@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 — Symmetry Audit</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap');
+body { font-family: 'Ubuntu Sans', Arial, sans-serif; font-size: 14px; max-width: 1400px; margin: 2rem auto; padding: 0 2rem; color: #2b2b2b; background: #fff; }
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.2rem; margin-top: 2rem; }
+h3 { font-size: 1rem; margin-top: 1.5rem; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 1rem 0; }
+th { background: #2b2b2b; color: #fff; padding: 8px 10px; text-align: left; position: sticky; top: 0; }
+td { padding: 6px 10px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+tr:nth-child(even) td { background: #f9f9f9; }
+.check { color: #2e7d32; }
+.warn { color: #e65100; }
+.cross { color: #c62828; }
+.note { font-size: 12px; color: #666; }
+</style>
+</head>
+<body>
+<h1>04 — Symmetry Audit</h1>
+
+<h2>Present Symmetric Pairs</h2>
+<table>
+<thead><tr><th>Operation</th><th>Forward Command</th><th>Reverse Command</th><th>Naming Symmetric?</th><th>Behavior Symmetric?</th><th>Notes</th></tr></thead>
+<tbody>
+<tr>
+<td>Config set/unset</td>
+<td><code>set &lt;key=value&gt;</code></td>
+<td><code>unset &lt;key&gt;</code></td>
+<td class="check">✅ Yes</td>
+<td class="check">✅ Yes</td>
+<td>Perfect symmetry. Both require root, prompt for restart, support --assume-yes and --no-restart. set accepts multiple pairs; unset accepts exactly one key.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Missing Reverse Operations</h2>
+<table>
+<thead><tr><th>Forward Operation</th><th>Forward Command</th><th>Missing Reverse</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Activate engine</td><td><code>use-engine &lt;name&gt;</code></td><td class="cross">No deactivate-engine</td><td>Switching engines deactivates old one as side effect. No standalone "stop using any engine" command.</td></tr>
+<tr><td>Select engine (test)</td><td><code>debug select-engine</code></td><td class="check">N/A</td><td>Read-only — no reverse needed.</td></tr>
+<tr><td>Start chat (auto)</td><td><code>chat</code></td><td class="check">N/A</td><td>Self-terminating interactive session.</td></tr>
+<tr><td>Launch web UI</td><td><code>webui</code></td><td class="check">N/A</td><td>Browser opened as separate process.</td></tr>
+<tr><td>Serve web UI</td><td><code>serve-webui</code></td><td class="check">N/A</td><td>Foreground server process (Ctrl+C to stop).</td></tr>
+<tr><td>Run subprocess</td><td><code>run &lt;command&gt;</code></td><td class="check">N/A</td><td>Subprocess runs to completion.</td></tr>
+<tr><td>List engines</td><td><code>list-engines</code></td><td class="check">N/A</td><td>Read-only.</td></tr>
+<tr><td>Show engine</td><td><code>show-engine</code></td><td class="check">N/A</td><td>Read-only.</td></tr>
+<tr><td>Show machine</td><td><code>show-machine</code></td><td class="check">N/A</td><td>Read-only.</td></tr>
+<tr><td>Get config</td><td><code>get</code></td><td class="check">N/A</td><td>Read-only.</td></tr>
+<tr><td>Status</td><td><code>status</code></td><td class="check">N/A</td><td>Read-only.</td></tr>
+<tr><td>Version</td><td><code>version</code></td><td class="check">N/A</td><td>Read-only.</td></tr>
+<tr><td>Validate engines</td><td><code>debug validate-engines</code></td><td class="check">N/A</td><td>Read-only validation.</td></tr>
+<tr><td>Prune cache</td><td><code>prune-cache</code></td><td class="cross">No restore-cache</td><td>Permanent removal. Reversal requires reinstalling components via use-engine.</td></tr>
+</tbody>
+</table>
+
+<h2>Behavioral Asymmetries: <code>set</code> vs <code>unset</code></h2>
+<table>
+<thead><tr><th>Aspect</th><th><code>set</code></th><th><code>unset</code></th></tr></thead>
+<tbody>
+<tr><td>Args</td><td><code>set &lt;key=value&gt;...</code> (≥1, repeatable)</td><td><code>unset &lt;key&gt;</code> (exactly 1)</td></tr>
+<tr><td>Hidden flags</td><td><code>--package</code>, <code>--engine</code></td><td>None</td></tr>
+<tr><td>Change detection</td><td>Checks previous value for any change</td><td>Checks if effective value changed after precedence</td></tr>
+<tr><td>Restart prompt</td><td>Yes (--assume-yes, --no-restart)</td><td>Yes (--assume-yes, --no-restart)</td></tr>
+<tr><td>Root required</td><td>Yes</td><td>Yes</td></tr>
+</tbody>
+</table>
+
+<h2>Behavioral Asymmetries: <code>chat</code> vs <code>debug chat</code></h2>
+<table>
+<thead><tr><th>Aspect</th><th><code>chat</code></th><th><code>debug chat</code></th></tr></thead>
+<tbody>
+<tr><td>Base URL source</td><td>Auto-detected from active engine</td><td><code>--base-url</code> flag (required)</td></tr>
+<tr><td>Model name</td><td>Auto-detected</td><td><code>--model</code> flag (optional)</td></tr>
+<tr><td>Server check</td><td>Yes (checks snap service active)</td><td>No</td></tr>
+<tr><td>Visibility</td><td>Visible (conditional)</td><td>Hidden under debug</td></tr>
+</tbody>
+</table>
+
+<h2>Summary</h2>
+<table>
+<thead><tr><th>Category</th><th>Count</th></tr></thead>
+<tbody>
+<tr><td>Present symmetric pairs</td><td>1 (set/unset)</td></tr>
+<tr><td>Missing reverse operations (justified)</td><td>12 (read-only or self-terminating)</td></tr>
+<tr><td>Missing reverse operations (actionable)</td><td>2 (use-engine deactivation, prune-cache restoration)</td></tr>
+<tr><td>Naming asymmetries</td><td>0</td></tr>
+<tr><td>Behavioral asymmetries in named pairs</td><td>1 (multi-value set vs single-value unset)</td></tr>
+</tbody>
+</table>
+</body>
+</html>
