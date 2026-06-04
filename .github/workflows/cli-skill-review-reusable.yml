@@ -44,7 +44,7 @@ on:
       llm_token:
         description: "LLM provider token used by Pi"
         required: true
-      github_token:
+      gh_token:
         description: "GitHub token for PR APIs"
         required: true
 
@@ -77,7 +77,7 @@ jobs:
         id: pi
         uses: shaftoe/pi-coding-agent-action@v2
         with:
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.gh_token }}
           provider: ${{ inputs.provider }}
           model: ${{ inputs.model }}
           token: ${{ secrets.llm_token }}
@@ -172,7 +172,7 @@ jobs:
           REPORT_PATH: pi-report-comment.md
           MARKER: "<!-- cli-skill-report:${{ inputs.command }} -->"
         with:
-          github-token: ${{ secrets.github_token }}
+          github-token: ${{ secrets.gh_token }}
           script: |
             const fs = require('node:fs');
 
