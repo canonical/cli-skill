@@ -1,0 +1,25 @@
+name: cli-skill-review-pr
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    uses: ./.github/workflows/cli-skill-review-reusable.yml
+    with:
+      command: /cli-review
+      target_path: .
+      pr_number: ${{ github.event.pull_request.number }}
+      provider: openrouter
+      model: gpt-5.4
+      thinking_level: medium
+      post_pr_comment: true
+      fail_on_agent_error: true
+    secrets:
+      llm_token: ${{ secrets.OPENROUTER_API_KEY }}
+      github_token: ${{ secrets.GITHUB_TOKEN }}

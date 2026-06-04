@@ -1,0 +1,218 @@
+name: cli-skill-review-reusable
+
+on:
+  workflow_call:
+    inputs:
+      command:
+        description: "cli-skill command to run"
+        required: false
+        type: string
+        default: "/cli-review"
+      target_path:
+        description: "Repository path to analyze"
+        required: false
+        type: string
+        default: "."
+      pr_number:
+        description: "Pull request number for report comment upsert"
+        required: false
+        type: number
+      provider:
+        description: "Pi provider"
+        required: true
+        type: string
+      model:
+        description: "Pi model"
+        required: true
+        type: string
+      thinking_level:
+        description: "Pi thinking level"
+        required: false
+        type: string
+        default: "medium"
+      post_pr_comment:
+        description: "Whether to publish/update PR markdown report"
+        required: false
+        type: boolean
+        default: true
+      fail_on_agent_error:
+        description: "Fail workflow when Pi action does not succeed"
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      llm_token:
+        description: "LLM provider token used by Pi"
+        required: true
+      github_token:
+        description: "GitHub token for PR APIs"
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  cli-review:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: cli-skill-review-${{ github.repository }}-${{ inputs.pr_number || github.run_id }}-${{ inputs.command }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Sync cli-skill adapters
+        run: node scripts/sync-cli-skill-adapters.js
+
+      - name: Run Pi agent
+        id: pi
+        uses: shaftoe/pi-coding-agent-action@v2
+        with:
+          github_token: ${{ secrets.github_token }}
+          provider: ${{ inputs.provider }}
+          model: ${{ inputs.model }}
+          token: ${{ secrets.llm_token }}
+          thinking_level: ${{ inputs.thinking_level }}
+          export_session_html: true
+          export_session_jsonl: true
+          prompt: |
+            Run ${{ inputs.command }} from the cli-skill in this repository.
+
+            Scope rules:
+            - If command is /cli-review, perform only CLI standard compliance checks.
+            - Use cli-skill/references/cli-standard.md as the sole review standard.
+
+            Repository target path: ${{ inputs.target_path }}
+
+            Output requirements:
+            - Return markdown only.
+            - Keep findings evidence-based and standards-mapped.
+            - Include a short summary table with severity counts and overall score.
+
+      - name: Upload Pi session artifacts
+        if: ${{ steps.pi.outputs.session_html_path || steps.pi.outputs.session_jsonl_path }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pi-session-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ steps.pi.outputs.session_html_path }}
+            ${{ steps.pi.outputs.session_jsonl_path }}
+
+      - name: Build PR report body
+        if: ${{ inputs.post_pr_comment && inputs.pr_number > 0 }}
+        id: report
+        env:
+          PI_RESPONSE: ${{ steps.pi.outputs.response }}
+          PI_SUCCESS: ${{ steps.pi.outputs.success }}
+          PI_COST: ${{ steps.pi.outputs.cost }}
+          PI_DURATION: ${{ steps.pi.outputs.duration_seconds }}
+          PI_INPUT_TOKENS: ${{ steps.pi.outputs.input_tokens }}
+          PI_OUTPUT_TOKENS: ${{ steps.pi.outputs.output_tokens }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          MARKER: "<!-- cli-skill-report:${{ inputs.command }} -->"
+          COMMAND: ${{ inputs.command }}
+        run: |
+          set -euo pipefail
+
+          python3 - << 'PY'
+          import os
+          from pathlib import Path
+
+          marker = os.environ.get('MARKER', '<!-- cli-skill-report -->')
+          command = os.environ.get('COMMAND', '/cli-review')
+          success = os.environ.get('PI_SUCCESS', '')
+          cost = os.environ.get('PI_COST', '')
+          duration = os.environ.get('PI_DURATION', '')
+          input_tokens = os.environ.get('PI_INPUT_TOKENS', '')
+          output_tokens = os.environ.get('PI_OUTPUT_TOKENS', '')
+          run_url = os.environ.get('RUN_URL', '')
+          response = os.environ.get('PI_RESPONSE', '')
+
+          if not response.strip():
+              response = '_No response was returned by Pi._'
+
+          # Keep body safely below GitHub comment max size.
+          max_response_len = 50000
+          if len(response) > max_response_len:
+              response = response[:max_response_len] + "\n\n... _truncated_"
+
+          body = f"""{marker}
+          ## CLI Skill Report ({command})
+
+          | Metric | Value |
+          |---|---|
+          | Success | {success or 'unknown'} |
+          | Duration (s) | {duration or 'n/a'} |
+          | Cost (USD) | {cost or 'n/a'} |
+          | Tokens (in/out) | {input_tokens or 'n/a'} / {output_tokens or 'n/a'} |
+          | Workflow run | [view run]({run_url}) |
+
+          {response}
+          """
+
+          p = Path('pi-report-comment.md')
+          p.write_text(body.strip() + "\n", encoding='utf-8')
+          print(f"Wrote {p}")
+          PY
+
+      - name: Upsert PR comment
+        if: ${{ inputs.post_pr_comment && inputs.pr_number > 0 }}
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+          REPORT_PATH: pi-report-comment.md
+          MARKER: "<!-- cli-skill-report:${{ inputs.command }} -->"
+        with:
+          github-token: ${{ secrets.github_token }}
+          script: |
+            const fs = require('node:fs');
+
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = Number(process.env.PR_NUMBER);
+            const marker = process.env.MARKER;
+            const body = fs.readFileSync(process.env.REPORT_PATH, 'utf8');
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+
+            const existing = comments.find((c) =>
+              c.user?.type === 'Bot' && typeof c.body === 'string' && c.body.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+              core.info(`Updated existing report comment: ${existing.id}`);
+            } else {
+              const created = await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+              core.info(`Created report comment: ${created.data.id}`);
+            }
+
+      - name: Fail when agent run is unsuccessful
+        if: ${{ inputs.fail_on_agent_error && steps.pi.outputs.success != 'true' }}
+        run: |
+          echo "Pi agent reported success=${{ steps.pi.outputs.success }}"
+          exit 1

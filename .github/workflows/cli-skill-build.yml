@@ -1,0 +1,64 @@
+name: cli-skill-build
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Optional PR number to post/update report on"
+        required: false
+        type: number
+        default: 0
+      command:
+        description: "cli-skill command"
+        required: false
+        type: choice
+        default: /cli-review
+        options:
+          - /cli-review
+          - /cli-check-help
+          - /cli-semantic-analysis
+          - /cli-heuristic-analysis
+      target_path:
+        description: "Repository path to analyze"
+        required: false
+        type: string
+        default: "."
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pr-run:
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/cli-skill-review-reusable.yml
+    with:
+      command: /cli-review
+      target_path: .
+      pr_number: ${{ github.event.pull_request.number }}
+      provider: openrouter
+      model: gpt-5.4
+      thinking_level: medium
+      post_pr_comment: true
+      fail_on_agent_error: true
+    secrets:
+      llm_token: ${{ secrets.OPENROUTER_API_KEY }}
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  manual-run:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    uses: ./.github/workflows/cli-skill-review-reusable.yml
+    with:
+      command: ${{ inputs.command }}
+      target_path: ${{ inputs.target_path }}
+      pr_number: ${{ inputs.pr_number }}
+      provider: openrouter
+      model: gpt-5.4
+      thinking_level: medium
+      post_pr_comment: ${{ inputs.pr_number > 0 }}
+      fail_on_agent_error: true
+    secrets:
+      llm_token: ${{ secrets.OPENROUTER_API_KEY }}
+      github_token: ${{ secrets.GITHUB_TOKEN }}
