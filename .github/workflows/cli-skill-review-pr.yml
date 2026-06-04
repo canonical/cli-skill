@@ -22,4 +22,4 @@ jobs:
       fail_on_agent_error: true
     secrets:
       llm_token: ${{ secrets.OPENROUTER_API_KEY }}
-      github_token: ${{ secrets.GITHUB_TOKEN }}
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
