@@ -2,10 +2,21 @@ const { spawn } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
+const { execSync } = require('node:child_process');
+
+function getRepoRoot() {
+  try {
+    return execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim();
+  } catch {
+    return path.resolve(__dirname, '..');
+  }
+}
+
+const ROOT = getRepoRoot();
 
 const PROJECTS = [
-  { name: 'juju', dir: '/project/juju' },
-  { name: 'qwen36-snap', dir: '/project/qwen36-snap' },
+  { name: 'juju', dir: path.join(ROOT, 'juju') },
+  { name: 'qwen36-snap', dir: path.join(ROOT, 'qwen36-snap') },
 ];
 
 const MODELS = [
@@ -14,14 +25,14 @@ const MODELS = [
   { name: 'deepseek-v4-pro', modelId: 'deepseek/deepseek-v4-pro' },
 ];
 
-const AGENTS_DIR = '/project/agents';
+const AGENTS_DIR = path.join(ROOT, 'agents');
 
 dirname = path.dirname;
 
 // Ensure skill is available in each project
 PROJECTS.forEach(p => {
   const skillDir = path.join(p.dir, '.pi', 'skills', 'cli-review');
-  const skillSrc = '/project/.github/skills/cli-review';
+  const skillSrc = path.join(ROOT, '.github', 'skills', 'cli-review');
   if (!fs.existsSync(skillDir)) {
     fs.mkdirSync(skillDir, { recursive: true });
     fs.copyFileSync(path.join(skillSrc, 'SKILL.md'), path.join(skillDir, 'SKILL.md'));

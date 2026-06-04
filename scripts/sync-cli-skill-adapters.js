@@ -1,7 +1,16 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const { execSync } = require('node:child_process');
 
-const ROOT = '/project';
+function getRepoRoot() {
+  try {
+    return execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim();
+  } catch {
+    return path.resolve(__dirname, '..');
+  }
+}
+
+const ROOT = getRepoRoot();
 const MANIFEST_PATH = path.join(ROOT, 'cli-skill', 'schemas', 'commands.manifest.yaml');
 
 function parseManifest(yamlText) {

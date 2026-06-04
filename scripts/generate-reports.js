@@ -1,6 +1,18 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const readline = require('node:readline');
+const { execSync } = require('node:child_process');
+
+function getRepoRoot() {
+  try {
+    return execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim();
+  } catch {
+    return path.resolve(__dirname, '..');
+  }
+}
+
+const ROOT = getRepoRoot();
+const AGENTS_ROOT = path.join(ROOT, 'agents');
 
 const AGENTS = [
   'kimi-k2.6-juju', 'glm-5-juju', 'deepseek-v4-pro-juju',
@@ -8,7 +20,7 @@ const AGENTS = [
 ];
 
 async function streamStats(agentName) {
-  const dir = path.join('/project/agents', agentName);
+  const dir = path.join(AGENTS_ROOT, agentName);
   const sessionFile = path.join(dir, 'session.jsonl');
   const analysisDir = path.join(dir, '0-analysis');
   const designDir = path.join(dir, '1-command-design');
@@ -37,7 +49,8 @@ async function streamStats(agentName) {
   const analysisFiles = fs.existsSync(analysisDir) ? fs.readdirSync(analysisDir).filter(f => f.endsWith('.md')) : [];
   const designFiles = fs.existsSync(designDir) ? fs.readdirSync(designDir).filter(f => f.endsWith('.md')) : [];
 
-  const orchestratorLog = fs.existsSync('/project/agents/orchestrator.log') ? fs.readFileSync('/project/agents/orchestrator.log', 'utf-8') : '';
+  const orchestratorPath = path.join(AGENTS_ROOT, 'orchestrator.log');
+  const orchestratorLog = fs.existsSync(orchestratorPath) ? fs.readFileSync(orchestratorPath, 'utf-8') : '';
   const isDone = orchestratorLog.includes(`[DONE] ${agentName}`);
 
   return { agentName, events, toolCalls, toolErrors, analysisFiles, designFiles, isDone, lastUsage };
@@ -107,8 +120,9 @@ async function generateFeedback() {
     md += '\n';
   }
 
-  fs.writeFileSync('/project/agents/feedback.md', md);
-  console.log('Wrote /project/agents/feedback.md');
+  const feedbackPath = path.join(AGENTS_ROOT, 'feedback.md');
+  fs.writeFileSync(feedbackPath, md);
+  console.log(`Wrote ${feedbackPath}`);
 }
 
 async function generateInsights() {
@@ -169,8 +183,9 @@ async function generateInsights() {
   md += '3. **Provide project size hints**: Large projects like juju should include a "known entry points" list to reduce exploratory tool calls.\n\n';
   md += '4. **Model-specific tuning**: Kimi K2.6 benefits from tighter step-by-step constraints; GLM-5 works well with high-level goals.\n\n';
 
-  fs.writeFileSync('/project/agents/insights.md', md);
-  console.log('Wrote /project/agents/insights.md');
+  const insightsPath = path.join(AGENTS_ROOT, 'insights.md');
+  fs.writeFileSync(insightsPath, md);
+  console.log(`Wrote ${insightsPath}`);
 }
 
 async function main() {

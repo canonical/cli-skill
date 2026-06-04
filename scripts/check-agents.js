@@ -1,6 +1,18 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const readline = require('node:readline');
+const { execSync } = require('node:child_process');
+
+function getRepoRoot() {
+  try {
+    return execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim();
+  } catch {
+    return path.resolve(__dirname, '..');
+  }
+}
+
+const ROOT = getRepoRoot();
+const AGENTS_ROOT = path.join(ROOT, 'agents');
 
 const AGENTS = [
   'kimi-k2.6-juju', 'glm-5-juju', 'deepseek-v4-pro-juju',
@@ -19,7 +31,7 @@ function streamLines(filePath) {
 }
 
 async function streamStats(agentName) {
-  const dir = path.join('/project/agents', agentName);
+  const dir = path.join(AGENTS_ROOT, agentName);
   const sessionFile = path.join(dir, 'session.jsonl');
   const analysisDir = path.join(dir, '0-analysis');
   const designDir = path.join(dir, '1-command-design');
@@ -28,7 +40,8 @@ async function streamStats(agentName) {
   const analysisFiles = fs.existsSync(analysisDir) ? fs.readdirSync(analysisDir).filter(f => f.endsWith('.md')).length : 0;
   const designFiles = fs.existsSync(designDir) ? fs.readdirSync(designDir).filter(f => f.endsWith('.md')).length : 0;
   
-  const orchestratorLog = fs.existsSync('/project/agents/orchestrator.log') ? fs.readFileSync('/project/agents/orchestrator.log', 'utf-8') : '';
+  const orchestratorPath = path.join(AGENTS_ROOT, 'orchestrator.log');
+  const orchestratorLog = fs.existsSync(orchestratorPath) ? fs.readFileSync(orchestratorPath, 'utf-8') : '';
   const isDone = orchestratorLog.includes(`[DONE] ${agentName}`);
   
   let toolCalls = 0;

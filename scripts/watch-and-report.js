@@ -2,6 +2,19 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
+const { execSync } = require('node:child_process');
+
+function getRepoRoot() {
+  try {
+    return execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim();
+  } catch {
+    return path.resolve(__dirname, '..');
+  }
+}
+
+const ROOT = getRepoRoot();
+const AGENTS_ROOT = path.join(ROOT, 'agents');
+const GENERATE_REPORTS_SCRIPT = path.join(ROOT, 'scripts', 'generate-reports.js');
 
 const AGENTS = [
   'kimi-k2.6-juju', 'glm-5-juju', 'deepseek-v4-pro-juju',
@@ -9,7 +22,8 @@ const AGENTS = [
 ];
 
 function isDone(agentName) {
-  const log = fs.existsSync('/project/agents/orchestrator.log') ? fs.readFileSync('/project/agents/orchestrator.log', 'utf-8') : '';
+  const orchestratorPath = path.join(AGENTS_ROOT, 'orchestrator.log');
+  const log = fs.existsSync(orchestratorPath) ? fs.readFileSync(orchestratorPath, 'utf-8') : '';
   return log.includes(`[DONE] ${agentName}`);
 }
 
@@ -20,7 +34,7 @@ function poll() {
   if (done.length > lastDoneCount) {
     lastDoneCount = done.length;
     console.log(`[${new Date().toISOString()}] ${done.length}/${AGENTS.length} agents done. Regenerating reports...`);
-    const child = spawn('node', ['/project/generate-reports.js'], {
+    const child = spawn('node', [GENERATE_REPORTS_SCRIPT], {
       stdio: ['ignore', 'pipe', 'pipe'],
     });
     child.stdout.on('data', d => process.stdout.write(d));
