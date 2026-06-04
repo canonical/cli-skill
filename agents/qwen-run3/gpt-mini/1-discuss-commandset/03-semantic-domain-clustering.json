@@ -1,9 +1,0 @@
-{
-  "clusters": {
-    "basic": ["status","chat","webui"],
-    "config": ["get","set","unset"],
-    "engine": ["list-engines","show-engine","use-engine"],
-    "admin": ["show-machine","prune-cache","version"],
-    "hidden": ["run","serve-webui","debug"]
-  }
-}

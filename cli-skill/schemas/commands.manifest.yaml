@@ -1,0 +1,32 @@
+version: 1
+skill: cli-skill
+summary: Cross-agent command registry for CLI analysis workflows.
+
+shared:
+  preflight:
+    module: cli-skill/shared/cli-discovery-preflight.md
+    outputDir: cli-review/0-cli-discovery-preflight/
+
+commands:
+  - name: /cli-review
+    file: cli-skill/commands/cli-review.md
+    stage: active
+    description: CLI standards compliance review only.
+  - name: /cli-semantic-analysis
+    file: cli-skill/commands/cli-semantic-analysis.md
+    stage: active
+    description: Deep semantic and structural analysis.
+  - name: /cli-heuristic-analysis
+    file: cli-skill/commands/cli-heuristic-analysis.md
+    stage: active
+    description: Nielsen-based CLI heuristic walkthrough (stub).
+  - name: /cli-check-help
+    file: cli-skill/commands/cli-check-help.md
+    stage: active
+    description: Help-system focused CLI audit.
+
+futureCommands:
+  - name: /cli-propose-command
+    file: cli-skill/future-commands/cli-propose-command.md
+  - name: /cli-rename-command
+    file: cli-skill/future-commands/cli-rename-command.md

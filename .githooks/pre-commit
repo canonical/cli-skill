@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+SYNC_SCRIPT="$ROOT/scripts/sync-cli-skill-adapters.js"
+
+if [[ ! -f "$SYNC_SCRIPT" ]]; then
+  echo "[pre-commit] Missing sync script: $SYNC_SCRIPT"
+  exit 1
+fi
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "[pre-commit] Node.js is required to run adapter sync."
+  exit 1
+fi
+
+echo "[pre-commit] Syncing cli-skill adapters..."
+node "$SYNC_SCRIPT"
+
+# If sync modified tracked files, block commit until user stages regenerated files.
+if ! git diff --quiet -- cli-skill/adapters .github/skills/cli-skill .pi/skills/cli-skill; then
+  echo "[pre-commit] Adapter files changed during sync."
+  echo "[pre-commit] Stage the regenerated files and commit again:"
+  echo "  git add cli-skill/adapters .github/skills/cli-skill .pi/skills/cli-skill"
+  exit 1
+fi
+
+echo "[pre-commit] cli-skill adapter sync check passed."

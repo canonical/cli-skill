@@ -1,8 +1,0 @@
-{
-  "symmetry": {
-    "configuration": "get/set/unset present (complete)",
-    "engine": "list/show/use present; install done implicitly during use",
-    "show": "consistent for engine and machine",
-    "prune-cache": "destructive without restore; suggest --dry-run"
-  }
-}

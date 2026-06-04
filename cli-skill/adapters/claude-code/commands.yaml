@@ -1,0 +1,17 @@
+version: 1
+agent: claude-code
+skill: cli-skill
+
+bootstrap:
+  manifest: cli-skill/schemas/commands.manifest.yaml
+  preflight: cli-skill/shared/cli-discovery-preflight.md
+
+routes:
+  /cli-review: cli-skill/commands/cli-review.md
+  /cli-semantic-analysis: cli-skill/commands/cli-semantic-analysis.md
+  /cli-heuristic-analysis: cli-skill/commands/cli-heuristic-analysis.md
+  /cli-check-help: cli-skill/commands/cli-check-help.md
+
+future:
+  /cli-propose-command: cli-skill/future-commands/cli-propose-command.md
+  /cli-rename-command: cli-skill/future-commands/cli-rename-command.md
