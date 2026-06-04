@@ -1,0 +1,40 @@
+{
+  "name": "copilot-session-export",
+  "displayName": "Copilot Session Export",
+  "description": "Export all Copilot chat sessions to a formatted Markdown file",
+  "version": "0.1.0",
+  "publisher": "hartmut@obendorf.de",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hartmutobendorf/copilot-session-export"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "extensionKind": ["workspace"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "copilotExport.exportSessions",
+        "title": "Export Copilot Sessions to Markdown"
+      },
+      {
+        "command": "copilotExport.exportSessionsHtml",
+        "title": "Export Copilot Sessions to HTML"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}
