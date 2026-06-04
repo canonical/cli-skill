@@ -39,7 +39,7 @@ jobs:
       target_path: .
       pr_number: ${{ github.event.pull_request.number }}
       provider: openrouter
-      model: gpt-5.4
+      model: moonshotai/kimi-k2.6
       thinking_level: medium
       post_pr_comment: true
       fail_on_agent_error: true
@@ -55,7 +55,7 @@ jobs:
       target_path: ${{ inputs.target_path }}
       pr_number: ${{ inputs.pr_number }}
       provider: openrouter
-      model: gpt-5.4
+      model: moonshotai/kimi-k2.6
       thinking_level: medium
       post_pr_comment: ${{ inputs.pr_number > 0 }}
       fail_on_agent_error: true
