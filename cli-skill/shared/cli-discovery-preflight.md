@@ -67,4 +67,4 @@ Files to produce (in order):
 * Start with an introduction that highlights common argument patterns.
 * Add a dedicated section titled Special arguments describing structural exceptions and non-standard patterns.
 
-**Phase 1 checkpoint**: Verify that 0-analysis/architecture.md, 0-analysis/commandset.md, and 0-analysis/argument-structure.md all exist and are non-empty. Do not proceed to Phase 2 until all three files are written.
+**Phase 0 checkpoint**: Verify that cli-review/0-cli-discovery-preflight/architecture.md, cli-review/0-cli-discovery-preflight/commandset.md, and cli-review/0-cli-discovery-preflight/argument-structure.md all exist and are non-empty. Do not proceed until all three files are written.
