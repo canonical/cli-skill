@@ -4,14 +4,14 @@ CLI standard compliance review only.
 
 ## Execution Order
 
-1. Run `shared/cli-discovery-preflight.md`
+1. Check for the existence of `cli-review/0-cli-discovery-preflight/`. If it does not exist, run `shared/cli-discovery-preflight.md`
 2. Use preflight outputs from `cli-review/0-cli-discovery-preflight/`
 3. Read `cli-skill/references/cli-standard.md` in full
 4. Evaluate the CLI only against that standard
 
 ## Scope
 
-- Compliance with `cli-skill/references/cli-standard.md` only
+- Check compliance with `cli-skill/references/cli-standard.md` only, do not use semantic criteria, or heuristics
 - Findings must map to explicit rules from the standard
 - Non-compliance and compliant evidence based on observed CLI behavior/docs/code
 - Use these rules to determine severity:
@@ -31,7 +31,7 @@ If an issue is not covered by the standard, do not include it in `/cli-review` f
 
 Write:
 
-- `cli-review/1-cli-review/summary.md`
+- `cli-review/cli-review.md`
 
 Required sections:
 
@@ -39,10 +39,11 @@ Required sections:
 2. Compliance Matrix
 3. Non-compliance Findings (with citations)
 4. Remediation Actions (standards-mapped)
-5. Compliant Findings (concise, without citations)
+5. Compliant Findings Summary (concise, without citations)
 
 ## Summary Requirements
 The summary should list the number of violations, and their severity. It shall include these in a table. It shall give an overall score (Excellent = >95%, Very Good = >90%, Good = >80%, Room for Improvement = >60%, Need for Action = <=60%) 
+Start with a score of 100%, the number of commands N, and the weight of a single command W=1/N. For each High violation, reduce the score by 5*W, for each Medium violation by 2*W, and for each Small violation by 0.5*W.
 
 ## Compliance Matrix Requirements
 
@@ -61,3 +62,5 @@ Every non-compliance finding
 2. Must include concrete CLI evidence (command/help/code reference)
 3. Should include whenever possible a remediation action that restores compliance
 4. Cite the code block in markdown code format where the violation is detected
+
+**Command completion checkpoint**: Verify that the review file exists in `cli-review/cli-review.md` and is non-empty. Do not proceed until confirmed.
