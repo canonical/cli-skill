@@ -99,6 +99,11 @@ jobs:
       - name: Sync cli-skill adapters
         run: node scripts/sync-cli-skill-adapters.js
 
+      - name: Install cli-skill for Pi discovery
+        run: |
+          mkdir -p ~/.pi/skills
+          cp -R cli-skill ~/.pi/skills/
+
       - name: Run Pi agent
         id: pi
         uses: shaftoe/pi-coding-agent-action@v2
@@ -189,53 +194,6 @@ jobs:
           p.write_text(body.strip() + "\n", encoding='utf-8')
           print(f"Wrote {p}")
           PY
-
-      - name: Upsert PR comment
-        if: ${{ inputs.post_pr_comment && inputs.pr_number > 0 }}
-        uses: actions/github-script@v7
-        env:
-          PR_NUMBER: ${{ inputs.pr_number }}
-          REPORT_PATH: pi-report-comment.md
-          MARKER: "<!-- cli-skill-report:${{ inputs.command }} -->"
-        with:
-          github-token: ${{ secrets.gh_token }}
-          script: |
-            const fs = require('node:fs');
-
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const issue_number = Number(process.env.PR_NUMBER);
-            const marker = process.env.MARKER;
-            const body = fs.readFileSync(process.env.REPORT_PATH, 'utf8');
-
-            const comments = await github.paginate(github.rest.issues.listComments, {
-              owner,
-              repo,
-              issue_number,
-              per_page: 100,
-            });
-
-            const existing = comments.find((c) =>
-              c.user?.type === 'Bot' && typeof c.body === 'string' && c.body.includes(marker)
-            );
-
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner,
-                repo,
-                comment_id: existing.id,
-                body,
-              });
-              core.info(`Updated existing report comment: ${existing.id}`);
-            } else {
-              const created = await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number,
-                body,
-              });
-              core.info(`Created report comment: ${created.data.id}`);
-            }
 
       - name: Fail when agent run is unsuccessful
         if: ${{ inputs.fail_on_agent_error && steps.pi.outputs.success != 'true' }}

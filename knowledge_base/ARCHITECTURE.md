@@ -40,5 +40,5 @@
 - Reusable workflow uses `gh_token` (not `github_token`) for `workflow_call` secret interface to avoid reserved-name collision.
 
 11. Repository-root path policy for scripts
-- Operational scripts resolve repository root at runtime via git (`rev-parse --show-toplevel`) with fallback to script-relative root.
+- The maintained helper script resolves repository root at runtime via git (`rev-parse --show-toplevel`) with fallback to script-relative root.
 - Hard-coded absolute workspace paths are intentionally avoided.

@@ -28,10 +28,10 @@ These are scaffolds for portability. If a specific runtime needs strict schema f
 
 ## Regeneration
 
-When command mappings change, regenerate all adapter files from the canonical manifest:
+When command mappings change, regenerate all adapter files from the canonical manifest using the single maintained helper script:
 
 ```bash
-node /project/scripts/sync-cli-skill-adapters.js
+node scripts/sync-cli-skill-adapters.js
 ```
 
 Source of truth:
@@ -46,7 +46,7 @@ A pre-commit hook is available at:
 
 The hook:
 
-1. Runs `node /project/scripts/sync-cli-skill-adapters.js`
+1. Runs `node scripts/sync-cli-skill-adapters.js`
 2. Fails the commit if adapter files changed during sync
 3. Prompts you to stage regenerated adapter files before retrying commit
 

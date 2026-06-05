@@ -19,3 +19,4 @@ This adapter is intentionally thin and delegates all behavior to files under `cl
 - `/cli-semantic-analysis` -> `cli-skill/commands/cli-semantic-analysis.md`
 - `/cli-heuristic-analysis` -> `cli-skill/commands/cli-heuristic-analysis.md`
 - `/cli-check-help` -> `cli-skill/commands/cli-check-help.md`
+- `/cli-behavioral-analysis` -> `cli-skill/commands/cli-behavioral-analysis.md`
