@@ -14,30 +14,9 @@ Write all preflight outputs to:
 
 `cli-review/0-cli-discovery-preflight/`
 
-This directory may contain multiple files.
+## Initial Pre-flight analysis: CLI Detection
 
-## Required Output Files
-
-Create these files at minimum:
-
-1. `cli-review/0-cli-discovery-preflight/00-summary.md`
-- Result: `yes`, `no`, or `uncertain`
-- Confidence: `high`, `medium`, or `low`
-- Short rationale
-
-2. `cli-review/0-cli-discovery-preflight/01-candidate-entrypoints.md`
-- Candidate CLI entrypoints and registration files
-- Language/framework hints (Go Cobra, Python argparse/Typer/Click, Rust clap, Node Commander, etc.)
-
-3. `cli-review/0-cli-discovery-preflight/02-parse-targets.md`
-- Prioritized list of files to parse in subsequent analysis
-- Why each file matters (registration, help text, flags, output, errors)
-
-4. `cli-review/0-cli-discovery-preflight/03-gaps-and-assumptions.md`
-- Missing context and blocked areas
-- Explicit assumptions for downstream analysis
-
-## Heuristics for CLI Detection
+### Heuristics for CLI Detection
 
 Use multiple signals. Positive matches increase confidence:
 
@@ -49,6 +28,43 @@ Use multiple signals. Positive matches increase confidence:
 - README usage blocks and examples
 - Packaging metadata referencing command binaries
 
-## Failure Policy
+### Failure Policy
 
-- If no CLI is found, do not write any files, and return the result "No CLI present. No CLI review necessary".
+- If no CLI is found, stop the analysis here. Do not write any files, and return the result "No CLI present. No CLI review necessary".
+
+## Phase 0: Structure Discovery
+**Goal: Map the CLI surface area — architecture, commands, and arguments.**
+
+Files to produce (in order):
+
+1. architecture.md
+
+* Short summary of the tech stack.
+* Architecture style used by the CLI. Include one primary style and optional secondary style.
+* Typical styles to classify against:
+  - Client-server CLI
+  - Monolith CLI
+  - Library-interface CLI
+  - Layered CLI application
+  - Plugin-based architecture
+  - Microkernel command host
+  - Event-driven pipeline
+  - Hexagonal (ports/adapters)
+  - Command bus architecture
+
+2. commandset.md
+
+* Full list of CLI commands and hierarchy (top-level and subcommands).
+* For each command include:
+  - Name
+  - Short description of what it does (based on docs/help)
+  - Description of how it works (based on code path and key functions/modules)
+
+3. argument-structure.md
+
+* Complete map of all commands and all possible arguments.
+* Include argument metadata when available: required/optional, default, type, accepted values, aliases, env var mapping.
+* Start with an introduction that highlights common argument patterns.
+* Add a dedicated section titled Special arguments describing structural exceptions and non-standard patterns.
+
+**Phase 1 checkpoint**: Verify that 0-analysis/architecture.md, 0-analysis/commandset.md, and 0-analysis/argument-structure.md all exist and are non-empty. Do not proceed to Phase 2 until all three files are written.
