@@ -30,7 +30,7 @@ Use multiple signals. Positive matches increase confidence:
 
 ### Failure Policy
 
-- If no CLI is found, stop the analysis here. Do not write any files, and return the result "No CLI present. No CLI review necessary".
+- If no CLI is found, stop the analysis here. Do not write any files, and return the result "No CLI present. No CLI review necessary". Do not try harder. The contents of a scripts/ directory are NOT considered CLIs. Just stop here.
 
 ## Phase 0: Structure Discovery
 **Goal: Map the CLI surface area — architecture, commands, and arguments.**
