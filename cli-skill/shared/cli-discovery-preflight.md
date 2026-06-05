@@ -51,5 +51,4 @@ Use multiple signals. Positive matches increase confidence:
 
 ## Failure Policy
 
-- If no CLI is found, still write all required files.
-- In that case, `00-summary.md` must include recommended next steps (what the user can provide).
+- If no CLI is found, do not write any files, and return the result "No CLI present. No CLI review necessary".
