@@ -24,7 +24,7 @@ Future scaffolds:
 
 ## Use with Different Agents
 
-1. Sync adapters from the manifest:
+1. Sync adapters from the manifest (single maintained helper script):
 
 	node scripts/sync-cli-skill-adapters.js
 
@@ -68,7 +68,7 @@ On pull requests (opened, synchronize, reopened, ready_for_review), the workflow
 
 - command: /cli-review
 - provider: openrouter
-- model: gpt-5.4
+- model: moonshotai/kimi-k2.6
 
 It publishes a markdown report in PR comments and updates the same report on subsequent PR updates.
 

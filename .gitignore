@@ -7,3 +7,4 @@ qwen36-snap
 **/*session.jsonl
 **/session.jsonl
 session.jsonl
+**/__pycache__

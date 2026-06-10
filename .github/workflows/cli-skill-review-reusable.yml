@@ -66,12 +66,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check CLI metadata and changed paths
+        id: cli_scope
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          python3 scripts/check-cli-scope.py
+
       - name: Setup Node
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
         uses: actions/setup-node@v6
         with:
           node-version: 24
 
       - name: Configure custom LLM provider
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
         env:
           LLM_API_KEY: ${{ secrets.llm_token }}
           MODEL_ID: ${{ inputs.model }}
@@ -97,9 +108,17 @@ jobs:
           EOF
 
       - name: Sync cli-skill adapters
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
         run: node scripts/sync-cli-skill-adapters.js
 
+      - name: Install cli-skill for Pi discovery
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
+        run: |
+          mkdir -p ~/.pi/skills
+          cp -R cli-skill ~/.pi/skills/
+
       - name: Run Pi agent
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
         id: pi
         uses: shaftoe/pi-coding-agent-action@v2
         with:
@@ -125,7 +144,7 @@ jobs:
             - Include a short summary table with severity counts and overall score.
 
       - name: Upload Pi session artifacts
-        if: ${{ steps.pi.outputs.session_html_path || steps.pi.outputs.session_jsonl_path }}
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' && (steps.pi.outputs.session_html_path || steps.pi.outputs.session_jsonl_path) }}
         uses: actions/upload-artifact@v4
         with:
           name: pi-session-${{ github.run_id }}-${{ github.run_attempt }}
@@ -134,7 +153,7 @@ jobs:
             ${{ steps.pi.outputs.session_jsonl_path }}
 
       - name: Build PR report body
-        if: ${{ inputs.post_pr_comment && inputs.pr_number > 0 }}
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.post_pr_comment && inputs.pr_number > 0 }}
         id: report
         env:
           PI_RESPONSE: ${{ steps.pi.outputs.response }}
@@ -190,55 +209,8 @@ jobs:
           print(f"Wrote {p}")
           PY
 
-      - name: Upsert PR comment
-        if: ${{ inputs.post_pr_comment && inputs.pr_number > 0 }}
-        uses: actions/github-script@v7
-        env:
-          PR_NUMBER: ${{ inputs.pr_number }}
-          REPORT_PATH: pi-report-comment.md
-          MARKER: "<!-- cli-skill-report:${{ inputs.command }} -->"
-        with:
-          github-token: ${{ secrets.gh_token }}
-          script: |
-            const fs = require('node:fs');
-
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const issue_number = Number(process.env.PR_NUMBER);
-            const marker = process.env.MARKER;
-            const body = fs.readFileSync(process.env.REPORT_PATH, 'utf8');
-
-            const comments = await github.paginate(github.rest.issues.listComments, {
-              owner,
-              repo,
-              issue_number,
-              per_page: 100,
-            });
-
-            const existing = comments.find((c) =>
-              c.user?.type === 'Bot' && typeof c.body === 'string' && c.body.includes(marker)
-            );
-
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner,
-                repo,
-                comment_id: existing.id,
-                body,
-              });
-              core.info(`Updated existing report comment: ${existing.id}`);
-            } else {
-              const created = await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number,
-                body,
-              });
-              core.info(`Created report comment: ${created.data.id}`);
-            }
-
       - name: Fail when agent run is unsuccessful
-        if: ${{ inputs.fail_on_agent_error && steps.pi.outputs.success != 'true' }}
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.fail_on_agent_error && steps.pi.outputs.success != 'true' }}
         run: |
           echo "Pi agent reported success=${{ steps.pi.outputs.success }}"
           exit 1

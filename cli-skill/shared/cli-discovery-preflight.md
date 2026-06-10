@@ -4,7 +4,8 @@ Run this module before any analysis command.
 
 ## Purpose
 
-- Identify whether the current repository contains a CLI
+- Identify whether the current repository contains a CLI - the skill and simple scripts are NOT considered CLIs.
+- If there is no CLI present, stop and return "No CLI found." This is an expected, valid, useful output for the user triggering this skill.
 - Determine which files should be parsed for command discovery and behavior analysis
 - Produce interim discovery artifacts for downstream commands
 
@@ -27,10 +28,6 @@ Use multiple signals. Positive matches increase confidence:
 - Shell completion definitions
 - README usage blocks and examples
 - Packaging metadata referencing command binaries
-
-### Failure Policy
-
-- If no CLI is found, stop the analysis here. Do not write any files, and return the result "No CLI present. No CLI review necessary".
 
 ## Phase 0: Structure Discovery
 **Goal: Map the CLI surface area — architecture, commands, and arguments.**

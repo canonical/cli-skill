@@ -19,3 +19,4 @@ Canonical files are in `cli-skill/`.
 - `/cli-semantic-analysis`
 - `/cli-heuristic-analysis`
 - `/cli-check-help`
+- `/cli-behavioral-analysis`

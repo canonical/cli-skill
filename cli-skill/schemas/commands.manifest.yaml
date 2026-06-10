@@ -24,6 +24,10 @@ commands:
     file: cli-skill/commands/cli-check-help.md
     stage: active
     description: Help-system focused CLI audit.
+  - name: /cli-behavioral-analysis
+    file: cli-skill/commands/cli-behavioral-analysis.md
+    stage: active
+    description: Analyze runtime behavior, output contracts, errors, and safety properties.
 
 futureCommands:
   - name: /cli-propose-command
