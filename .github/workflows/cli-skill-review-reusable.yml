@@ -68,6 +68,9 @@ on:
       gh_token:
         description: "GitHub token for PR APIs"
         required: true
+      skill_source_token:
+        description: "Optional token used to checkout canonical/cli-skill when cross-repo access is restricted"
+        required: false
 
 permissions:
   contents: read
@@ -92,7 +95,7 @@ jobs:
           repository: canonical/cli-skill
           ref: ${{ inputs.skill_source_ref }}
           path: .cli-skill-infra
-          token: ${{ secrets.gh_token }}
+          token: ${{ secrets.skill_source_token != '' && secrets.skill_source_token || secrets.gh_token }}
 
       - name: Verify internal cli-skill assets
         run: |
