@@ -117,41 +117,6 @@ jobs:
           set -euo pipefail
           python3 .cli-skill-infra/scripts/check-cli-scope.py
 
-      - name: Configure custom LLM provider
-        if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
-        env:
-          LLM_API_KEY: ${{ secrets.llm_token }}
-          MODEL_ID: ${{ inputs.model }}
-        run: |
-          mkdir -p ~/.pi/agent
-          cat > ~/.pi/agent/models.json <<EOF
-          {
-            "providers": {
-              "my-llm": {
-                "baseUrl": "https://openrouter.ai/api/v1",
-                "apiKey": "${LLM_API_KEY}",
-                "models": [{
-                  "id": "${MODEL_ID}",
-                  "name": "${MODEL_ID} (OpenRouter)",
-                  "api": "openai-completions",
-                  "cost": { "input": 0.001, "output": 0.002, "cacheRead": 0, "cacheWrite": 0 },
-                  "contextWindow": 128000,
-                  "maxTokens": 4096
-                }]
-              }
-            }
-          }
-          EOF
-          cat > ~/.pi/agent/auth.json <<EOF
-          {
-            "openrouter": {
-              "type": "api_key",
-              "key": "${LLM_API_KEY}"
-            }
-          }
-          EOF
-
-
       - name: Install cli-skill for Pi discovery
         if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
         run: |
