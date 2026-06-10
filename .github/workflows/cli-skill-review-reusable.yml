@@ -19,8 +19,9 @@ on:
         type: number
       provider:
         description: "Pi provider"
-        required: true
+        required: false
         type: string
+        default: "openrouter"
       model:
         description: "Pi model"
         required: false
