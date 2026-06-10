@@ -157,8 +157,7 @@ jobs:
             OPENROUTER_API_KEY: ${{ secrets.llm_token }}
         with:
           github_token: ${{ secrets.gh_token }}
-          provider: openrouter
-          api: openai-completions
+          provider: my-llm
           model: ${{ inputs.model }}
           token: ${{ secrets.llm_token }}
           thinking_level: ${{ inputs.thinking_level }}
