@@ -56,6 +56,11 @@ on:
         required: false
         type: boolean
         default: false
+      skill_source_ref:
+        description: "Git ref (branch, tag, or SHA) used to fetch cli-skill assets"
+        required: false
+        type: string
+        default: "main"
     secrets:
       llm_token:
         description: "LLM provider token used by Pi"
@@ -77,33 +82,15 @@ jobs:
 
     steps:
       - name: Checkout repository under review
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: Resolve workflow source repository and ref
-        id: workflow_source
-        env:
-          WORKFLOW_REF: ${{ github.workflow_ref }}
-        run: |
-          set -euo pipefail
-          repo_with_path="${WORKFLOW_REF%@*}"
-          source_ref="${WORKFLOW_REF##*@}"
-          source_repo="${repo_with_path%/.github/workflows/*}"
-
-          if [ -z "${source_repo}" ] || [ -z "${source_ref}" ]; then
-            echo "Unable to parse workflow source from WORKFLOW_REF=${WORKFLOW_REF}"
-            exit 1
-          fi
-
-          echo "repo=${source_repo}" >> "$GITHUB_OUTPUT"
-          echo "ref=${source_ref}" >> "$GITHUB_OUTPUT"
-
       - name: Checkout workflow source repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
-          repository: ${{ steps.workflow_source.outputs.repo }}
-          ref: ${{ steps.workflow_source.outputs.ref }}
+          repository: canonical/cli-skill
+          ref: ${{ inputs.skill_source_ref }}
           path: .cli-skill-infra
           token: ${{ secrets.gh_token }}
 
