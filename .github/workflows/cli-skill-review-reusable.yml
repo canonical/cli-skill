@@ -133,7 +133,7 @@ jobs:
                 "models": [{
                   "id": "${MODEL_ID}",
                   "name": "${MODEL_ID} (OpenRouter)",
-                  "api": "openai-chat",
+                  "api": "openai-completions",
                   "cost": { "input": 0.001, "output": 0.002, "cacheRead": 0, "cacheWrite": 0 },
                   "contextWindow": 128000,
                   "maxTokens": 4096
@@ -158,6 +158,7 @@ jobs:
         with:
           github_token: ${{ secrets.gh_token }}
           provider: openrouter
+          api: openai-completions
           model: ${{ inputs.model }}
           token: ${{ secrets.llm_token }}
           thinking_level: ${{ inputs.thinking_level }}
