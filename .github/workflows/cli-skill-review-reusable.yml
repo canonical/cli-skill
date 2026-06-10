@@ -146,7 +146,7 @@ jobs:
           {
             "openrouter": {
               "type": "api_key",
-              "key": "sk-or-your-key-here"
+              "key": "${LLM_API_KEY}"
             }
           }
           EOF
