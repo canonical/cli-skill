@@ -153,6 +153,8 @@ jobs:
         if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
         id: pi
         uses: shaftoe/pi-coding-agent-action@v2
+        env:
+            OPENROUTER_API_KEY: ${{ secrets.llm_token }}
         with:
           github_token: ${{ secrets.gh_token }}
           provider: openrouter
