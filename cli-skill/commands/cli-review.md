@@ -16,8 +16,8 @@ CLI standard compliance review only.
 - Non-compliance and compliant evidence based on observed CLI behavior/docs/code
 - Use these rules to determine severity:
   * High: violations of command structure and naming, use of positional parameters, accessibility/color violations
-  * Medium: use if non-standard verbs for commands, inconsistent flag names, extremely high complexity (eg. created by >20 commands)
-  * Low: formatting violations
+  * Medium: use if non-standard verbs for commands, inconsistent flag names or usage, extremely high complexity (eg. created by >20 commands)
+  * Low: formatting violations, duplicate short/long flags
 
 ## Out Of Scope
 
@@ -43,7 +43,7 @@ Required sections:
 
 ## Summary Requirements
 The summary should list the number of violations, and their severity. It shall include these in a table. It shall give an overall score (Excellent = >95%, Very Good = >90%, Good = >80%, Room for Improvement = >60%, Need for Action = <=60%) 
-Start with a score of 100%, the number of commands N, and the weight of a single command W=1/N. For each High violation, reduce the score by 5*W, for each Medium violation by 2*W, and for each Small violation by 0.5*W.
+The score is calculated based on violations and set into relation with the size of the command set. Start with a score of 100%, the number of commands N, and the weight of a single command W=100/N. First, make a list of all the violations sorted by command. For each High violation, reduce the score by 5*W, for each Medium violation by 2*W, and for each Small violation by 0.5*W. USE THIS ALGORITHM, DO NOT REASON ABOUT IT, OR FIND ALTERNATIVE WAYS TO CALCULATE A SCORE.
 
 ## Compliance Matrix Requirements
 
