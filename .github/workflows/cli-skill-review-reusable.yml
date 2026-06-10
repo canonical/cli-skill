@@ -19,13 +19,14 @@ on:
         type: number
       provider:
         description: "Pi provider"
-        required: true
+        required: false
         type: string
+        default: "moonshotai"
       model:
         description: "Pi model"
         required: false
         type: string
-        default: "moonshotai/kimi-k2.6"
+        default: "kimi-k2.6"
       thinking_level:
         description: "Pi thinking level"
         required: false
@@ -122,7 +123,7 @@ jobs:
         uses: shaftoe/pi-coding-agent-action@v2
         with:
           github_token: ${{ secrets.gh_token }}
-          provider: openai
+          provider: ${{ inputs.provider }}
           base_url: https://openrouter.ai/api/v1
           model: ${{ inputs.model }}
           token: ${{ secrets.llm_token }}
