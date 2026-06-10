@@ -86,3 +86,85 @@ Optional inputs:
 
 - /cli-review is standards compliance only and evaluates against [cli-skill/references/cli-standard.md](cli-skill/references/cli-standard.md).
 - Session exports are uploaded as workflow artifacts.
+
+## Use from Another Repository (One-File Setup)
+
+Another repository can consume the reusable workflow by adding a single workflow file. No helper scripts, skill files, or metadata files are required in the consumer repository.
+
+### 1. Add a workflow in the consumer repository
+
+Create a workflow file in the consumer repository (for example, .github/workflows/cli-review.yml):
+
+```yaml
+name: CLI Skill Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  cli-review:
+    uses: shaftoe/cli-skill/.github/workflows/cli-skill-review-reusable.yml@v1
+    with:
+      command: /cli-review
+      provider: openrouter
+      model: moonshotai/kimi-k2.6
+      thinking_level: medium
+      pr_number: ${{ github.event.pull_request.number }}
+      post_pr_comment: true
+      fail_on_agent_error: true
+
+      # Optional input-based path filters (comma or newline separated globs)
+      cli_paths_include: |
+        cmd/**
+        internal/cli/**
+        scripts/demo_cli.py
+      cli_paths_exclude: |
+        docs/archive/**
+        **/*.md
+
+      # Optional strict mode. When true, knowledge_base/CLI.md is required
+      # if cli_paths_include is not provided.
+      enforce_cli_metadata: false
+    secrets:
+      llm_token: ${{ secrets.OPENROUTER_API_KEY }}
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### 2. Configure secrets in the consumer repository
+
+- OPENROUTER_API_KEY
+
+The workflow uses the repository-provided GITHUB_TOKEN for PR APIs.
+
+### 3. Inputs contract
+
+Required inputs:
+
+- provider
+
+Optional inputs:
+
+- command (default: /cli-review)
+- target_path (default: .)
+- model (default: moonshotai/kimi-k2.6)
+- thinking_level (default: medium)
+- pr_number
+- post_pr_comment (default: true)
+- fail_on_agent_error (default: true)
+- cli_paths_include (default: empty)
+- cli_paths_exclude (default: empty)
+- enforce_cli_metadata (default: false)
+
+Required secrets:
+
+- llm_token
+- gh_token
+
+### 4. Version pinning
+
+Use a tagged major version (for example, @v1) for a stable interface. Use a commit SHA pin for maximum reproducibility.

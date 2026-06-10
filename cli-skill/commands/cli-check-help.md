@@ -4,10 +4,10 @@ Analyze the CLI help system only, using canonical help rules.
 
 ## Execution Order
 
-1. Run `shared/cli-discovery-preflight.md`
-2. Read `cli-skill/references/cli-help.md` in full
-3. Read `cli-skill/references/cli-help-examples.md` in full
-4. Use parse targets relevant to help generation and command registration
+1. Check for the existence of `cli-review/0-cli-discovery-preflight/`. If it does not exist, run `shared/cli-discovery-preflight.md`
+2. Use preflight outputs from `cli-review/0-cli-discovery-preflight/`
+3. Read `cli-skill/references/cli-help.md` in full
+4. Read `cli-skill/references/cli-help-examples.md` in full
 5. Evaluate help against `cli-help.md` only
 
 ## Scope

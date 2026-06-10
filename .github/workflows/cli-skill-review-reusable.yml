@@ -41,6 +41,21 @@ on:
         required: false
         type: boolean
         default: true
+      cli_paths_include:
+        description: "Optional include path filters (comma or newline separated globs)"
+        required: false
+        type: string
+        default: ""
+      cli_paths_exclude:
+        description: "Optional exclude path filters (comma or newline separated globs)"
+        required: false
+        type: string
+        default: ""
+      enforce_cli_metadata:
+        description: "Require knowledge_base/CLI.md metadata when no include filters are provided"
+        required: false
+        type: boolean
+        default: false
     secrets:
       llm_token:
         description: "LLM provider token used by Pi"
@@ -61,25 +76,55 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - name: Checkout
+      - name: Checkout repository under review
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Resolve workflow source repository and ref
+        id: workflow_source
+        env:
+          WORKFLOW_REF: ${{ github.workflow_ref }}
+        run: |
+          set -euo pipefail
+          repo_with_path="${WORKFLOW_REF%@*}"
+          source_ref="${WORKFLOW_REF##*@}"
+          source_repo="${repo_with_path%/.github/workflows/*}"
+
+          if [ -z "${source_repo}" ] || [ -z "${source_ref}" ]; then
+            echo "Unable to parse workflow source from WORKFLOW_REF=${WORKFLOW_REF}"
+            exit 1
+          fi
+
+          echo "repo=${source_repo}" >> "$GITHUB_OUTPUT"
+          echo "ref=${source_ref}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout workflow source repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.workflow_source.outputs.repo }}
+          ref: ${{ steps.workflow_source.outputs.ref }}
+          path: .cli-skill-infra
+          token: ${{ secrets.gh_token }}
+
+      - name: Verify internal cli-skill assets
+        run: |
+          set -euo pipefail
+          test -f .cli-skill-infra/scripts/check-cli-scope.py
+          test -f .cli-skill-infra/scripts/build-pr-report.py
+          test -d .cli-skill-infra/cli-skill
 
       - name: Check CLI metadata and changed paths
         id: cli_scope
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          CLI_PATHS_INCLUDE: ${{ inputs.cli_paths_include }}
+          CLI_PATHS_EXCLUDE: ${{ inputs.cli_paths_exclude }}
+          ENFORCE_CLI_METADATA: ${{ inputs.enforce_cli_metadata }}
         run: |
           set -euo pipefail
-          python3 scripts/check-cli-scope.py
-
-      - name: Setup Node
-        if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
+          python3 .cli-skill-infra/scripts/check-cli-scope.py
 
       - name: Configure custom LLM provider
         if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
@@ -111,7 +156,7 @@ jobs:
         if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
         run: |
           mkdir -p ~/.pi/skills
-          cp -R cli-skill ~/.pi/skills/
+          cp -R .cli-skill-infra/cli-skill ~/.pi/skills/
 
       - name: Run Pi agent
         if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
@@ -130,7 +175,7 @@ jobs:
 
             Scope rules:
             - If command is /cli-review, perform only CLI standard compliance checks.
-            - Use cli-skill/references/cli-standard.md as the sole review standard.
+            - Use .cli-skill-infra/cli-skill/references/cli-standard.md as the sole review standard.
 
             Repository target path: ${{ inputs.target_path }}
 
@@ -163,7 +208,7 @@ jobs:
           COMMAND: ${{ inputs.command }}
         run: |
           set -euo pipefail
-          python3 scripts/build-pr-report.py
+          python3 .cli-skill-infra/scripts/build-pr-report.py
 
       - name: Fail when agent run is unsuccessful
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.fail_on_agent_error && steps.pi.outputs.success != 'true' }}
