@@ -107,10 +107,6 @@ jobs:
           }
           EOF
 
-      - name: Sync cli-skill adapters
-        if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
-        run: node scripts/sync-cli-skill-adapters.js
-
       - name: Install cli-skill for Pi discovery
         if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
         run: |
