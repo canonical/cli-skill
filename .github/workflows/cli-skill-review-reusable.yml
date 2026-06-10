@@ -133,7 +133,7 @@ jobs:
                 "models": [{
                   "id": "${MODEL_ID}",
                   "name": "${MODEL_ID} (OpenRouter)",
-                  "api": "openai",
+                  "api": "openai-completions",
                   "cost": { "input": 0.001, "output": 0.002, "cacheRead": 0, "cacheWrite": 0 },
                   "contextWindow": 128000,
                   "maxTokens": 4096
@@ -142,6 +142,15 @@ jobs:
             }
           }
           EOF
+          cat > ~/.pi/agent/auth.json <<EOF
+          {
+            "openrouter": {
+              "type": "api_key",
+              "key": "sk-or-your-key-here"
+            }
+          }
+          EOF
+
 
       - name: Install cli-skill for Pi discovery
         if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
@@ -157,7 +166,7 @@ jobs:
             OPENROUTER_API_KEY: ${{ secrets.llm_token }}
         with:
           github_token: ${{ secrets.gh_token }}
-          provider: my-llm
+          provider: openrouter
           model: ${{ inputs.model }}
           token: ${{ secrets.llm_token }}
           thinking_level: ${{ inputs.thinking_level }}
