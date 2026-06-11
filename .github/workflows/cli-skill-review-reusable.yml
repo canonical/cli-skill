@@ -151,14 +151,21 @@ jobs:
             - Keep findings evidence-based and standards-mapped.
             - Include a short summary table with severity counts and overall score.
 
-      - name: Upload Pi session artifacts
-        if: ${{ steps.cli_scope.outputs.proceed == 'true' && (steps.pi.outputs.session_html_path || steps.pi.outputs.session_jsonl_path) }}
+      - name: Upload Pi session HTML artifact
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_html_path != '' }}
+        id: upload_session_html
         uses: actions/upload-artifact@v4
         with:
-          name: pi-session-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            ${{ steps.pi.outputs.session_html_path }}
-            ${{ steps.pi.outputs.session_jsonl_path }}
+          name: pi-session-html-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.pi.outputs.session_html_path }}
+
+      - name: Upload Pi session JSONL artifact
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_jsonl_path != '' }}
+        id: upload_session_jsonl
+        uses: actions/upload-artifact@v4
+        with:
+          name: pi-session-jsonl-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.pi.outputs.session_jsonl_path }}
 
       - name: Build PR report body
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.post_pr_comment && inputs.pr_number > 0 }}
@@ -171,11 +178,22 @@ jobs:
           PI_INPUT_TOKENS: ${{ steps.pi.outputs.input_tokens }}
           PI_OUTPUT_TOKENS: ${{ steps.pi.outputs.output_tokens }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SESSION_HTML_ARTIFACT_URL: ${{ steps.upload_session_html.outputs.artifact-id && format('{0}/{1}/actions/runs/{2}/artifacts/{3}', github.server_url, github.repository, github.run_id, steps.upload_session_html.outputs.artifact-id) || '' }}
+          SESSION_JSONL_ARTIFACT_URL: ${{ steps.upload_session_jsonl.outputs.artifact-id && format('{0}/{1}/actions/runs/{2}/artifacts/{3}', github.server_url, github.repository, github.run_id, steps.upload_session_jsonl.outputs.artifact-id) || '' }}
           MARKER: "<!-- cli-skill-report:${{ inputs.command }} -->"
           COMMAND: ${{ inputs.command }}
         run: |
           set -euo pipefail
           python3 .cli-skill-infra/scripts/build-pr-report.py
+
+      - name: Publish PR report comment
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.post_pr_comment && inputs.pr_number > 0 }}
+        uses: mshick/add-pr-comment@v3
+        with:
+          repo-token: ${{ secrets.gh_token }}
+          issue: ${{ inputs.pr_number }}
+          message-path: pi-report-comment.md
+          message-id: cli-skill-report-${{ inputs.command }}
 
       - name: Fail when agent run is unsuccessful
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.fail_on_agent_error && steps.pi.outputs.success != 'true' }}

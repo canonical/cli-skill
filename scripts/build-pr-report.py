@@ -13,6 +13,8 @@ def main() -> None:
     output_tokens = os.environ.get("PI_OUTPUT_TOKENS", "")
     run_url = os.environ.get("RUN_URL", "")
     response = os.environ.get("PI_RESPONSE", "")
+    session_html_artifact_url = os.environ.get("SESSION_HTML_ARTIFACT_URL", "")
+    session_jsonl_artifact_url = os.environ.get("SESSION_JSONL_ARTIFACT_URL", "")
 
     if not response.strip():
         response = "_No response was returned by Pi._"
@@ -21,6 +23,16 @@ def main() -> None:
     max_response_len = 50000
     if len(response) > max_response_len:
         response = response[:max_response_len] + "\n\n... _truncated_"
+
+    artifact_links: list[str] = []
+    if session_html_artifact_url:
+        artifact_links.append(f"- Session HTML: [download]({session_html_artifact_url})")
+    if session_jsonl_artifact_url:
+        artifact_links.append(f"- Session JSONL: [download]({session_jsonl_artifact_url})")
+
+    artifacts_section = ""
+    if artifact_links:
+        artifacts_section = "\n### Artifacts\n\n" + "\n".join(artifact_links) + "\n"
 
     body = f"""{marker}
 ## CLI Skill Report ({command})
@@ -33,6 +45,7 @@ def main() -> None:
 | Tokens (in/out) | {input_tokens or 'n/a'} / {output_tokens or 'n/a'} |
 | Workflow run | [view run]({run_url}) |
 
+{artifacts_section}
 {response}
 """
 
