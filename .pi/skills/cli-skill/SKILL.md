@@ -20,3 +20,4 @@ Canonical files are in `cli-skill/`.
 - `/cli-heuristic-analysis`
 - `/cli-check-help`
 - `/cli-behavioral-analysis`
+- `/install-cli-pr-workflow`

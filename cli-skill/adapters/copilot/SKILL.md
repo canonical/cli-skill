@@ -21,6 +21,7 @@ This adapter maps slash-style command intents to command files in `cli-skill/`.
 - `/cli-heuristic-analysis` -> `cli-skill/commands/cli-heuristic-analysis.md`
 - `/cli-check-help` -> `cli-skill/commands/cli-check-help.md`
 - `/cli-behavioral-analysis` -> `cli-skill/commands/cli-behavioral-analysis.md`
+- `/install-cli-pr-workflow` -> `cli-skill/commands/install-cli-pr-workflow.md`
 
 ## Future Command Stubs
 

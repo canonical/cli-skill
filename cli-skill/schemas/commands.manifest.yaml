@@ -28,6 +28,10 @@ commands:
     file: cli-skill/commands/cli-behavioral-analysis.md
     stage: active
     description: Analyze runtime behavior, output contracts, errors, and safety properties.
+  - name: /install-cli-pr-workflow
+    file: cli-skill/commands/install-cli-pr-workflow.md
+    stage: active
+    description: Install PR review workflow and ensure minimal CLI metadata.
 
 futureCommands:
   - name: /cli-propose-command

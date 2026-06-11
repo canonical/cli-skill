@@ -30,6 +30,7 @@ The preflight output path is fixed to:
 - `/cli-semantic-analysis` -> `commands/cli-semantic-analysis.md`
 - `/cli-heuristic-analysis` -> `commands/cli-heuristic-analysis.md`
 - `/cli-check-help` -> `commands/cli-check-help.md`
+- `/install-cli-pr-workflow` -> `commands/install-cli-pr-workflow.md`
 
 ## Future Commands (Scaffolding Only)
 
