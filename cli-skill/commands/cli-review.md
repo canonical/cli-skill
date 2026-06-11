@@ -43,8 +43,8 @@ Required sections:
 4. Non-compliance Findings (with citations)
 5. Compliant Findings Summary (concise, without citations)
 
-## Summary Requirements
-The summary should list the number of violations, and their severity. It shall include these in a table. It shall give an overall score (Excellent = >95%, Very Good = >90%, Good = >80%, Room for Improvement = >60%, Need for Action = <=60%) 
+### Summary Requirements
+The summary should list the number of violations, and their severity. It shall include these in a table. It shall give an overall score. This score is calculated by a script, DO NOT REASON ABOUT IT, AND DO NOT CHANGE THE ALGORITHM. 
 
 To calculate the score:
 1. Create a JSON table with structure: `{"commands": <int>, "issues": [{"severity": "High|Medium|Low|Unrated", "category": <str>, "message": <str>}, ...]}`
@@ -55,14 +55,16 @@ To calculate the score:
 
 The script implements the standard algorithm: Start with 100%, number of commands N, weight W=100/N. For each High violation, reduce by 3*W; Medium violation by 1*W; Low violation by 0.5*W. Clamp to 0-100.
 
-## Compliance Matrix Requirements
+### CLI Change Requirements
+Analyze the files that have been changes as part of this PR. Create a detailed summary of how each change affects the compliance of the CLI.
+
+### Compliance Matrix Requirements
 
 The `Compliance Matrix` section must include a table with these columns:
 
 - `Standard Clause`
 - `Rule Summary`
 - `Evidence`
-- `Status` (`compliant`, `non-compliant`, or `not-assessable`)
 - `Severity` (`High`, `Medium`, `Low`, or `Unrated`)
 - `Notes`
 
