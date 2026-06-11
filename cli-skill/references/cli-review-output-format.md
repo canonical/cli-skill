@@ -36,6 +36,8 @@ ${| Grammar + Vocabulary — Commands are verbs | Every command acting on a prim
 
 ## Non-compliance Findings (with citations)
 
+Each finding heading must follow this exact format: `### [SEVERITY-N] <short description>`, where `SEVERITY` is `HIGH`, `MEDIUM`, `LOW`, or `UNRATED` (uppercase) and `N` is a per-severity counter starting at 1 (HIGH-1, HIGH-2, MEDIUM-1, LOW-1, …).
+
 Example:
 ${### [HIGH-1] `registration-csv` is not a verb
 **Standard citation:** Grammar + Vocabulary — *"Commands are verbs. Every command that acts on a primary object of a command must be a verb."*

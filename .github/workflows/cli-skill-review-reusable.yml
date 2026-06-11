@@ -147,14 +147,14 @@ jobs:
             Repository target path: ${{ inputs.target_path }}
 
             Output requirements:
-            - Return markdown only.
+            - Follow the section structure defined in `.cli-skill-infra/cli-skill/references/cli-review-output-format.md` exactly.
+            - The overall score MUST be computed by running `python3 .cli-skill-infra/cli-skill/scripts/calculate_cli_score.py <json_file>` — do not calculate or estimate it manually.
             - Keep findings evidence-based and standards-mapped.
-            - Include a short summary table with severity counts and overall score.
 
       - name: Upload Pi session HTML artifact
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_html_path != '' }}
         id: upload_session_html
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pi-session-html-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.pi.outputs.session_html_path }}
@@ -162,7 +162,7 @@ jobs:
       - name: Upload Pi session JSONL artifact
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_jsonl_path != '' }}
         id: upload_session_jsonl
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pi-session-jsonl-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.pi.outputs.session_jsonl_path }}

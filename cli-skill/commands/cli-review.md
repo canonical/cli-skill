@@ -7,7 +7,9 @@ CLI standard compliance review only.
 1. Check for the existence of `cli-review/0-cli-discovery-preflight/`. If it does not exist, run `shared/cli-discovery-preflight.md`
 2. Use preflight outputs from `cli-review/0-cli-discovery-preflight/`
 3. Read `cli-skill/references/cli-standard.md` in full
-4. Evaluate the CLI only against that standard
+4. **Phase 1 — Collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[clause] [evidence]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
+5. **Phase 2 — Assign severity.** For each finding collected in Phase 1, assign exactly one severity (`High`, `Medium`, `Low`, or `Unrated`) using the rules in the `## Scope` section. Do not add or remove findings in this phase.
+6. Build the score JSON `{"commands": <int>, "issues": [...]}` from the complete, severity-annotated list and execute `python3 .cli-skill-infra/cli-skill/scripts/calculate_cli_score.py <json_file>`. Use the returned `score`, `rating`, and badge in the summary. **Do not compute the score manually — the script is mandatory.**
 
 ## Scope
 
@@ -18,7 +20,7 @@ CLI standard compliance review only.
   * High: violations of command structure and naming, use of positional parameters, accessibility/color violations
   * Medium: use if non-standard verbs for commands, inconsistent flag names or usage, extremely high complexity (eg. created by >20 commands)
   * Low: formatting violations, duplicate short/long flags
-  * Unrated: use if no standard rule applies, or if the finding is not certain
+  * Unrated: use if no standard rule applies, or if the finding is not certain, there is a SHOULD rule, or the rule applies to a debug/secret command
 
 ## Out Of Scope
 
@@ -30,18 +32,21 @@ If an issue is not covered by the standard, do not include it in `/cli-review` f
 
 ## Required Output
 
-Create an output that is using exactly the structure and examples in `cli-skill/references/cli-review-output.md`. Follow the structure and formatting strictly. Generate the text for all <placeholders> and ${examples}.
+Read `cli-skill/references/cli-review-output-format.md` in full. Follow the structure and formatting strictly. Generate the text for all <placeholders> and ${examples}.
+
+The output **must** use exactly these top-level headings in this order:
+
+```
+# Canonical CLI automated review report
+## Summary          (violation table + rating badge returned by the scoring script)
+## CLI changes in this PR (include only if the workflow was triggered from a PR creation/update)
+## Compliance matrix  (table with columns: Standard Clause | Rule Summary | Evidence | Severity | Notes)
+## Non-compliance Findings (with citations)
+## Compliant Findings Summary (concise, without citations)
+```
 
 Write:
 - `cli-review/cli-review.md`
-
-Required sections:
-
-1. Summary
-2. CLI Changes in this PR (include only if the workflow was triggered from a PR creation/update)
-3. Compliance Matrix
-4. Non-compliance Findings (with citations)
-5. Compliant Findings Summary (concise, without citations)
 
 ### Summary Requirements
 The summary should list the number of violations, and their severity. It shall include these in a table. It shall give an overall score. This score is calculated by a script, DO NOT REASON ABOUT IT, AND DO NOT CHANGE THE ALGORITHM. 
@@ -68,7 +73,15 @@ The `Compliance Matrix` section must include a table with these columns:
 - `Severity` (`High`, `Medium`, `Low`, or `Unrated`)
 - `Notes`
 
-Every non-compliance finding 
+Every non-compliance finding must use this exact heading format:
+
+```
+### [SEVERITY-N] <short description>
+```
+
+Where `SEVERITY` is one of `HIGH`, `MEDIUM`, `LOW`, or `UNRATED` (uppercase), and `N` is a counter that resets to 1 for each severity group (e.g. HIGH-1, HIGH-2, MEDIUM-1, LOW-1). Number findings within each group in the order they appear in the Compliance Matrix.
+
+Each finding:
 
 1. Must include the violated clause from `cli-skill/references/cli-standard.md`
 2. Must include concrete CLI evidence (command/help/code reference)
