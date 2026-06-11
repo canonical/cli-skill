@@ -8,14 +8,15 @@ CLI standard compliance review only.
 2. Use preflight outputs from `cli-review/0-cli-discovery-preflight/`
 3. Read `cli-skill/references/cli-standard.md` in full
 4. **Phase 1 — Collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[clause] [evidence]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
-5. **Phase 2 — Assign severity.** For each finding collected in Phase 1, assign exactly one severity (`High`, `Medium`, `Low`, or `Unrated`) using the rules in the `## Scope` section. Do not add or remove findings in this phase.
-6. Build the score JSON `{"commands": <int>, "issues": [...]}` from the complete, severity-annotated list.
-7. Resolve the scoring script path in this exact order and use the first existing path:
+5. Checkpoint: Before going to Phase 2, make sure that no duplicate findings are listed. 
+6. **Phase 2 — Assign severity.** For each finding collected in Phase 1, assign exactly one severity (`High`, `Medium`, `Low`, or `Unrated`) using the rules in the `## Scope` section. Do not add or remove findings in this phase.
+7. Build the score JSON `{"commands": <int>, "issues": [...]}` from the complete, severity-annotated list.
+8. Resolve the scoring script path in this exact order and use the first existing path:
   - `.cli-skill-infra/scripts/calculate_cli_score.py`
   - `scripts/calculate_cli_score.py`
   Execute: `python3 <resolved_script_path> <json_file>`.
-8. Use the script JSON output values (`score`, `rating`, `rating_badge`, counts) in the summary. **Do not compute score manually.**
-9. Add this evidence line in the `Summary` section so workflow checks can verify script usage:
+9. Use the script JSON output values (`score`, `rating`, `rating_badge`, counts) in the summary. **Do not compute score manually.**
+10. Add this evidence line in the `Summary` section so workflow checks can verify script usage:
   - `Scoring script invocation: <resolved_script_path>`
   - `Scoring output JSON:` followed by a fenced `json` block containing the script output.
 
@@ -31,10 +32,11 @@ CLI standard compliance review only.
 - Findings must map to explicit rules from the standard
 - Non-compliance and compliant evidence based on observed CLI behavior/docs/code
 - Use these rules to determine severity. Severity can only be [High|Medium|Low|Unrated]:
-  * High: violations of command structure and naming, use of positional parameters, accessibility/color violations
+  * High: violations of command structure and naming (DO NOT APPLY SHOULD RULES), use of positional parameters, accessibility/color violations
   * Medium: use if non-standard verbs for commands, inconsistent flag names or usage, extremely high complexity (eg. created by >20 commands)
   * Low: formatting violations, duplicate short/long flags
   * Unrated: use if no standard rule applies, or if the finding is not certain, there is a SHOULD rule, or the rule applies to a debug/secret command
+- All SHOULD rules result in unrated violations - report them, but don't include them in the scoring.
 
 ## Out Of Scope
 
