@@ -38,9 +38,10 @@ Write:
 Required sections:
 
 1. Summary
-2. Compliance Matrix
-3. Non-compliance Findings (with citations)
-4. Compliant Findings Summary (concise, without citations)
+2. CLI Changes in this PR (include only if the workflow was triggered from a PR creation/update)
+3. Compliance Matrix
+4. Non-compliance Findings (with citations)
+5. Compliant Findings Summary (concise, without citations)
 
 ## Summary Requirements
 The summary should list the number of violations, and their severity. It shall include these in a table. It shall give an overall score (Excellent = >95%, Very Good = >90%, Good = >80%, Room for Improvement = >60%, Need for Action = <=60%) 
@@ -48,8 +49,9 @@ The summary should list the number of violations, and their severity. It shall i
 To calculate the score:
 1. Create a JSON table with structure: `{"commands": <int>, "issues": [{"severity": "High|Medium|Low|Unrated", "category": <str>, "message": <str>}, ...]}`
 2. Execute: `python3 scripts/calculate_cli_score.py <json_file>`
-3. This script returns JSON with `score` (0-100), `passed` (boolean), and severity counts
+3. This script returns JSON with `score` (0-100), `passed` (boolean), `rating badge`, and severity counts
 4. Use this score and rating in the summary section of the markdown output
+5. Use the rating badge in the summary section of the markdown output
 
 The script implements the standard algorithm: Start with 100%, number of commands N, weight W=100/N. For each High violation, reduce by 3*W; Medium violation by 1*W; Low violation by 0.5*W. Clamp to 0-100.
 

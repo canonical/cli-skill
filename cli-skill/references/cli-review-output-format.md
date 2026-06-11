@@ -18,7 +18,13 @@
 
 ---
 
-## Compliance Matrix
+## CLI changes in this PR
+
+<describe findings: what code changes improve or decrease the CLI>
+
+---
+
+## Compliance matrix
 
 | Standard Clause | Rule Summary | Evidence | Severity | Notes |
 |-----------------|--------------|----------|----------|-------|
