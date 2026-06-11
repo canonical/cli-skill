@@ -48,12 +48,12 @@ The summary should list the number of violations, and their severity. It shall i
 
 To calculate the score:
 1. Create a JSON table with structure: `{"commands": <int>, "issues": [{"severity": "High|Medium|Low|Unrated", "category": <str>, "message": <str>}, ...]}`
-2. Execute: `python3 scripts/calculate_cli_score.py <json_file>`
+2. Execute: `python3 cli-skill/scripts/calculate_cli_score.py <json_file>` (replace cli-skill with the correc directory)
 3. This script returns JSON with `score` (0-100), `passed` (boolean), `rating badge`, and severity counts
 4. Use this score and rating in the summary section of the markdown output
 5. Use the rating badge in the summary section of the markdown output
 
-The script implements the standard algorithm: Start with 100%, number of commands N, weight W=100/N. For each High violation, reduce by 3*W; Medium violation by 1*W; Low violation by 0.5*W. Clamp to 0-100.
+The script implements the standard algorithm: Start with 100%, weight W=100/#commands. For each High violation, reduce by 2*W; Medium violation by 1*W; Low violation by 0.5*W. Clamp to 0-100%.
 
 ### CLI Change Requirements
 Analyze the files that have been changes as part of this PR. Create a detailed summary of how each change affects the compliance of the CLI.

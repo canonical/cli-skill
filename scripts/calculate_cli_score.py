@@ -64,14 +64,14 @@ def calculate_score(issues_data: dict) -> dict:
     else:
         weight = 100.0 / num_commands
         score = 100.0
-        score -= high_count * 3 * weight
+        score -= high_count * 2 * weight
         score -= medium_count * 1 * weight
         score -= low_count * 0.5 * weight
 
     score = max(0.0, min(100.0, score))  # Clamp to 0-100
 
     label, badge = acceptance_rating(score)
-    passed = high_count == 0 and score > 60
+    passed = score > 80
 
     return {
         "score": score,
