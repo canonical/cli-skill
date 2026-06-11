@@ -14,10 +14,11 @@ CLI standard compliance review only.
 - Check compliance with `cli-skill/references/cli-standard.md` only, do not use semantic criteria, or heuristics
 - Findings must map to explicit rules from the standard
 - Non-compliance and compliant evidence based on observed CLI behavior/docs/code
-- Use these rules to determine severity:
+- Use these rules to determine severity. Severity can only be [High|Medium|Low|Unrated]:
   * High: violations of command structure and naming, use of positional parameters, accessibility/color violations
   * Medium: use if non-standard verbs for commands, inconsistent flag names or usage, extremely high complexity (eg. created by >20 commands)
   * Low: formatting violations, duplicate short/long flags
+  * Unrated: use if no standard rule applies, or if the finding is not certain
 
 ## Out Of Scope
 
@@ -29,8 +30,9 @@ If an issue is not covered by the standard, do not include it in `/cli-review` f
 
 ## Required Output
 
-Write:
+Create an output that is using exactly the structure and examples in `cli-skill/references/cli-review-output.md`. Follow the structure and formatting strictly. Generate the text for all <placeholders> and ${examples}.
 
+Write:
 - `cli-review/cli-review.md`
 
 Required sections:
@@ -38,8 +40,7 @@ Required sections:
 1. Summary
 2. Compliance Matrix
 3. Non-compliance Findings (with citations)
-4. Remediation Actions (standards-mapped)
-5. Compliant Findings Summary (concise, without citations)
+4. Compliant Findings Summary (concise, without citations)
 
 ## Summary Requirements
 The summary should list the number of violations, and their severity. It shall include these in a table. It shall give an overall score (Excellent = >95%, Very Good = >90%, Good = >80%, Room for Improvement = >60%, Need for Action = <=60%) 
