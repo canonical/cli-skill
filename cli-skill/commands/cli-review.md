@@ -43,7 +43,14 @@ Required sections:
 
 ## Summary Requirements
 The summary should list the number of violations, and their severity. It shall include these in a table. It shall give an overall score (Excellent = >95%, Very Good = >90%, Good = >80%, Room for Improvement = >60%, Need for Action = <=60%) 
-The score is calculated based on violations and set into relation with the size of the command set. Start with a score of 100%, the number of commands N, and the weight of a single command W=100/N. First, make a list of all the violations sorted by command. For each High violation, reduce the score by 5*W, for each Medium violation by 2*W, and for each Small violation by 0.5*W. USE THIS ALGORITHM, DO NOT REASON ABOUT IT, OR FIND ALTERNATIVE WAYS TO CALCULATE A SCORE.
+
+To calculate the score:
+1. Create a JSON table with structure: `{"commands": <int>, "issues": [{"severity": "High|Medium|Low|Unrated", "category": <str>, "message": <str>}, ...]}`
+2. Execute: `python3 scripts/calculate_cli_score.py <json_file>`
+3. This script returns JSON with `score` (0-100), `passed` (boolean), and severity counts
+4. Use this score and rating in the summary section of the markdown output
+
+The script implements the standard algorithm: Start with 100%, number of commands N, weight W=100/N. For each High violation, reduce by 3*W; Medium violation by 1*W; Low violation by 0.5*W. Clamp to 0-100.
 
 ## Compliance Matrix Requirements
 
@@ -53,7 +60,7 @@ The `Compliance Matrix` section must include a table with these columns:
 - `Rule Summary`
 - `Evidence`
 - `Status` (`compliant`, `non-compliant`, or `not-assessable`)
-- `Severity` (`High`, `Medium`, or `Low`)
+- `Severity` (`High`, `Medium`, `Low`, or `Unrated`)
 - `Notes`
 
 Every non-compliance finding 
