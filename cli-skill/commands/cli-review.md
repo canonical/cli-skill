@@ -9,7 +9,21 @@ CLI standard compliance review only.
 3. Read `cli-skill/references/cli-standard.md` in full
 4. **Phase 1 — Collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[clause] [evidence]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
 5. **Phase 2 — Assign severity.** For each finding collected in Phase 1, assign exactly one severity (`High`, `Medium`, `Low`, or `Unrated`) using the rules in the `## Scope` section. Do not add or remove findings in this phase.
-6. Build the score JSON `{"commands": <int>, "issues": [...]}` from the complete, severity-annotated list and execute `python3 .cli-skill-infra/cli-skill/scripts/calculate_cli_score.py <json_file>`. Use the returned `score`, `rating`, and badge in the summary. **Do not compute the score manually — the script is mandatory.**
+6. Build the score JSON `{"commands": <int>, "issues": [...]}` from the complete, severity-annotated list.
+7. Resolve the scoring script path in this exact order and use the first existing path:
+  - `.cli-skill-infra/scripts/calculate_cli_score.py`
+  - `scripts/calculate_cli_score.py`
+  Execute: `python3 <resolved_script_path> <json_file>`.
+8. Use the script JSON output values (`score`, `rating`, `rating_badge`, counts) in the summary. **Do not compute score manually.**
+9. Add this evidence line in the `Summary` section so workflow checks can verify script usage:
+  - `Scoring script invocation: <resolved_script_path>`
+  - `Scoring output JSON:` followed by a fenced `json` block containing the script output.
+
+### Hard Constraints
+
+- Forbidden: manual arithmetic, estimating score, discussing alternative formulas, or reconciling formula discrepancies.
+- Forbidden: “let me think / let me recalculate / let me verify” style narration in final output.
+- If scoring script execution fails, stop and report failure; do not produce a scored summary.
 
 ## Scope
 
@@ -53,7 +67,7 @@ The summary should list the number of violations, and their severity. It shall i
 
 To calculate the score:
 1. Create a JSON table with structure: `{"commands": <int>, "issues": [{"severity": "High|Medium|Low|Unrated", "category": <str>, "message": <str>}, ...]}`
-2. Execute: `python3 cli-skill/scripts/calculate_cli_score.py <json_file>` (replace cli-skill with the correc directory)
+2. Execute: `python3 <resolved_script_path> <json_file>` using the path resolution defined in `Execution Order`
 3. This script returns JSON with `score` (0-100), `passed` (boolean), `rating badge`, and severity counts
 4. Use this score and rating in the summary section of the markdown output
 5. Use the rating badge in the summary section of the markdown output

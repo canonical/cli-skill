@@ -148,7 +148,7 @@ jobs:
 
             Output requirements:
             - Follow the section structure defined in `.cli-skill-infra/cli-skill/references/cli-review-output-format.md` exactly.
-            - The overall score MUST be computed by running `python3 .cli-skill-infra/cli-skill/scripts/calculate_cli_score.py <json_file>` — do not calculate or estimate it manually.
+            - The overall score MUST be computed by running `python3 .cli-skill-infra/scripts/calculate_cli_score.py <json_file>` (fallback: `python3 scripts/calculate_cli_score.py <json_file>`) — do not calculate or estimate it manually.
             - Keep findings evidence-based and standards-mapped.
 
       - name: Upload Pi session HTML artifact
