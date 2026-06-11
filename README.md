@@ -3,6 +3,18 @@
 
 cli-skill is a command based, cross agent CLI review framework. It uses one canonical command set and thin adapters so the same workflows can run in Copilot, Claude Code, Pi Coding Agent, and OpenCode.
 
+## Install via npm
+
+This repository is also packaged as `canonical-cli-skill` for consumers that want to install the skill files into their own repo.
+
+```bash
+npx canonical-cli-skill install
+```
+
+By default, the installer resolves the target directory to the top-level of the current Git repository, so generated paths are anchored at the repo root even when you run it from a subdirectory. If there is no Git repository, it falls back to the current directory. Use `--target <path>` to override this behavior.
+
+Auto-detection is based on repository markers for the supported agents. Existing unmanaged files are not overwritten unless `--force` is used, and managed files are only updated when they have not been edited since the last install.
+
 ## Project Structure
 
 - Canonical skill index: [cli-skill/SKILL.md](cli-skill/SKILL.md)
@@ -21,34 +33,6 @@ Future scaffolds:
 
 - [cli-skill/future-commands/cli-propose-command.md](cli-skill/future-commands/cli-propose-command.md)
 - [cli-skill/future-commands/cli-rename-command.md](cli-skill/future-commands/cli-rename-command.md)
-
-## Use with Different Agents
-
-1. Sync adapters from the manifest (single maintained helper script):
-
-	node scripts/sync-cli-skill-adapters.js
-
-2. Copilot (GitHub skills path):
-
-- Entry point: [.github/skills/cli-skill/SKILL.md](.github/skills/cli-skill/SKILL.md)
-- Adapter file: [cli-skill/adapters/copilot/SKILL.md](cli-skill/adapters/copilot/SKILL.md)
-
-3. Pi Coding Agent:
-
-- Entry point: [.pi/skills/cli-skill/SKILL.md](.pi/skills/cli-skill/SKILL.md)
-- Adapter file: [cli-skill/adapters/pi-coding-agent/SKILL.md](cli-skill/adapters/pi-coding-agent/SKILL.md)
-
-4. Claude Code:
-
-- Adapter file: [cli-skill/adapters/claude-code/commands.yaml](cli-skill/adapters/claude-code/commands.yaml)
-
-5. OpenCode:
-
-- Adapter file: [cli-skill/adapters/opencode/commands.json](cli-skill/adapters/opencode/commands.json)
-
-6. Adapter docs:
-
-- [cli-skill/adapters/README.md](cli-skill/adapters/README.md)
 
 ## Quick Start for GitHub Action: cli-skill-build
 

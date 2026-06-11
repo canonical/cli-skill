@@ -1,0 +1,36 @@
+{
+  "name": "canonical-cli-skill",
+  "version": "0.1.0",
+  "description": "Cross-agent CLI review skill installer for Copilot, Pi, Claude Code, and OpenCode.",
+  "license": "MIT",
+  "type": "commonjs",
+  "bin": {
+    "canonical-cli-skill": "scripts/cli.js"
+  },
+  "scripts": {
+    "postinstall": "node scripts/cli.js install --postinstall",
+    "install:skill": "node scripts/cli.js install",
+    "install:skill:dry-run": "node scripts/cli.js install --dry-run"
+  },
+  "files": [
+    "scripts/cli.js",
+    "cli-skill",
+    ".github/skills/cli-skill/SKILL.md",
+    ".pi/skills/cli-skill/SKILL.md",
+    "README.md"
+  ],
+  "keywords": [
+    "cli",
+    "skill",
+    "copilot",
+    "pi",
+    "claude",
+    "opencode"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "commander": "15.0.0"
+  }
+}
