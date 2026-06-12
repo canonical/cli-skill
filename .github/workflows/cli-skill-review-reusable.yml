@@ -138,6 +138,11 @@ jobs:
           export_session_html: true
           export_session_jsonl: true
           prompt: |
+            Review this pull request. Before starting, use get_issue_or_pr_thread to
+            fetch any existing review comments so you don't duplicate feedback that
+            has already been given. Focus on issues, bugs, and security concerns.
+            Post your findings as a PR review when done.
+
             Run ${{ inputs.command }} from the cli-skill in this repository.
 
             Scope rules:
@@ -166,51 +171,6 @@ jobs:
         with:
           name: pi-session-jsonl-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.pi.outputs.session_jsonl_path }}
-
-      - name: Build PR report body
-        if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.post_pr_comment && inputs.pr_number > 0 }}
-        id: report
-        env:
-          PI_RESPONSE: ${{ steps.pi.outputs.response }}
-          PI_SUCCESS: ${{ steps.pi.outputs.success }}
-          PI_COST: ${{ steps.pi.outputs.cost }}
-          PI_DURATION: ${{ steps.pi.outputs.duration_seconds }}
-          PI_INPUT_TOKENS: ${{ steps.pi.outputs.input_tokens }}
-          PI_OUTPUT_TOKENS: ${{ steps.pi.outputs.output_tokens }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          SESSION_HTML_ARTIFACT_URL: ${{ steps.upload_session_html.outputs.artifact-id && format('{0}/{1}/actions/runs/{2}/artifacts/{3}', github.server_url, github.repository, github.run_id, steps.upload_session_html.outputs.artifact-id) || '' }}
-          SESSION_JSONL_ARTIFACT_URL: ${{ steps.upload_session_jsonl.outputs.artifact-id && format('{0}/{1}/actions/runs/{2}/artifacts/{3}', github.server_url, github.repository, github.run_id, steps.upload_session_jsonl.outputs.artifact-id) || '' }}
-          MARKER: "<!-- cli-skill-report:${{ inputs.command }} -->"
-          COMMAND: ${{ inputs.command }}
-        run: |
-          set -euo pipefail
-          python3 .cli-skill-infra/scripts/build-pr-report.py
-
-      - name: Publish PR report comment
-        if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.post_pr_comment && inputs.pr_number > 0 }}
-        env:
-          GH_TOKEN: ${{ secrets.gh_token }}
-          MARKER: "<!-- cli-skill-report:${{ inputs.command }} -->"
-          PR_NUMBER: ${{ inputs.pr_number }}
-        run: |
-          set -euo pipefail
-          body="$(cat pi-report-comment.md)"
-
-          existing_id=$(gh api "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
-            --jq ".[] | select(.body | startswith(\"${MARKER}\")) | .id" \
-            2>/dev/null | head -1 || true)
-
-          if [[ -n "$existing_id" ]]; then
-            gh api --method PATCH \
-              "repos/${{ github.repository }}/issues/comments/${existing_id}" \
-              --field body="${body}"
-            echo "Updated existing comment ${existing_id}"
-          else
-            gh api --method POST \
-              "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
-              --field body="${body}"
-            echo "Created new comment"
-          fi
 
       - name: Fail when agent run is unsuccessful
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.fail_on_agent_error && steps.pi.outputs.success != 'true' }}

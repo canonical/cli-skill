@@ -71,7 +71,7 @@ To calculate the score:
 1. Create a JSON table with structure: `{"commands": <int>, "issues": [{"severity": "High|Medium|Low|Unrated", "category": <str>, "message": <str>}, ...]}`
 2. Execute: `python3 <resolved_script_path> <json_file>` using the path resolution defined in `Execution Order`
 3. This script returns JSON with `score` (0-100), `passed` (boolean), `rating badge`, and severity counts
-4. Use this `score` and `rating badge` in the summary section of the markdown output
+4. Use this `score` and `rating badge` in the summary section of the markdown output to report the compliance score
 
 The script implements the standard algorithm: Start with 100%, weight W=100/#commands. For each High violation, reduce by W; Medium violation by 0.5*W; Low violation by 0.2*W. Clamp to 0-100%.
 
