@@ -58,15 +58,15 @@ def calculate_score(issues_data: dict) -> dict:
     medium_count = sum(1 for issue in issues if issue.get("severity") == "Medium")
     low_count = sum(1 for issue in issues if issue.get("severity") == "Low")
 
-    # Calculate score: W = 100/N, High: -2W, Medium: -1W, Low: -0.5W
+    # Calculate score: W = 100/N, High: -W, Medium: -0.5W, Low: -0.2W
     if num_commands == 0:
         score = 100.0
     else:
         weight = 100.0 / num_commands
         score = 100.0
-        score -= high_count * 2 * weight
-        score -= medium_count * 1 * weight
-        score -= low_count * 0.5 * weight
+        score -= high_count * weight
+        score -= medium_count * 0.5 * weight
+        score -= low_count * 0.2 * weight
 
     score = max(0.0, min(100.0, score))  # Clamp to 0-100
 

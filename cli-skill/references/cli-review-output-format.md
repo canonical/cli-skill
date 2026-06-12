@@ -13,7 +13,7 @@
 | Unrated | <# unrated> | <main categories for unrated issues> |
 | **Total** | **<# total>** | |
 
-**Overall rating:** <rating badge>
+**Overall rating:** <score> <rating badge>
 > The scoring algorithm starts with 100%, number of commands N, weight W=100/N. For each High violation, reduce by 2*W; Medium violation by 1*W; Low violation by 0.5*W. Clamp to 0-100.
 
 ---
