@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "files": {
+    "cli-skill/SKILL.md": {
+      "sourceHash": "571493ef1dd510d7b2c5efa388ab81805ca1bfb839b278554ac0e2d6028b11c8",
+      "installedHash": "571493ef1dd510d7b2c5efa388ab81805ca1bfb839b278554ac0e2d6028b11c8"
+    },
+    "cli-skill/adapters/README.md": {
+      "sourceHash": "9a52f0a729dd8c2f054f4e462f1d4de9a0666d123a6161b82d7f87776f2c7dd2",
+      "installedHash": "9a52f0a729dd8c2f054f4e462f1d4de9a0666d123a6161b82d7f87776f2c7dd2"
+    },
+    "cli-skill/adapters/claude-code/commands.yaml": {
+      "sourceHash": "10d1554e5d74376db1080eb82b1f6d4f296b268908f1684001e3d323051bd9f3",
+      "installedHash": "10d1554e5d74376db1080eb82b1f6d4f296b268908f1684001e3d323051bd9f3"
+    },
+    "cli-skill/adapters/copilot/SKILL.md": {
+      "sourceHash": "30314e5ce0f67887a47a7f36fd51bb52defcd1bcb45aadd6e9c4479ea5f402ac",
+      "installedHash": "30314e5ce0f67887a47a7f36fd51bb52defcd1bcb45aadd6e9c4479ea5f402ac"
+    },
+    "cli-skill/adapters/opencode/commands.json": {
+      "sourceHash": "d86ba471e92338ddaddd4c69558c78e6ad3594754bed8bfb2948aec88462c207",
+      "installedHash": "d86ba471e92338ddaddd4c69558c78e6ad3594754bed8bfb2948aec88462c207"
+    },
+    "cli-skill/adapters/pi-coding-agent/SKILL.md": {
+      "sourceHash": "770f9f095f7fd00913ab21326fc71f6a69b2363be0f5ea5db9fbf46fd0507628",
+      "installedHash": "770f9f095f7fd00913ab21326fc71f6a69b2363be0f5ea5db9fbf46fd0507628"
+    },
+    "cli-skill/commands/cli-behavioral-analysis.md": {
+      "sourceHash": "9c6545d9fd1cf9e8e42d797a9906f18e2895cc0b934b12c94da64643ff83dcc1",
+      "installedHash": "9c6545d9fd1cf9e8e42d797a9906f18e2895cc0b934b12c94da64643ff83dcc1"
+    },
+    "cli-skill/commands/cli-check-help.md": {
+      "sourceHash": "16e36e23668ecdf0e12600092218574199ffbccb80179d4bdb05dcecaa5c9b4d",
+      "installedHash": "16e36e23668ecdf0e12600092218574199ffbccb80179d4bdb05dcecaa5c9b4d"
+    },
+    "cli-skill/commands/cli-heuristic-analysis.md": {
+      "sourceHash": "9df2fb0997e5a6160b0c93920cf6ab8868469f84d6f5a701d9036cc9f191c748",
+      "installedHash": "9df2fb0997e5a6160b0c93920cf6ab8868469f84d6f5a701d9036cc9f191c748"
+    },
+    "cli-skill/commands/cli-review.md": {
+      "sourceHash": "4ba55617d0bb026fc0d4d74b5bd12ba93a591477026e13da48223a2d44fdf886",
+      "installedHash": "4ba55617d0bb026fc0d4d74b5bd12ba93a591477026e13da48223a2d44fdf886"
+    },
+    "cli-skill/commands/cli-semantic-analysis.md": {
+      "sourceHash": "d5ff5569ee41b777686c23fb3ae294b26f6583a12b6b1efbc8a6ae931eee52a6",
+      "installedHash": "d5ff5569ee41b777686c23fb3ae294b26f6583a12b6b1efbc8a6ae931eee52a6"
+    },
+    "cli-skill/commands/install-cli-pr-workflow.md": {
+      "sourceHash": "49b1c6c837a158f9690257cc6dbdbfe65382f628cf6f936d0ceb8d9a7d5c2ebf",
+      "installedHash": "49b1c6c837a158f9690257cc6dbdbfe65382f628cf6f936d0ceb8d9a7d5c2ebf"
+    },
+    "cli-skill/future-commands/cli-propose-command.md": {
+      "sourceHash": "2cda4adabb1ad05d9113c357c202248636d6223f32c830a0ec275728bca5e461",
+      "installedHash": "2cda4adabb1ad05d9113c357c202248636d6223f32c830a0ec275728bca5e461"
+    },
+    "cli-skill/future-commands/cli-rename-command.md": {
+      "sourceHash": "653b62a22fceb60fd8ca090fcf713d4d93eb554650817ec132c9e01081a8b9b1",
+      "installedHash": "653b62a22fceb60fd8ca090fcf713d4d93eb554650817ec132c9e01081a8b9b1"
+    },
+    "cli-skill/references/cli-help-examples.md": {
+      "sourceHash": "e4080251c73bd30734de33c1f31fb69d5be0569fb63043e32fd75aeeae93ef7d",
+      "installedHash": "e4080251c73bd30734de33c1f31fb69d5be0569fb63043e32fd75aeeae93ef7d"
+    },
+    "cli-skill/references/cli-help.md": {
+      "sourceHash": "50765456253ceb63c3cd80bdcd63bd29c02644c3190cb149defc1892e5c24ad5",
+      "installedHash": "50765456253ceb63c3cd80bdcd63bd29c02644c3190cb149defc1892e5c24ad5"
+    },
+    "cli-skill/references/cli-review-output-format.md": {
+      "sourceHash": "5ca3b52870c04341d6b9240c2f28edd1753ab33d8eba87ef247cb0b1492b0d10",
+      "installedHash": "5ca3b52870c04341d6b9240c2f28edd1753ab33d8eba87ef247cb0b1492b0d10"
+    },
+    "cli-skill/references/cli-skill-review-pr.yml": {
+      "sourceHash": "f9bf075bdae3239fce0da1a558d766932a0d0a206573ab2283c291787d07f0ac",
+      "installedHash": "f9bf075bdae3239fce0da1a558d766932a0d0a206573ab2283c291787d07f0ac"
+    },
+    "cli-skill/references/cli-standard.md": {
+      "sourceHash": "10f617f80610490d8c4a9795fbfbf5f1d4e7aac74f8da79d6db1c994a3c926d4",
+      "installedHash": "10f617f80610490d8c4a9795fbfbf5f1d4e7aac74f8da79d6db1c994a3c926d4"
+    },
+    "cli-skill/references/deprecation.md": {
+      "sourceHash": "cb47534e93c4daf78a621ba9754f214e82f2e8975d895b3f0029727417a13a4e",
+      "installedHash": "cb47534e93c4daf78a621ba9754f214e82f2e8975d895b3f0029727417a13a4e"
+    },
+    "cli-skill/schemas/commands.manifest.yaml": {
+      "sourceHash": "957b98b156ce1187ea932293b4a636c5d4d891bf3cafe5517780c66a21dbc803",
+      "installedHash": "957b98b156ce1187ea932293b4a636c5d4d891bf3cafe5517780c66a21dbc803"
+    },
+    "cli-skill/shared/cli-discovery-preflight.md": {
+      "sourceHash": "cb50539228b6d99cd859d81efcc75bb2823c3438c865b75479f65671757e7ee3",
+      "installedHash": "cb50539228b6d99cd859d81efcc75bb2823c3438c865b75479f65671757e7ee3"
+    },
+    ".pi/skills/cli-skill/SKILL.md": {
+      "sourceHash": "dce5fc40f9861cc42b4cfdeaf53d9aea0219b851b9b3dd7d4ec65df4c9161b64",
+      "installedHash": "dce5fc40f9861cc42b4cfdeaf53d9aea0219b851b9b3dd7d4ec65df4c9161b64"
+    }
+  }
+}

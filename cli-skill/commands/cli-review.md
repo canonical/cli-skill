@@ -32,11 +32,11 @@ CLI standard compliance review only.
 - Findings must map to explicit rules from the standard
 - Non-compliance and compliant evidence based on observed CLI behavior/docs/code
 - Use these rules to determine severity. Severity can only be [High|Medium|Low|Unrated]:
-  * High: violations of command structure and naming (DO NOT APPLY SHOULD RULES), use of positional parameters, accessibility/color violations
+  * High: violations of command structure and naming (SHOULD RULES DO NOT COUNT), use of positional parameters, accessibility/color violations
   * Medium: use if non-standard verbs for commands, inconsistent flag names or usage, extremely high complexity (eg. created by >20 commands)
   * Low: formatting violations, duplicate short/long flags
   * Unrated: use if no standard rule applies, or if the finding is not certain, there is a SHOULD rule, or the rule applies to a debug/secret command
-- All SHOULD rules result in unrated violations - report them, but don't include them in the scoring.
+- All SHOULD rules must be unrated violations - report them, but don't include them in the scoring. This can be a use of non-standard verbs, or in cases where the standard says "you should", or "prefer".
 
 ## Out Of Scope
 
@@ -71,10 +71,9 @@ To calculate the score:
 1. Create a JSON table with structure: `{"commands": <int>, "issues": [{"severity": "High|Medium|Low|Unrated", "category": <str>, "message": <str>}, ...]}`
 2. Execute: `python3 <resolved_script_path> <json_file>` using the path resolution defined in `Execution Order`
 3. This script returns JSON with `score` (0-100), `passed` (boolean), `rating badge`, and severity counts
-4. Use this score and rating in the summary section of the markdown output
-5. Use the rating badge in the summary section of the markdown output
+4. Use this `score` and `rating badge` in the summary section of the markdown output
 
-The script implements the standard algorithm: Start with 100%, weight W=100/#commands. For each High violation, reduce by 2*W; Medium violation by 1*W; Low violation by 0.5*W. Clamp to 0-100%.
+The script implements the standard algorithm: Start with 100%, weight W=100/#commands. For each High violation, reduce by W; Medium violation by 0.5*W; Low violation by 0.2*W. Clamp to 0-100%.
 
 ### CLI Change Requirements
 Analyze the files that have been changes as part of this PR. Create a detailed summary of how each change affects the compliance of the CLI.
