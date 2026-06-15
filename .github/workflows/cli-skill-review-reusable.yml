@@ -116,6 +116,7 @@ jobs:
         with:
           provider: ${{ inputs.provider }}
           model: ${{ inputs.model }}
+          token: ${{ secrets.llm_token }}
           api-key: ${{ secrets.llm_token }}
           prompt: |
             Review this pull request. Before starting, use get_issue_or_pr_thread to
