@@ -23,6 +23,11 @@ on:
         required: false
         type: string
         default: "xiaomi/mimo-v2.5"
+      thinking_level:
+        description: "Pi thinking level (affects response depth and latency)"
+        required: false
+        type: string
+        default: "medium"
       fail_on_agent_error:
         description: "Fail workflow when Pi action does not succeed"
         required: false
@@ -117,7 +122,7 @@ jobs:
           provider: ${{ inputs.provider }}
           model: ${{ inputs.model }}
           token: ${{ secrets.llm_token }}
-          api-key: ${{ secrets.llm_token }}
+          thinking_level: ${{ inputs.thinking_level }}
           prompt: |
             Review this pull request. Before starting, use get_issue_or_pr_thread to
             fetch any existing review comments so you don't duplicate feedback that
