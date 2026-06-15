@@ -22,7 +22,7 @@ on:
         description: "Pi model"
         required: false
         type: string
-        default: "moonshotai/kimi-k2.7-code"
+        default: "deepseek/deepseek-v4-pro"
       thinking_level:
         description: "Pi thinking level (affects response depth and latency)"
         required: false
