@@ -165,11 +165,11 @@ jobs:
           
           npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 
-          echo ${PI_MODEL}
-
           # Write the OpenRouter Fusion extension that injects plugins into the request payload
-          mkdir -p ~/.pi/agent/extensions
-          cat > ~/.pi/agent/extensions/openrouter-fusion.ts <<'EXT_EOF'
+          EXTENSION_FLAG=""
+          if [[ "${PI_MODEL}" == "openrouter/fusion" ]]; then
+            mkdir -p ~/.pi/agent/extensions
+            cat > ~/.pi/agent/extensions/openrouter-fusion.ts <<'EXT_EOF'
           import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
           const ANALYSIS_MODELS = (process.env.FUSION_ANALYSIS_MODELS || "")
@@ -197,33 +197,43 @@ jobs:
             });
           }
           EXT_EOF
+            EXTENSION_FLAG="--extension ~/.pi/agent/extensions/openrouter-fusion.ts"
+          fi
 
-          # Run Pi agent with explicit provider/model and the fusion extension
-          pi -p \
-            --provider "${PI_PROVIDER}" \
-            --model "${PI_MODEL}" \
-            --thinking "${PI_THINKING_LEVEL}" \
-            --api-key "${LLM_TOKEN}" \
-            --extension ~/.pi/agent/extensions/openrouter-fusion.ts \
-            <<PROMPT_EOF
+          # Build prompt file — use quoted heredoc to prevent bash interpreting
+          # backticks and angle-bracket tokens inside the prompt text, then
+          # substitute the two env vars we do want expanded.
+          PROMPT_FILE=$(mktemp)
+          cat > "${PROMPT_FILE}" <<'PROMPT_EOF'
           Review this pull request. Before starting, use get_issue_or_pr_thread to
           fetch any existing review comments so you don't duplicate feedback that
           has already been given. Focus on issues, bugs, and security concerns.
           Post your findings as a PR review when done.
 
-          Run ${PI_COMMAND} from the cli-skill in this repository.
+          Run __PI_COMMAND__ from the cli-skill in this repository.
 
           Scope rules:
           - If command is /cli-review, perform only CLI standard compliance checks.
           - Use .cli-skill-infra/cli-skill/references/cli-standard.md as the sole review standard.
 
-          Repository target path: ${PI_TARGET_PATH}
+          Repository target path: __PI_TARGET_PATH__
 
           Output requirements:
           - Follow the section structure defined in `.cli-skill-infra/cli-skill/references/cli-review-output-format.md` exactly.
           - The overall score MUST be computed by running `python3 .cli-skill-infra/scripts/calculate_cli_score.py <json_file>` (fallback: `python3 scripts/calculate_cli_score.py <json_file>`) — do not calculate or estimate it manually.
           - Keep findings evidence-based and standards-mapped.
           PROMPT_EOF
+          sed -i "s|__PI_COMMAND__|${PI_COMMAND}|g; s|__PI_TARGET_PATH__|${PI_TARGET_PATH}|g" "${PROMPT_FILE}"
+
+          # Run Pi agent with explicit provider/model and (optionally) the fusion extension
+          pi -p \
+            --provider "${PI_PROVIDER}" \
+            --model "${PI_MODEL}" \
+            --thinking "${PI_THINKING_LEVEL}" \
+            --api-key "${LLM_TOKEN}" \
+            ${EXTENSION_FLAG} \
+            < "${PROMPT_FILE}"
+          rm -f "${PROMPT_FILE}"
           
           # Extract session outputs from Pi result (adjust paths based on actual Pi output)
           SESSION_HTML=$(find ~ -name "*.html" -path "*pi*session*" -type f | head -1 || echo "")
