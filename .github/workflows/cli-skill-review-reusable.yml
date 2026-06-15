@@ -119,6 +119,7 @@ jobs:
         id: pi
         uses: shaftoe/pi-coding-agent-action@v2
         with:
+          github_token: ${{ secrets.gh_token }}
           provider: ${{ inputs.provider }}
           model: ${{ inputs.model }}
           token: ${{ secrets.llm_token }}
