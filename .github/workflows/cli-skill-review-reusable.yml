@@ -127,7 +127,9 @@ jobs:
           prompt: |
             Review this pull request. Before starting, use get_issue_or_pr_thread to
             fetch any existing review comments so you can refer to feedback that
-            has already been given. Post your findings as a PR review when done.
+            has already been given. Use references to the code in this PR, but if
+            the findings do not relate to a change, don't try to use diff.
+            Post your findings as a comment when done.
 
             Run ${{ inputs.command }} from the cli-skill in this repository.
 
