@@ -79,7 +79,7 @@ Analyze the files that have been changes as part of this PR. Create a detailed s
 
 The `Compliance Matrix` section must include a table with these columns:
 
-- `[SEVERITY-N]` - link to non-compliance finding heading in this report
+- `Finding` - In the form of `[SEVERITY-N]`, link to non-compliance finding in the `Non-compliance findings` section
 - `Rule Summary`
 - `Evidence`, include the name of the relevant section of the cli standard by using `reference to cli standard`
 - `Notes`

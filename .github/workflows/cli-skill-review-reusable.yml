@@ -126,9 +126,8 @@ jobs:
           thinking_level: ${{ inputs.thinking_level }}
           prompt: |
             Review this pull request. Before starting, use get_issue_or_pr_thread to
-            fetch any existing review comments so you don't duplicate feedback that
-            has already been given. Focus on issues, bugs, and security concerns.
-            Post your findings as a PR review when done.
+            fetch any existing review comments so you can refer to feedback that
+            has already been given. Post your findings as a PR review when done.
 
             Run ${{ inputs.command }} from the cli-skill in this repository.
 
