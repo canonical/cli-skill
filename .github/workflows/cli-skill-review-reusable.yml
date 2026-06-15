@@ -226,6 +226,10 @@ jobs:
           sed -i "s|__PI_COMMAND__|${PI_COMMAND}|g; s|__PI_TARGET_PATH__|${PI_TARGET_PATH}|g" "${PROMPT_FILE}"
 
           # Run Pi agent with explicit provider/model and (optionally) the fusion extension
+          # Shield workflow outputs from any writes performed inside Pi/tool subprocesses.
+          REAL_GITHUB_OUTPUT="$GITHUB_OUTPUT"
+          export GITHUB_OUTPUT="$(mktemp)"
+
           set +e
           pi -p \
             --provider "${PI_PROVIDER}" \
@@ -237,31 +241,41 @@ jobs:
           PI_EXIT_CODE=$?
           set -e
           rm -f "${PROMPT_FILE}"
-          
+
+          # Restore the real GitHub output file for controlled outputs only.
+          export GITHUB_OUTPUT="$REAL_GITHUB_OUTPUT"
+
           # Capture Pi SDK version
           PI_VERSION=$(pi --version 2>/dev/null | head -1 || echo "unknown")
-          
+
           # Find the latest session file created by Pi (file path only, never directories)
           SESSION_DIR="${HOME}/.pi/agent/sessions"
           SESSION_JSONL=""
           if [[ -d "${SESSION_DIR}" ]]; then
             SESSION_JSONL=$(find "${SESSION_DIR}" -type f -name "session.jsonl" -printf '%T@ %p\n' 2>/dev/null | sort -nr | head -n 1 | cut -d' ' -f2- || true)
           fi
-          if [[ -n "${SESSION_JSONL}" && ! -f "${SESSION_JSONL}" ]]; then
-            SESSION_JSONL=""
+
+          # Accept only canonical Pi session files under ~/.pi/agent/sessions.
+          if [[ -n "${SESSION_JSONL}" ]]; then
+            if [[ ! -f "${SESSION_JSONL}" || "${SESSION_JSONL}" != "${SESSION_DIR}"/* || "$(basename "${SESSION_JSONL}")" != "session.jsonl" ]]; then
+              SESSION_JSONL=""
+            fi
           fi
-          
+
           # Export session to HTML if session file exists
           SESSION_HTML=""
           if [[ -n "${SESSION_JSONL}" && -f "${SESSION_JSONL}" ]]; then
             SESSION_HTML="${SESSION_JSONL%.jsonl}.html"
             pi --export "${SESSION_JSONL}" "${SESSION_HTML}" || true
+            if [[ ! -f "${SESSION_HTML}" ]]; then
+              SESSION_HTML=""
+            fi
           fi
-          
-          echo "session_html_path=${SESSION_HTML}" >> $GITHUB_OUTPUT
-          echo "session_jsonl_path=${SESSION_JSONL}" >> $GITHUB_OUTPUT
-          echo "pi_version=${PI_VERSION}" >> $GITHUB_OUTPUT
-          [[ ${PI_EXIT_CODE} -eq 0 ]] && echo "success=true" >> $GITHUB_OUTPUT || echo "success=false" >> $GITHUB_OUTPUT
+
+          echo "session_html_path=${SESSION_HTML}" >> "$GITHUB_OUTPUT"
+          echo "session_jsonl_path=${SESSION_JSONL}" >> "$GITHUB_OUTPUT"
+          echo "pi_version=${PI_VERSION}" >> "$GITHUB_OUTPUT"
+          [[ ${PI_EXIT_CODE} -eq 0 ]] && echo "success=true" >> "$GITHUB_OUTPUT" || echo "success=false" >> "$GITHUB_OUTPUT"
 
       - name: Build PR report from Pi output
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_jsonl_path != '' && inputs.post_pr_comment }}
