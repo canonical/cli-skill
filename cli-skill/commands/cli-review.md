@@ -16,9 +16,6 @@ CLI standard compliance review only.
   - `scripts/calculate_cli_score.py`
   Execute: `python3 <resolved_script_path> <json_file>`.
 9. Use the script JSON output values (`score`, `rating`, `rating_badge`, counts) in the summary. **Do not compute score manually.**
-10. Add this evidence line in the `Summary` section so workflow checks can verify script usage:
-  - `Scoring script invocation: <resolved_script_path>`
-  - `Scoring output JSON:` followed by a fenced `json` block containing the script output.
 
 ### Hard Constraints
 
@@ -82,12 +79,12 @@ Analyze the files that have been changes as part of this PR. Create a detailed s
 
 The `Compliance Matrix` section must include a table with these columns:
 
-- `Standard Clause`
+- `[SEVERITY-N]` - link to non-compliance finding heading in this report
 - `Rule Summary`
 - `Evidence`, include the name of the relevant section of the cli standard by using `reference to cli standard`
-- `Severity` (`High`, `Medium`, `Low`, or `Unrated`)
 - `Notes`
 
+### Non-compliance findings requirements
 Every non-compliance finding must use this exact heading format:
 
 ```
@@ -103,5 +100,7 @@ Each finding:
 3. Must include links to the relevant sections of the CLI standard by using `reference to cli standard` and `https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md` as a base URL
 3. Should include whenever possible a remediation action that restores compliance
 4. Cite the code block in markdown code format where the violation is detected
+
+**Non-compliance findings checkpoint**: Verify that each non-compliance finding is linked in the compliance matrix, and that each row in the compliance matrix links to a finding. Do not proceed until confirmed.
 
 **Command completion checkpoint**: Verify that the review file exists in `cli-review/cli-review.md` and is non-empty. Do not proceed until confirmed.
