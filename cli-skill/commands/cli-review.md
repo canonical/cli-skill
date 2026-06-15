@@ -8,7 +8,7 @@ CLI standard compliance review only.
 2. Use preflight outputs from `cli-review/0-cli-discovery-preflight/`
 3. Checkpoint: Before going to Phase 1, make sure that preflight analysis is complete. Do not proceed before it is done.
 4. Read `cli-skill/references/cli-standard.md` in full
-5. **Phase 1 — Collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[clause] [evidence] [reference to code] [reference to cli standard]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
+5. **Phase 1 — Collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[problem description] [evidence] [reference to code] [reference to cli standard]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
 6. Checkpoint: Before going to Phase 2, make sure that no duplicate findings are listed, DO THIS ONLY by analysing the `reference to code`. 
 7. **Phase 2 — Assign severity.** For each finding collected in Phase 1, assign exactly one severity (`High`, `Medium`, `Low`, or `Unrated`) using the rules in the `## Scope` section. Do not add or remove findings in this phase.
 8. Build the score JSON `{"commands": <int>, "issues": [...]}` from the complete, severity-annotated list.
@@ -27,10 +27,10 @@ CLI standard compliance review only.
 ## Scope
 
 - Check compliance with `cli-skill/references/cli-standard.md` only, do not use semantic criteria, or heuristics
-- Findings must map to explicit rules from the standard
+- Findings must map to clauses from the standard, suggestions in the standard will result in unrated findings
 - Non-compliance and compliant evidence based on observed CLI behavior/docs/code
 - Use these rules to determine severity. Severity can only be [High|Medium|Low|Unrated]:
-  * High: violations of command structure and naming (SHOULD RULES DO NOT COUNT), use of positional parameters, accessibility/color violations
+  * High: violations of command structure and naming (SHOULD RULES DO NOT COUNT, THEY ARE UNRATED but should be included), use of positional parameters, accessibility/color violations (IF NO COLOR IS USED, eg. only plain or boldbold, NO_COLOR need not be detected)
   * Medium: use if inconsistent verbs for commands (e.g. add-foo vs. kill-foo), inconsistent flag names or usage, extremely high complexity (eg. created by >20 commands)
   * Low: formatting violations, duplicate short/long flags
   * Unrated: use if no standard rule applies, or if the finding is not certain, there is a SHOULD rule, the rule applies to a debug/secret command, use of non-standard verbs when there is a standard verb that fits the action
@@ -54,7 +54,7 @@ The output **must** use exactly these top-level headings in this order:
 # Canonical CLI automated review report
 ## Summary          (violation table + rating badge returned by the scoring script)
 ## CLI changes in this PR (include only if the workflow was triggered from a PR creation/update)
-## Compliance matrix  (table with columns: Standard Clause | Rule Summary | Evidence | Severity | Notes)
+## Compliance matrix  (table with columns: Finding | Rule Summary | Evidence | Notes)
 ## Non-compliance Findings (with citations)
 ## Compliant Findings Summary (concise, without citations)
 ```
@@ -97,10 +97,10 @@ Where `SEVERITY` is one of `HIGH`, `MEDIUM`, `LOW`, or `UNRATED` (uppercase), an
 Each finding:
 
 1. Must include the violated clause from `cli-skill/references/cli-standard.md`
-2. Must include concrete CLI evidence (command/help/code reference)
-3. Must include links to the relevant sections of the CLI standard by using `reference to cli standard` and `https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md` as a base URL
-3. Should include whenever possible a remediation action that restores compliance
-4. Cite the code block in markdown code format where the violation is detected
+2. Must include links to the relevant sections of the CLI standard by using `reference to cli standard` and `https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md` as a base URL
+3. Must include concrete CLI evidence (command/help/code reference)
+4. Should include whenever possible a remediation action that restores compliance
+5. Cite the code block in markdown code format where the violation is detected
 
 **Non-compliance findings checkpoint**: Verify that each non-compliance finding is linked in the compliance matrix, and that each row in the compliance matrix links to a finding. Do not proceed until confirmed.
 
