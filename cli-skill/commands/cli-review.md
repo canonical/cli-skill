@@ -74,7 +74,7 @@ To calculate the score:
 The script implements the standard algorithm: Start with 100%, weight W=100/#commands. For each High violation, reduce by W; Medium violation by 0.5*W; Low violation by 0.2*W. Clamp to 0-100%.
 
 ### CLI Change Requirements
-Analyze the files that have been changes as part of this PR. Create a detailed summary of how each change affects the compliance of the CLI.
+Analyze the files that have been changes as part of this PR. Create a list of changes, each with a detailed summary of how each change affects the compliance of the CLI.
 
 ### Compliance Matrix Requirements
 
