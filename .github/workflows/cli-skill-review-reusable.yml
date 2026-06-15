@@ -256,7 +256,6 @@ jobs:
           echo "session_html_path=${SESSION_HTML}" >> $GITHUB_OUTPUT
           echo "session_jsonl_path=${SESSION_JSONL}" >> $GITHUB_OUTPUT
           echo "pi_version=${PI_VERSION}" >> $GITHUB_OUTPUT
-          [[ ${PI_EXIT_CODE} -eq 0 ]] && echo "success=true" >> $GITHUB_OUTPUT || echo "success=false" >> $GITHUB_OUTPUT
 
       - name: Build PR report from Pi output
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_jsonl_path != '' && inputs.post_pr_comment }}
