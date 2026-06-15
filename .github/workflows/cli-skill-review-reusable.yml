@@ -36,7 +36,7 @@ on:
         description: "OpenRouter Fusion synthesis model"
         required: false
         type: string
-        default: "~openai/gpt-latest"
+        default: "~moonshotai/kimi-k2.7-code"
       thinking_level:
         description: "Pi thinking level"
         required: false
@@ -165,8 +165,7 @@ jobs:
           
           npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 
-          # Export OpenRouter API key so pi recognizes it
-          export OPENROUTER_API_KEY="${LLM_TOKEN}"
+          echo ${PI_MODEL}
 
           # Write the OpenRouter Fusion extension that injects plugins into the request payload
           mkdir -p ~/.pi/agent/extensions
