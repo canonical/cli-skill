@@ -26,11 +26,11 @@
 
 ## Compliance matrix
 
-| Standard Clause | Rule Summary | Evidence | Severity | Notes |
-|-----------------|--------------|----------|----------|-------|
+| Finding | Rule Summary | Evidence | Notes |
+|---------|--------------|----------|-------|
 <findings>
 Example:
-${| Grammar + Vocabulary — Commands are verbs | Every command acting on a primary object must be a verb. | `registration-csv` is a noun phrase, not a verb. | High | Should use a verb such as `generate-registration-csv`. |}
+${| HIGH-1 | Every command acting on a primary object must be a verb. | `registration-csv` is a noun phrase, not a verb. | Should use a verb such as `generate-registration-csv`. |}
 
 ---
 
@@ -40,7 +40,7 @@ Each finding heading must follow this exact format: `### [SEVERITY-N] <short des
 
 Example:
 ${### [HIGH-1] `registration-csv` is not a verb
-**Standard citation:** Grammar + Vocabulary — *"Commands are verbs. Every command that acts on a primary object of a command must be a verb."*
+**CLI Standard citation:** [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#commands-are-verbs) — *"Commands are verbs. Every command that acts on a primary object of a command must be a verb."*
 **Evidence:**
 ```python
 app.command(
