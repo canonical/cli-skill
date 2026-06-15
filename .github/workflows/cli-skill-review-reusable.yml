@@ -134,7 +134,6 @@ jobs:
             Run ${{ inputs.command }} from the cli-skill in this repository.
 
             Scope rules:
-            - If command is /cli-review, perform only CLI standard compliance checks.
             - Use .cli-skill-infra/cli-skill/references/cli-standard.md as the sole review standard.
 
             Repository target path: ${{ inputs.target_path }}

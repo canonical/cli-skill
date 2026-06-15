@@ -4,18 +4,19 @@ CLI standard compliance review only.
 
 ## Execution Order
 
-1. Check for the existence of `cli-review/0-cli-discovery-preflight/`. If it does not exist, run `shared/cli-discovery-preflight.md`
+1. Check for the existence of `cli-review/0-cli-discovery-preflight/`. If it does not exist, run `cli-skill/shared/cli-discovery-preflight.md`
 2. Use preflight outputs from `cli-review/0-cli-discovery-preflight/`
-3. Read `cli-skill/references/cli-standard.md` in full
-4. **Phase 1 — Collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[clause] [evidence] [reference to code] [reference to cli standard]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
-5. Checkpoint: Before going to Phase 2, make sure that no duplicate findings are listed, DO THIS ONLY by analysing the `reference to code`. 
-6. **Phase 2 — Assign severity.** For each finding collected in Phase 1, assign exactly one severity (`High`, `Medium`, `Low`, or `Unrated`) using the rules in the `## Scope` section. Do not add or remove findings in this phase.
-7. Build the score JSON `{"commands": <int>, "issues": [...]}` from the complete, severity-annotated list.
-8. Resolve the scoring script path in this exact order and use the first existing path:
+3. Checkpoint: Before going to Phase 1, make sure that preflight analysis is complete. Do not proceed before it is done.
+4. Read `cli-skill/references/cli-standard.md` in full
+5. **Phase 1 — Collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[clause] [evidence] [reference to code] [reference to cli standard]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
+6. Checkpoint: Before going to Phase 2, make sure that no duplicate findings are listed, DO THIS ONLY by analysing the `reference to code`. 
+7. **Phase 2 — Assign severity.** For each finding collected in Phase 1, assign exactly one severity (`High`, `Medium`, `Low`, or `Unrated`) using the rules in the `## Scope` section. Do not add or remove findings in this phase.
+8. Build the score JSON `{"commands": <int>, "issues": [...]}` from the complete, severity-annotated list.
+9. Resolve the scoring script path in this exact order and use the first existing path:
   - `.cli-skill-infra/scripts/calculate_cli_score.py`
   - `scripts/calculate_cli_score.py`
   Execute: `python3 <resolved_script_path> <json_file>`.
-9. Use the script JSON output values (`score`, `rating`, `rating_badge`, counts) in the summary. **Do not compute score manually.**
+10. Use the script JSON output values (`score`, `rating`, `rating_badge`, counts) in the summary. **Do not compute score manually.**
 
 ### Hard Constraints
 
