@@ -226,7 +226,7 @@ jobs:
           sed -i "s|__PI_COMMAND__|${PI_COMMAND}|g; s|__PI_TARGET_PATH__|${PI_TARGET_PATH}|g" "${PROMPT_FILE}"
 
           # Run Pi agent with explicit provider/model and (optionally) the fusion extension
-          # Capture both stdout and stderr while displaying in workflow log
+          PI_CONSOLE_LOG=$(mktemp)
           pi -p \
             --provider "${PI_PROVIDER}" \
             --model "${PI_MODEL}" \
@@ -234,6 +234,7 @@ jobs:
             --api-key "${LLM_TOKEN}" \
             ${EXTENSION_FLAG} \
             < "${PROMPT_FILE}"
+          PI_EXIT_CODE=$?
           
           # Capture Pi SDK version
           PI_VERSION=$(pi --version 2>/dev/null | head -1 || echo "unknown")
@@ -256,6 +257,7 @@ jobs:
           echo "session_html_path=${SESSION_HTML}" >> $GITHUB_OUTPUT
           echo "session_jsonl_path=${SESSION_JSONL}" >> $GITHUB_OUTPUT
           echo "pi_version=${PI_VERSION}" >> $GITHUB_OUTPUT
+          [[ ${PI_EXIT_CODE} -eq 0 ]] && echo "success=true" >> $GITHUB_OUTPUT || echo "success=false" >> $GITHUB_OUTPUT
 
       - name: Build PR report from Pi output
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_jsonl_path != '' && inputs.post_pr_comment }}
@@ -299,21 +301,6 @@ jobs:
           name: pi-session-jsonl-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.pi.outputs.session_jsonl_path }}
           if-no-files-found: ignore
-
-      - name: Upload Pi console output log
-        if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.console_log_path != '' }}
-        id: upload_console_log
-        uses: actions/upload-artifact@v7
-        with:
-          name: pi-console-log-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ steps.pi.outputs.console_log_path }}
-          if-no-files-found: ignore
-
-      - name: Display Pi console output on failure
-        if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.console_log_path != '' && failure() }}
-        run: |
-          echo "Pi console output:"
-          cat "${{ steps.pi.outputs.console_log_path }}"
 
       - name: Fail when agent run is unsuccessful
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.fail_on_agent_error && steps.pi.outputs.success != 'true' }}
