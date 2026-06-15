@@ -85,6 +85,11 @@ jobs:
       cancel-in-progress: true
 
     steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'npm'
       - name: Checkout repository under review
         uses: actions/checkout@v5
         with:
@@ -136,6 +141,8 @@ jobs:
         run: |
           set -euo pipefail
           
+          npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+
           # Create Pi configuration file with OpenRouter fusion config as default
           mkdir -p ~/.pi/config
                     
