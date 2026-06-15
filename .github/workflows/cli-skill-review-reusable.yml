@@ -226,29 +226,56 @@ jobs:
           sed -i "s|__PI_COMMAND__|${PI_COMMAND}|g; s|__PI_TARGET_PATH__|${PI_TARGET_PATH}|g" "${PROMPT_FILE}"
 
           # Run Pi agent with explicit provider/model and (optionally) the fusion extension
+          # Capture both stdout and stderr while displaying in workflow log
+          PI_CONSOLE_LOG=$(mktemp)
           pi -p \
             --provider "${PI_PROVIDER}" \
             --model "${PI_MODEL}" \
             --thinking "${PI_THINKING_LEVEL}" \
             --api-key "${LLM_TOKEN}" \
             ${EXTENSION_FLAG} \
-            < "${PROMPT_FILE}"
+            < "${PROMPT_FILE}" 2>&1 | tee "${PI_CONSOLE_LOG}"
+          PI_EXIT_CODE=${PIPESTATUS[0]}
           rm -f "${PROMPT_FILE}"
           
-          # Extract session outputs from Pi result (adjust paths based on actual Pi output)
-          SESSION_HTML=$(find ~ -name "*.html" -path "*pi*session*" -type f | head -1 || echo "")
-          SESSION_JSONL=$(find ~ -name "*.jsonl" -path "*pi*session*" -type f | head -1 || echo "")
+          # Capture Pi SDK version
+          PI_VERSION=$(pi --version 2>/dev/null | head -1 || echo "unknown")
+          
+          # Find the latest session file created by pi
+          SESSION_DIR="${HOME}/.pi/agent/sessions"
+          if [[ -d "${SESSION_DIR}" ]]; then
+            SESSION_JSONL=$(find "${SESSION_DIR}" -type f -name "session.jsonl" | xargs ls -t | head -1 || echo "")
+          else
+            SESSION_JSONL=""
+          fi
+          
+          # Export session to HTML if session file exists
+          SESSION_HTML=""
+          if [[ -n "${SESSION_JSONL}" && -f "${SESSION_JSONL}" ]]; then
+            SESSION_HTML="${SESSION_JSONL%.jsonl}.html"
+            pi --export "${SESSION_JSONL}" "${SESSION_HTML}" || true
+          fi
           
           echo "session_html_path=${SESSION_HTML}" >> $GITHUB_OUTPUT
           echo "session_jsonl_path=${SESSION_JSONL}" >> $GITHUB_OUTPUT
-          echo "success=true" >> $GITHUB_OUTPUT
+          echo "console_log_path=${PI_CONSOLE_LOG}" >> $GITHUB_OUTPUT
+          echo "pi_version=${PI_VERSION}" >> $GITHUB_OUTPUT
+          [[ ${PI_EXIT_CODE} -eq 0 ]] && echo "success=true" >> $GITHUB_OUTPUT || echo "success=false" >> $GITHUB_OUTPUT
 
       - name: Build PR report from Pi output
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_jsonl_path != '' && inputs.post_pr_comment }}
         id: report
+        env:
+          PI_VERSION: ${{ steps.pi.outputs.pi_version }}
+          PI_MODEL: ${{ inputs.model }}
+          PI_THINKING: ${{ inputs.thinking_level }}
+          GH_RUN_ID: ${{ github.run_id }}
+          GH_REPO: ${{ github.repository }}
+          GH_SERVER_URL: ${{ github.server_url }}
+          PI_RESPONSE: "Review completed by Pi coding agent."
         run: |
           set -euo pipefail
-          python3 .cli-skill-infra/scripts/build-pr-report.py "${{ steps.pi.outputs.session_jsonl_path }}" > pr_report.md
+          python3 .cli-skill-infra/scripts/build-pr-report.py "${{ steps.pi.outputs.session_jsonl_path }}"
           echo "report_path=pr_report.md" >> $GITHUB_OUTPUT
 
       - name: Upsert PR comment
@@ -267,6 +294,7 @@ jobs:
         with:
           name: pi-session-html-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.pi.outputs.session_html_path }}
+          if-no-files-found: ignore
 
       - name: Upload Pi session JSONL artifact
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_jsonl_path != '' }}
@@ -275,6 +303,22 @@ jobs:
         with:
           name: pi-session-jsonl-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.pi.outputs.session_jsonl_path }}
+          if-no-files-found: ignore
+
+      - name: Upload Pi console output log
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.console_log_path != '' }}
+        id: upload_console_log
+        uses: actions/upload-artifact@v7
+        with:
+          name: pi-console-log-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.pi.outputs.console_log_path }}
+          if-no-files-found: ignore
+
+      - name: Display Pi console output on failure
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.console_log_path != '' && failure() }}
+        run: |
+          echo "Pi console output:"
+          cat "${{ steps.pi.outputs.console_log_path }}"
 
       - name: Fail when agent run is unsuccessful
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.fail_on_agent_error && steps.pi.outputs.success != 'true' }}
