@@ -27,6 +27,16 @@ on:
         required: false
         type: string
         default: "openrouter/fusion"
+      fusion_analysis_models:
+        description: "OpenRouter Fusion analysis models (comma-separated)"
+        required: false
+        type: string
+        default: "~moonshotai/kimi-k2.7-code,~deepseek/deepseek-v3.2,~google/gemini-flash-latest"
+      fusion_synthesis_model:
+        description: "OpenRouter Fusion synthesis model"
+        required: false
+        type: string
+        default: "~openai/gpt-latest"
       thinking_level:
         description: "Pi thinking level"
         required: false
@@ -143,36 +153,60 @@ jobs:
         env:
           LLM_TOKEN: ${{ secrets.llm_token }}
           GH_TOKEN: ${{ secrets.gh_token }}
+          PI_PROVIDER: ${{ inputs.provider }}
           PI_MODEL: ${{ inputs.model }}
           PI_THINKING_LEVEL: ${{ inputs.thinking_level }}
           PI_COMMAND: ${{ inputs.command }}
           PI_TARGET_PATH: ${{ inputs.target_path }}
+          FUSION_ANALYSIS_MODELS: ${{ inputs.fusion_analysis_models }}
+          FUSION_SYNTHESIS_MODEL: ${{ inputs.fusion_synthesis_model }}
         run: |
           set -euo pipefail
           
           npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 
-          # Create Pi configuration file with OpenRouter fusion config as default
-          mkdir -p ~/.pi/config
-                    
-          # Generate Pi config with OpenRouter fusion plugins for analysis
-          cat > ~/.pi/config/pi.yaml <<EOF
-          provider: openrouter
-          model: ${PI_MODEL}
-          thinking_level: ${PI_THINKING_LEVEL}
-          export_session_html: true
-          export_session_jsonl: true
-          plugins:
-            - id: fusion
-              analysis_models:
-                - "~moonshotai/kimi-k2.7-code"
-                - "~deepseek/deepseek-v3.2"
-                - "~google/gemini-flash-latest"
-              model: "~moonshotai/kimi-k2.7-code"
-          EOF
-          
-          # Run Pi agent with the specified prompt
-          pi --config ~/.pi/config/pi.yaml <<'PROMPT_EOF'
+          # Export OpenRouter API key so pi recognizes it
+          export OPENROUTER_API_KEY="${LLM_TOKEN}"
+
+          # Write the OpenRouter Fusion extension that injects plugins into the request payload
+          mkdir -p ~/.pi/agent/extensions
+          cat > ~/.pi/agent/extensions/openrouter-fusion.ts <<'EXT_EOF'
+          import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+
+          const ANALYSIS_MODELS = (process.env.FUSION_ANALYSIS_MODELS || "")
+            .split(",")
+            .map((m) => m.trim())
+            .filter((m) => m.length > 0);
+
+          const SYNTHESIS_MODEL = process.env.FUSION_SYNTHESIS_MODEL || "";
+
+          export default function (pi: ExtensionAPI) {
+            pi.on("before_provider_request", (event) => {
+              const payload = event.payload;
+              if (payload.model !== "openrouter/fusion") return;
+
+              return {
+                ...payload,
+                plugins: [
+                  {
+                    id: "fusion",
+                    analysis_models: ANALYSIS_MODELS,
+                    model: SYNTHESIS_MODEL,
+                  },
+                ],
+              };
+            });
+          }
+          EXT_EOF
+
+          # Run Pi agent with explicit provider/model and the fusion extension
+          pi -p \
+            --provider "${PI_PROVIDER}" \
+            --model "${PI_MODEL}" \
+            --thinking "${PI_THINKING_LEVEL}" \
+            --api-key "${LLM_TOKEN}" \
+            --extension ~/.pi/agent/extensions/openrouter-fusion.ts \
+            <<PROMPT_EOF
           Review this pull request. Before starting, use get_issue_or_pr_thread to
           fetch any existing review comments so you don't duplicate feedback that
           has already been given. Focus on issues, bugs, and security concerns.

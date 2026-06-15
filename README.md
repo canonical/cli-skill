@@ -52,19 +52,21 @@ On pull requests (opened, synchronize, reopened, ready_for_review), the workflow
 
 - command: /cli-review
 - provider: openrouter
-- model: moonshotai/kimi-k2.6
+- model: openrouter/fusion
 
 It publishes a markdown report in PR comments and updates the same report on subsequent PR updates.
 
 ### 3. Manual Runs
 
-Run the workflow from the Actions tab with workflow_dispatch.
+Run the workflow from the Actions tab with `workflow_dispatch`.
 
 Optional inputs:
 
 - pr_number (set to post or update a PR report comment)
 - command (/cli-review, /cli-check-help, /cli-semantic-analysis, /cli-heuristic-analysis)
 - target_path
+- fusion_analysis_models (comma-separated panel models for Fusion)
+- fusion_synthesis_model (synthesis model for Fusion)
 
 ### 4. Notes
 
@@ -96,8 +98,10 @@ jobs:
     with:
       command: /cli-review
       provider: openrouter
-      model: moonshotai/kimi-k2.6
+      model: openrouter/fusion
       thinking_level: medium
+      fusion_analysis_models: "~anthropic/claude-opus-latest,~openai/gpt-latest,~google/gemini-pro-latest"
+      fusion_synthesis_model: "~openai/gpt-latest"
       pr_number: ${{ github.event.pull_request.number }}
       post_pr_comment: true
       fail_on_agent_error: true
@@ -135,8 +139,10 @@ Optional inputs:
 
 - command (default: /cli-review)
 - target_path (default: .)
-- model (default: moonshotai/kimi-k2.6)
+- model (default: openrouter/fusion)
 - thinking_level (default: medium)
+- fusion_analysis_models (default: ~anthropic/claude-opus-latest,~openai/gpt-latest,~google/gemini-pro-latest)
+- fusion_synthesis_model (default: ~openai/gpt-latest)
 - pr_number
 - post_pr_comment (default: true)
 - fail_on_agent_error (default: true)
