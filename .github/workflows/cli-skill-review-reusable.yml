@@ -22,7 +22,7 @@ on:
         description: "Pi model"
         required: false
         type: string
-        default: "xiaomi/mimo-v2.5"
+        default: "moonshotai/kimi-k2.7-code"
       thinking_level:
         description: "Pi thinking level (affects response depth and latency)"
         required: false
