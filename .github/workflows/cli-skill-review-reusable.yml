@@ -26,7 +26,7 @@ on:
         description: "Pi model"
         required: false
         type: string
-        default: "moonshotai/kimi-k2.7-code"
+        default: "xiaomi/mimo-v2.5"
       fusion_analysis_models:
         description: "OpenRouter Fusion analysis models (comma-separated)"
         required: false
@@ -227,16 +227,13 @@ jobs:
 
           # Run Pi agent with explicit provider/model and (optionally) the fusion extension
           # Capture both stdout and stderr while displaying in workflow log
-          PI_CONSOLE_LOG=$(mktemp)
           pi -p \
             --provider "${PI_PROVIDER}" \
             --model "${PI_MODEL}" \
             --thinking "${PI_THINKING_LEVEL}" \
             --api-key "${LLM_TOKEN}" \
             ${EXTENSION_FLAG} \
-            < "${PROMPT_FILE}" 2>&1 | tee "${PI_CONSOLE_LOG}"
-          PI_EXIT_CODE=${PIPESTATUS[0]}
-          rm -f "${PROMPT_FILE}"
+            < "${PROMPT_FILE}"
           
           # Capture Pi SDK version
           PI_VERSION=$(pi --version 2>/dev/null | head -1 || echo "unknown")
