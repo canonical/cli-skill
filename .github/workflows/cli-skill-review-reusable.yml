@@ -71,20 +71,6 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - name: Install Node.js 24 via nvm
-        run: |
-          set -euo pipefail
-          export NVM_DIR="$HOME/.nvm"
-          curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-          . "$NVM_DIR/nvm.sh"
-          nvm install 24
-          nvm use 24
-          NODE_BIN_DIR="$(dirname "$(nvm which 24)")"
-          echo "$NODE_BIN_DIR" >> "$GITHUB_PATH"
-          echo "NVM_DIR=$NVM_DIR" >> "$GITHUB_ENV"
-          node -v
-          npm -v
-
       - name: Checkout repository under review
         uses: actions/checkout@v5
         with:
@@ -126,7 +112,7 @@ jobs:
       - name: Create Pi configuration and run agent
         if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
         id: pi
-        uses: earendil-works/pi-coding-agent@v1
+        uses: shaftoe/pi-coding-agent-action@v2
         with:
           provider: ${{ inputs.provider }}
           model: ${{ inputs.model }}
