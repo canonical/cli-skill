@@ -17,7 +17,7 @@ Ideally, this document would be accompanied by a library providing the described
 If you spot any of the problems detailed here in our existing command-line interfaces, don’t be afraid to raise issues fixing them—the CLI is what most people will first encounter – and remember – about our products. 
 
 
-# The Language of the Command Line
+# The Language of the Command Line {#language-of-command-line}
 Canonical Design strives for freedom, reliability, preciseness, and collaborativeness, and we aim to reflect these values in all our user experiences. Command line interfaces (CLIs) are one of the primary means of interacting with Canonical products, and their user experience will shape the perception of Canonical in users’ minds.
 
 How you interact with the CLI directly informs your perception of the capabilities of the product you are using. Your user experience can be greatly improved by a grammar that is adequate to the scope of the product (use the verb paradigm for simple cases, carefully amend the set of verbs used to communicate additional complexity and power) as it draws on a logical, easily learned and remembered choice of words.
@@ -25,7 +25,7 @@ How you interact with the CLI directly informs your perception of the capabiliti
 Conversely, if you mix different grammar styles, or pick an uneven vocabulary, this will make it difficult to deduce functionality (“what will this command do?” can be easily triggered by using vastly different verbs, or by mixing different objects without allowing the user to differentiate between them).
 
 
-## Grammar + Vocabulary 
+## Grammar + Vocabulary {#grammar-vocabulary}
 A command-line tool’s primary interface is its name; often, it will take a parameter and/or flags (that can have their own parameters). More complex functionality often uses a *command* as the first argument.
 
 
@@ -41,21 +41,21 @@ docker exec      -it my_container  /bin/bash
 Single-purpose command-line tools might not require a command to be specified, they are the command. Some examples are built-in shell commands such as ls, echo, but also tools such as less , rsync or awk.
 
 
-### The standard grammar for Canonical command-line interfaces  
+### The standard grammar for Canonical command-line interfaces {#standard-grammar}  
 
 At Canonical, most of the commands we build are complex – they manipulate more than one type of object, and often cover more than one aspect of managing the behaviour of the software they interact with. With this standard Canonical command grammar, we strive to create a precise, minimal interface.
 
-**Commands are verbs**. Every command that acts on a primary object of a command (e.g. snaps for snap, virtual machines for multipass) *must* be a verb. 
+**Commands are verbs** {#commands-are-verbs}. Every command that acts on a primary object of a command (e.g. snaps for snap, virtual machines for multipass) *must* be a verb. 
 
 Choosing the right verb is not trivial: it needs to imply or trigger recall of the object type it refers to. And when a command acts on different object types, it needs to help the user differentiate between these types as they are not explicitly stated in the command (e.g. install or refresh a snap vs. login to a store).
 
-**Commands are logically grouped.** Not all commands are equal. Some commands act on the same type of objects or act in a logically coherent domain. We differentiate between these domains by grouping commands (e.g. build lifecycle vs. store management for snapcraft).
+**Commands are logically grouped.** {#commands-logically-grouped} Not all commands are equal. Some commands act on the same type of objects or act in a logically coherent domain. We differentiate between these domains by grouping commands (e.g. build lifecycle vs. store management for snapcraft).
 
 Ideally, verbs in one command group are implicitly connected with the object they act upon, semantically close to each other, and different from verbs used in other command groups.
 
-**When verbs alone are not sufficient **to distinguish between objects, use the **verb-noun** form (e.g. set-quota for snaps).
+**When verbs alone are not sufficient ** {#verb-noun-form}to distinguish between objects, use the **verb-noun** form (e.g. set-quota for snaps).
 
-**Use** foobars as a shorthand **for listing information** about all instances of a specific type of *secondary *object **instead of **list-foobar (e.g. snap services over snap list-services for listing services of a snap, but snap list for listing snaps).
+**Use** foobars as a shorthand **for listing information** {#use-foobars-shorthand} about all instances of a specific type of *secondary *object **instead of **list-foobar (e.g. snap services over snap list-services for listing services of a snap, but snap list for listing snaps).
 
 **For showing state** without changing it, use the shorthand status over show-status. For specific secondary objects, use foobar-status over show-foobar-status (e.g. snapcraft release-status), and foobar over show-foobar							.
 
@@ -64,7 +64,7 @@ Commands can become quite complex if a conceptual hierarchy is involved (e.g. a 
 Choosing the right verbs is hard. We consider it to be an essential part of your design work, and in order to get this right, we need to make sure that we find the verbs that best capture (and thus convey) what a command allows the user to do, and what effects it will have when completed. 
 
 
-#### Commonly used commands
+#### Commonly used commands {#commonly-used-commands}
 
 For the sake of consistency, here is a list of standard commands that are commonly used in our tools:
 
@@ -92,7 +92,7 @@ For the sake of consistency, here is a list of standard commands that are common
 
 (*) you may prefer using info over show if the tool name already defines the object type, e.g. snap info foo (snap is both the type of the main object and the command name).
 
-**All** commands **must** converge on a grammar based on the above rules. 
+**All** commands **must** {#commands-converge-grammar} converge on a grammar based on the above rules. 
 
 When designing the grammar for a command that covers clearly distinct workflows and struggling to find a grammar that enables users to easily map actions and objects to a specific workflow, you can introduce a second command level. At most *one* sublevel may be used, and all commands in that second level must follow the rules outlined above. 
 
@@ -109,12 +109,12 @@ cmd-cluster config --secret "$(cat secret.txt)"
 
 
 
-### Every command matters
+### Every command matters {#every-command-matters}
 
 Every new command should be considered with all existing commands in mind. This will help to find the right wording, and the right logical group. 
 
 
-### Conclusion: Keep it Simple (for your Users) 
+### Conclusion: Keep it Simple (for your Users) {#keep-it-simple}
 Good grammar is **concise**, and **easy to learn** and **remember**. When deciding what grammar to use, you should consider a series of factors:
 
 
@@ -124,14 +124,14 @@ Good grammar is **concise**, and **easy to learn** and **remember**. When decidi
 3. What are the **expectations** of your users, what is their existing mental model, and how might it need to change? Consider both internal and external reference points, and aim to align your decision with other products we are developing. 
 
 
-## Parameters, Flags and Options 
+## Parameters, Flags and Options {#parameters-flags-options}
 
 Arguments can be added to a command line to **specify the object(s)** that an action will be performed on, and to **provide context to, or modify the action** to be performed. 
 
 Command lines can take the following kinds of arguments:
 
 
-### Positional Parameters 
+### Positional Parameters {#positional-parameters}
 
 Positional parameters are parameters that are identified only by their position following the specified action. You should **only** use positional parameters when there is** no doubt** about the meaning of each position; this can be because the action is clearly directional and maps in a natural way to the position of the parameters:
 
@@ -162,13 +162,13 @@ git remote show (implicit)
 
 
 
-### Flags
+### Flags {#flags}
 
 Flags modify the performed action. They come in two varieties, short and long. Short flags start with a single dash (-) for a single character flag, and **must** **only** be used when the action being performed is both frequent *and* easy to imply from the context and the character used. Long flags start with a double dash (--), and are more descriptive and make it easier to imply their action.
 
-As a policy, **do not offer both short and long flags for the same action.** Typically this is done because the CLI was not carefully designed, and thus no consideration was given to whether the flag should be short or long.  Having both means users need to memorize both phrasings, even if they're used infrequently and might be hard to imply.
+As a policy,  a policy,**do not offer both short and long flags for the same action.** {#no-both-short-long-flags} Typically this is done because the CLI was not carefully designed, and thus no consideration was given to whether the flag should be short or long.  Having both means users need to memorize both phrasings, even if they're used infrequently and might be hard to imply.
 
-Single character flags **should** allow being stacked or combined.
+Single character flags **should** {#flags-stacking} allow being stacked or combined.
 
 
 ```
@@ -177,7 +177,7 @@ apt upgrade -y -a -d -f
 ```
 
 
-Flags **must not** be dependent on ordering.
+Flags **must not** {#flags-order-independent} be dependent on ordering.
 
 
 ```
@@ -187,7 +187,7 @@ apt upgrade -d -a       # same arguments in different order
 
 
 
-### Commonly Used Flags
+### Commonly Used Flags {#commonly-used-flags}
 All tools **should** at a minimum support these flags:
 
 
@@ -197,7 +197,7 @@ All tools **should** at a minimum support these flags:
 
 
 
-### Flags with Values 
+### Flags with Values {#flags-with-values}
 
 Flags often accept values to further specify the action:
 
@@ -207,8 +207,8 @@ snapcraft pack --verbosity debug
 ```
 
 
-Flag name and value **must** support separation by whitespace. \
-Flag name and value **may** support separation by an equal sign. When there is an equal sign present, following whitespace is a separation marker for the next option/argument.
+Flag name and value **must** {#flag-whitespace-separator} support separation by whitespace. \
+Flag name and value **may** {#flag-equals-separator} support separation by an equal sign. When there is an equal sign present, following whitespace is a separation marker for the next option/argument.
 
 
 ```
@@ -218,7 +218,7 @@ rsync --rsh="ssh -p 2222"
 
 
 
-#### Flags accepting multiple arguments
+#### Flags accepting multiple arguments {#flags-multiple-arguments}
 
 To enable a flag to accept several values, there are two accepted patterns for the time being: it can be repeated, in which case the flag name must be singular; otherwise, it may accept a comma-separated list of values, in which case the flag name must be plural. For example:
 
@@ -229,10 +229,10 @@ tool do-foo --channels=edge,beta
 ```
 
 
-Typically the first form is preferred when the value has a rich set of undefined characters, which would make choosing the separator hard or non-obvious, while the second form is better for cases where the vocabulary is strictly defined and composed of short words. **Do not provide both forms.**
+Typically the first form is preferred when the value has a rich set of undefined characters, which would make choosing the separator hard or non-obvious, while the second form is better for cases where the vocabulary is strictly defined and composed of short words. **Do not provide both forms.** {#no-both-multi-value-forms}
 
 
-#### Flags accepting key=value arguments
+#### Flags accepting key=value arguments {#flags-key-value-arguments}
 
 If you need to allow setting an open-ended set of parameters for a given command, it might be preferable to treat these as key=value arguments to a single flag, where `"="` is used to separate the key and value.
 
@@ -259,7 +259,7 @@ juju deploy haproxy -n 2 --constraints spaces=dmz,^cms,^database
 
 
 
-### Special case: - - as separator for command arguments 
+### Special case: - - as separator for command arguments {#double-dash-separator}
 
 If the command accepts a complete command line as an argument, "--" is to be used to separate the command and its flags from the positional command, as the command will stop parsing and allow the input to be interpreted verbatim:
 
@@ -273,12 +273,12 @@ multipass exec docker -- snapcraft --help
 Here, the --help is passed to snapcraft rather than multipass.
 
 
-# Feedback 
+# Feedback {#feedback}
 
 An important aspect of feedback is the help a command is showing when a user is seeking to understand what a command is capable of and how to phrase a valid command. We are developing guidance for formatting help, further details will be posted in .
 
 
-## Errors, warnings and success messages 
+## Errors, warnings and success messages {#errors-warnings-success}
 
 Feedback is important to provide information about
 
@@ -291,14 +291,14 @@ Feedback is important to provide information about
 All messages should be human-readable (almost always using natural language or tabularized data), and as short and succinct as possible while considering the task at hand.
 
 
-## Use of Color and Font Weight (bold)
+## Use of Color and Font Weight (bold) {#color-font-weight}
 
 The output of the CLI may use color to provide a clear visual hierarchy. That is, differentiating between more important and less important information. Never rely on color as the only mechanism conveying information. For example, do not rely on color as the single element to signal to the user that an action was successful - the message should be enough on its own. Also, be careful not to introduce colorful elements without care - it's easy to misuse the capability and introduce noise, and even hinder comprehension by calling attention to irrelevant information. 
 
-CLIs should only enable color when they can identify such capabilities in the output stream. When the capability isn't identified (e.g. the standard output is redirected to a filethe stdout or stderr stream) or when the NO_COLOR environment is set, you must not use color ([https://no-color.org/](https://no-color.org/)).
+CLIs should only enable color when they can identify such capabilities in the output stream. {#color-capability-detection} When the capability isn't identified (e.g. the standard output is redirected to a filethe stdout or stderr stream) or when the NO_COLOR environment is set, you must not use color ([https://no-color.org/](https://no-color.org/)).
 
 
-### Terminal Colors 
+### Terminal Colors {#terminal-colors}
 
 For CLIs, use only a limited set of colors to emphasize and differentiate information, even as many modern terminals support 256 or more colors – these are mainly useful when you want to use subtle shading, create the perception of depth or subtle visual hierarchy in a TUI (terminal user interface). 
 
@@ -317,10 +317,10 @@ Their exact rendering can vary with the color palette that the User defines for 
 If the terminal supports Operating System Control (OSC) sequences (most do, e.g. gnome, xfce4, xterm, ghostty, iterm2), it is possible to query the background and foreground color from the Terminal. You should do this  to differentiate between “light mode” and “dark mode”, and optimize output for both cases: green on white and blue on black should be avoided for longer text or critical information. [https://gist.github.com/ThinGuy/76ca97fb7c035c62d8d444ce1fcb5617](https://gist.github.com/ThinGuy/76ca97fb7c035c62d8d444ce1fcb5617) 
 
 
-## Tabular Data
+## Tabular Data {#tabular-data}
 Management of objects (machines, instances, packages, …) will often require processing of relational data. When rendering data to the output stream for users, tables are often used to structure the information.
 
-Format of tables
+Format of tables {#table-format}
 
 All tables should follow a standard format:
 
@@ -350,7 +350,7 @@ blender           4.0.2     4300  latest/stable  blenderfoundati✓  classic
 
 
 
-### Responsive output for tables 
+### Responsive output for tables {#responsive-tables}
 
 It's hard to propose a good design for a CLI table without invoking good judgement. Tables should focus on key information that benefits from being seen together in a list, rather than individually in more detailed command output. Typically important "primary key" information will be on the leftmost columns, while more repetitive or less relevant details will be on the right side.
 
@@ -359,7 +359,7 @@ If possible, keep rows under 80 characters, but sometimes that's too limiting fo
 As a useful pattern, when it's tempting to add too much information to a table, try harder to find the important information that benefits from being displayed that way, and offer a detailed display command that will more extensively display all data for individual items.
 
 
-### Empty states for tables 
+### Empty states for tables {#empty-table-states}
 
 When the data for a table has zero entries in it, the output should be clear about the fact this is an empty table rather than an error to obtain the information.  For example:
 
@@ -411,10 +411,10 @@ items: []
 
 
 
-## Logging Output
+## Logging Output {#logging-output}
 
 
-### Timestamps 
+### Timestamps {#timestamps}
 
 For communicating exact time, use the date and time format defined in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601).
 
@@ -425,12 +425,12 @@ For communicating exact time, use the date and time format defined in [ISO 8601]
 
 
 
-### Verbosity
+### Verbosity {#verbosity}
 
 Different use-cases call for different levels of information; for command-line tools this is reflected in the verbosity level of the output. This may range from just a return code (no output stream) to concise output (only the most relevant information) to verbose (all the information that may be needed). In addition, more information about the internal processes of a command can be surfaced using common debug levels such as info, debug and trace.
 
 
-#### The verbosity levels
+#### The verbosity levels {#verbosity-levels}
 
 
 |||||
@@ -443,11 +443,11 @@ Different use-cases call for different levels of information; for command-line t
 |Trace|No shorthand flag|trace|Tracing is a special mode that can provide additional information about where in the code structure the execution is at any time. Trace information is useful to analyze performance, measure how often code is executed, or understand how the code is being executed with live data. It provides you the information you would usually see in a debugger. The volume of data generated by this mode is going to be overwhelming for typical users, and it's often too much even for high level debugging purposes.|
 
 
-### Ephemeral Feedback: To New Line or not to New Line
+### Ephemeral Feedback: To New Line or not to New Line {#ephemeral-feedback}
 
 Output to the terminal can be erased and overwritten. That makes it possible to provide ephemeral feedback, i.e. feedback that will not be recorded on screen.
 
-When the command outputs to a pipe or file, it should never try to rewrite its output, only when an interactive tty session is used.
+When the command outputs to a pipe or file, it should never try to rewrite its output, only when an interactive tty session is used. {#no-rewrite-non-tty}
 
 
 |||
@@ -457,11 +457,11 @@ When the command outputs to a pipe or file, it should never try to rewrite its o
 
 
 
-# CLI Copy and Tone of Voice 
+# CLI Copy and Tone of Voice {#copy-tone-of-voice}
 CLIs and UIs must use consistent terminology. If a concept is e.g. a “machine” in a CLI, it must not be described using e.g. “node” in a UI, and vice versa. Every product should define where their source of truth lies, and align accordingly.
 
 
-#### Be concise, precise, and clear at all times.
+#### Be concise, precise, and clear at all times. {#concise-precise-clear}
 
 When “talking” to a user, a CLI command should strive to be 
 
@@ -501,7 +501,7 @@ $ snap list syf                                                                 
 
 
 
-#### Use passive, succinct sentences when arguments or objects are missing.
+#### Use passive, succinct sentences when arguments or objects are missing. {#passive-succinct}
 
 
 ```
@@ -518,7 +518,7 @@ You need to provide a valid URL.
 
 
 
-#### Use an active, direct, friendly tone of voice when explaining helpful information to the user, without being apologetic.
+#### Use an active, direct, friendly tone of voice when explaining helpful information to the user, without being apologetic. {#active-direct-friendly}
 
 
 ```
@@ -535,7 +535,7 @@ Oops, something went wrong. Please either let juju create a new controller using
 
 
 
-#### Use “cannot” instead of “didn’t / couldn’t / wouldn’t / failed to / unable to / etc”.
+#### Use “cannot” instead of “didn’t / couldn’t / wouldn’t / failed to / unable to / etc”. {#use-cannot}
 
 
 ```
@@ -552,7 +552,7 @@ error: connection couldn't be established
 
 
 
-#### Do not use contractions.
+#### Do not use contractions. {#no-contractions}
 
 
 ```

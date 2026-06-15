@@ -26,7 +26,7 @@ on:
         description: "Pi model"
         required: false
         type: string
-        default: "xiaomi/mimo-v2.5"
+        default: "openrouter/fusion"
       thinking_level:
         description: "Pi thinking level"
         required: false
@@ -123,38 +123,83 @@ jobs:
           mkdir -p ~/.pi/skills
           cp -R .cli-skill-infra/cli-skill ~/.pi/skills/
 
-      - name: Run Pi agent
+      - name: Create Pi configuration and run agent
         if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
         id: pi
-        uses: shaftoe/pi-coding-agent-action@v2
         env:
-            OPENROUTER_API_KEY: ${{ secrets.llm_token }}
-        with:
-          github_token: ${{ secrets.gh_token }}
+          LLM_TOKEN: ${{ secrets.llm_token }}
+          GH_TOKEN: ${{ secrets.gh_token }}
+          PI_MODEL: ${{ inputs.model }}
+          PI_THINKING_LEVEL: ${{ inputs.thinking_level }}
+          PI_COMMAND: ${{ inputs.command }}
+          PI_TARGET_PATH: ${{ inputs.target_path }}
+        run: |
+          set -euo pipefail
+          
+          # Create Pi configuration file with OpenRouter fusion config as default
+          mkdir -p ~/.pi/config
+                    
+          # Generate Pi config with OpenRouter fusion plugins for analysis
+          cat > ~/.pi/config/pi.yaml <<EOF
           provider: openrouter
-          model: ${{ inputs.model }}
-          token: ${{ secrets.llm_token }}
-          thinking_level: ${{ inputs.thinking_level }}
+          model: ${PI_MODEL}
+          thinking_level: ${PI_THINKING_LEVEL}
           export_session_html: true
           export_session_jsonl: true
-          prompt: |
-            Review this pull request. Before starting, use get_issue_or_pr_thread to
-            fetch any existing review comments so you don't duplicate feedback that
-            has already been given. Focus on issues, bugs, and security concerns.
-            Post your findings as a PR review when done.
+          plugins:
+            - id: fusion
+              analysis_models:
+                - "~moonshotai/kimi-k2.7-code"
+                - "~deepseek/deepseek-v3.2"
+                - "~google/gemini-flash-latest"
+              model: "~moonshotai/kimi-k2.7-code"
+          EOF
+          
+          # Run Pi agent with the specified prompt
+          pi --config ~/.pi/config/pi.yaml <<'PROMPT_EOF'
+          Review this pull request. Before starting, use get_issue_or_pr_thread to
+          fetch any existing review comments so you don't duplicate feedback that
+          has already been given. Focus on issues, bugs, and security concerns.
+          Post your findings as a PR review when done.
 
-            Run ${{ inputs.command }} from the cli-skill in this repository.
+          Run ${PI_COMMAND} from the cli-skill in this repository.
 
-            Scope rules:
-            - If command is /cli-review, perform only CLI standard compliance checks.
-            - Use .cli-skill-infra/cli-skill/references/cli-standard.md as the sole review standard.
+          Scope rules:
+          - If command is /cli-review, perform only CLI standard compliance checks.
+          - Use .cli-skill-infra/cli-skill/references/cli-standard.md as the sole review standard.
 
-            Repository target path: ${{ inputs.target_path }}
+          Repository target path: ${PI_TARGET_PATH}
 
-            Output requirements:
-            - Follow the section structure defined in `.cli-skill-infra/cli-skill/references/cli-review-output-format.md` exactly.
-            - The overall score MUST be computed by running `python3 .cli-skill-infra/scripts/calculate_cli_score.py <json_file>` (fallback: `python3 scripts/calculate_cli_score.py <json_file>`) — do not calculate or estimate it manually.
-            - Keep findings evidence-based and standards-mapped.
+          Output requirements:
+          - Follow the section structure defined in `.cli-skill-infra/cli-skill/references/cli-review-output-format.md` exactly.
+          - The overall score MUST be computed by running `python3 .cli-skill-infra/scripts/calculate_cli_score.py <json_file>` (fallback: `python3 scripts/calculate_cli_score.py <json_file>`) — do not calculate or estimate it manually.
+          - Keep findings evidence-based and standards-mapped.
+          PROMPT_EOF
+          
+          # Extract session outputs from Pi result (adjust paths based on actual Pi output)
+          SESSION_HTML=$(find ~ -name "*.html" -path "*pi*session*" -type f | head -1 || echo "")
+          SESSION_JSONL=$(find ~ -name "*.jsonl" -path "*pi*session*" -type f | head -1 || echo "")
+          
+          echo "session_html_path=${SESSION_HTML}" >> $GITHUB_OUTPUT
+          echo "session_jsonl_path=${SESSION_JSONL}" >> $GITHUB_OUTPUT
+          echo "success=true" >> $GITHUB_OUTPUT
+
+      - name: Build PR report from Pi output
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_jsonl_path != '' && inputs.post_pr_comment }}
+        id: report
+        run: |
+          set -euo pipefail
+          python3 .cli-skill-infra/scripts/build-pr-report.py "${{ steps.pi.outputs.session_jsonl_path }}" > pr_report.md
+          echo "report_path=pr_report.md" >> $GITHUB_OUTPUT
+
+      - name: Upsert PR comment
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.report.outputs.report_path != '' && inputs.pr_number != '' }}
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ inputs.pr_number }}
+          body-file: ${{ steps.report.outputs.report_path }}
+          edit-mode: replace
+          body-includes: "<!-- cli-review-report -->"
 
       - name: Upload Pi session HTML artifact
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_html_path != '' }}

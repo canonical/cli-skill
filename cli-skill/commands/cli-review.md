@@ -7,8 +7,8 @@ CLI standard compliance review only.
 1. Check for the existence of `cli-review/0-cli-discovery-preflight/`. If it does not exist, run `shared/cli-discovery-preflight.md`
 2. Use preflight outputs from `cli-review/0-cli-discovery-preflight/`
 3. Read `cli-skill/references/cli-standard.md` in full
-4. **Phase 1 — Collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[clause] [evidence]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
-5. Checkpoint: Before going to Phase 2, make sure that no duplicate findings are listed. 
+4. **Phase 1 — Collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[clause] [evidence] [reference to code] [reference to cli standard]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
+5. Checkpoint: Before going to Phase 2, make sure that no duplicate findings are listed, DO THIS ONLY by analysing the `reference to code`. 
 6. **Phase 2 — Assign severity.** For each finding collected in Phase 1, assign exactly one severity (`High`, `Medium`, `Low`, or `Unrated`) using the rules in the `## Scope` section. Do not add or remove findings in this phase.
 7. Build the score JSON `{"commands": <int>, "issues": [...]}` from the complete, severity-annotated list.
 8. Resolve the scoring script path in this exact order and use the first existing path:
@@ -84,7 +84,7 @@ The `Compliance Matrix` section must include a table with these columns:
 
 - `Standard Clause`
 - `Rule Summary`
-- `Evidence`
+- `Evidence`, include the name of the relevant section of the cli standard by using `reference to cli standard`
 - `Severity` (`High`, `Medium`, `Low`, or `Unrated`)
 - `Notes`
 
@@ -100,6 +100,7 @@ Each finding:
 
 1. Must include the violated clause from `cli-skill/references/cli-standard.md`
 2. Must include concrete CLI evidence (command/help/code reference)
+3. Must include links to the relevant sections of the CLI standard by using `reference to cli standard` and `https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md` as a base URL
 3. Should include whenever possible a remediation action that restores compliance
 4. Cite the code block in markdown code format where the violation is detected
 
