@@ -33,9 +33,9 @@ CLI standard compliance review only.
 - Non-compliance and compliant evidence based on observed CLI behavior/docs/code
 - Use these rules to determine severity. Severity can only be [High|Medium|Low|Unrated]:
   * High: violations of command structure and naming (SHOULD RULES DO NOT COUNT), use of positional parameters, accessibility/color violations
-  * Medium: use if non-standard verbs for commands, inconsistent flag names or usage, extremely high complexity (eg. created by >20 commands)
+  * Medium: use if inconsistent verbs for commands (e.g. add-foo vs. kill-foo), inconsistent flag names or usage, extremely high complexity (eg. created by >20 commands)
   * Low: formatting violations, duplicate short/long flags
-  * Unrated: use if no standard rule applies, or if the finding is not certain, there is a SHOULD rule, or the rule applies to a debug/secret command
+  * Unrated: use if no standard rule applies, or if the finding is not certain, there is a SHOULD rule, the rule applies to a debug/secret command, use of non-standard verbs when there is a standard verb that fits the action
 - All SHOULD rules must be unrated violations - report them, but don't include them in the scoring. This can be a use of non-standard verbs, or in cases where the standard says "you should", or "prefer".
 
 ## Out Of Scope
