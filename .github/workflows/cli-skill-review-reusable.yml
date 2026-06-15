@@ -26,7 +26,7 @@ on:
         description: "Pi model"
         required: false
         type: string
-        default: "openrouter/fusion"
+        default: "moonshotai/kimi-k2.7-code"
       fusion_analysis_models:
         description: "OpenRouter Fusion analysis models (comma-separated)"
         required: false
