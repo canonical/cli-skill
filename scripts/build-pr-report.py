@@ -82,8 +82,8 @@ def main() -> None:
     marker = os.environ.get("MARKER", "<!-- cli-review-report -->")
     command = os.environ.get("COMMAND", "/cli-review")
     response = os.environ.get("PI_RESPONSE", "")
-    pi_version = os.environ.get("PI_VERSION", "unknown")
-    pi_thinking = os.environ.get("PI_THINKING", "medium")
+    pi_version = os.environ.get("PI_VERSION", "")
+    pi_thinking = os.environ.get("PI_THINKING", "")
     pi_model = os.environ.get("PI_MODEL", "unknown")
     gh_run_id = os.environ.get("GH_RUN_ID", "")
     gh_repo = os.environ.get("GH_REPO", "")
@@ -115,6 +115,15 @@ def main() -> None:
     else:
         action_run_link = "Action run"
 
+    # Build footer with optional thinking level and SDK version
+    footer_parts = [action_run_link, f"Model: {model_display}"]
+    if pi_thinking:
+        footer_parts[1] += f" (thinking: {pi_thinking})"
+    footer_parts.extend([f"Time: {duration_str}", f"Tokens: {tokens_str}", f"Cost: {cost_str}"])
+    if pi_version:
+        footer_parts.append(f"Pi SDK {pi_version}")
+    footer_line = " | ".join(footer_parts)
+
     body = f"""{marker}
 ## CLI Skill Report ({command})
 
@@ -122,7 +131,7 @@ def main() -> None:
 
 ---
 
-{action_run_link} | Model: {model_display} (thinking: {pi_thinking}) | Time: {duration_str} | Tokens: {tokens_str} | Cost: {cost_str} | Pi SDK {pi_version}
+{footer_line}
 """
 
     report_path = Path("pr_report.md")

@@ -13,10 +13,6 @@ on:
         required: false
         type: string
         default: "."
-      pr_number:
-        description: "Pull request number for report comment upsert"
-        required: false
-        type: number
       provider:
         description: "Pi provider"
         required: false
@@ -27,26 +23,6 @@ on:
         required: false
         type: string
         default: "xiaomi/mimo-v2.5"
-      fusion_analysis_models:
-        description: "OpenRouter Fusion analysis models (comma-separated)"
-        required: false
-        type: string
-        default: "~moonshotai/kimi-k2.7-code,~deepseek/deepseek-v3.2,~google/gemini-flash-latest"
-      fusion_synthesis_model:
-        description: "OpenRouter Fusion synthesis model"
-        required: false
-        type: string
-        default: "~moonshotai/kimi-k2.7-code"
-      thinking_level:
-        description: "Pi thinking level"
-        required: false
-        type: string
-        default: "medium"
-      post_pr_comment:
-        description: "Whether to publish/update PR markdown report"
-        required: false
-        type: boolean
-        default: true
       fail_on_agent_error:
         description: "Fail workflow when Pi action does not succeed"
         required: false
@@ -91,7 +67,7 @@ jobs:
   cli-review:
     runs-on: ubuntu-latest
     concurrency:
-      group: cli-skill-review-${{ github.repository }}-${{ inputs.pr_number || github.run_id }}-${{ inputs.command }}
+      group: cli-skill-review-${{ github.repository }}-${{ github.run_id }}-${{ inputs.command }}
       cancel-in-progress: true
 
     steps:
@@ -150,157 +126,29 @@ jobs:
       - name: Create Pi configuration and run agent
         if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
         id: pi
-        env:
-          LLM_TOKEN: ${{ secrets.llm_token }}
-          GH_TOKEN: ${{ secrets.gh_token }}
-          PI_PROVIDER: ${{ inputs.provider }}
-          PI_MODEL: ${{ inputs.model }}
-          PI_THINKING_LEVEL: ${{ inputs.thinking_level }}
-          PI_COMMAND: ${{ inputs.command }}
-          PI_TARGET_PATH: ${{ inputs.target_path }}
-          FUSION_ANALYSIS_MODELS: ${{ inputs.fusion_analysis_models }}
-          FUSION_SYNTHESIS_MODEL: ${{ inputs.fusion_synthesis_model }}
-        run: |
-          set -euo pipefail
-          
-          npm install -g --ignore-scripts @earendil-works/pi-coding-agent
-
-          # Write the OpenRouter Fusion extension that injects plugins into the request payload
-          EXTENSION_FLAG=""
-          if [[ "${PI_MODEL}" == "openrouter/fusion" ]]; then
-            mkdir -p ~/.pi/agent/extensions
-            cat > ~/.pi/agent/extensions/openrouter-fusion.ts <<'EXT_EOF'
-          import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-
-          const ANALYSIS_MODELS = (process.env.FUSION_ANALYSIS_MODELS || "")
-            .split(",")
-            .map((m) => m.trim())
-            .filter((m) => m.length > 0);
-
-          const SYNTHESIS_MODEL = process.env.FUSION_SYNTHESIS_MODEL || "";
-
-          export default function (pi: ExtensionAPI) {
-            pi.on("before_provider_request", (event) => {
-              const payload = event.payload;
-              if (payload.model !== "openrouter/fusion") return;
-
-              return {
-                ...payload,
-                plugins: [
-                  {
-                    id: "fusion",
-                    analysis_models: ANALYSIS_MODELS,
-                    model: SYNTHESIS_MODEL,
-                  },
-                ],
-              };
-            });
-          }
-          EXT_EOF
-            EXTENSION_FLAG="--extension ~/.pi/agent/extensions/openrouter-fusion.ts"
-          fi
-
-          # Build prompt file — use quoted heredoc to prevent bash interpreting
-          # backticks and angle-bracket tokens inside the prompt text, then
-          # substitute the two env vars we do want expanded.
-          PROMPT_FILE=$(mktemp)
-          cat > "${PROMPT_FILE}" <<'PROMPT_EOF'
-          Review this pull request. Before starting, use get_issue_or_pr_thread to
-          fetch any existing review comments so you don't duplicate feedback that
-          has already been given. Focus on issues, bugs, and security concerns.
-          Post your findings as a PR review when done.
-
-          Run __PI_COMMAND__ from the cli-skill in this repository.
-
-          Scope rules:
-          - If command is /cli-review, perform only CLI standard compliance checks.
-          - Use .cli-skill-infra/cli-skill/references/cli-standard.md as the sole review standard.
-
-          Repository target path: __PI_TARGET_PATH__
-
-          Output requirements:
-          - Follow the section structure defined in `.cli-skill-infra/cli-skill/references/cli-review-output-format.md` exactly.
-          - The overall score MUST be computed by running `python3 .cli-skill-infra/scripts/calculate_cli_score.py <json_file>` (fallback: `python3 scripts/calculate_cli_score.py <json_file>`) — do not calculate or estimate it manually.
-          - Keep findings evidence-based and standards-mapped.
-          PROMPT_EOF
-          sed -i "s|__PI_COMMAND__|${PI_COMMAND}|g; s|__PI_TARGET_PATH__|${PI_TARGET_PATH}|g" "${PROMPT_FILE}"
-
-          # Run Pi agent with explicit provider/model and (optionally) the fusion extension
-          # Shield workflow outputs from any writes performed inside Pi/tool subprocesses.
-          REAL_GITHUB_OUTPUT="$GITHUB_OUTPUT"
-          export GITHUB_OUTPUT="$(mktemp)"
-
-          set +e
-          pi -p \
-            --provider "${PI_PROVIDER}" \
-            --model "${PI_MODEL}" \
-            --thinking "${PI_THINKING_LEVEL}" \
-            --api-key "${LLM_TOKEN}" \
-            ${EXTENSION_FLAG} \
-            < "${PROMPT_FILE}"
-          PI_EXIT_CODE=$?
-          set -e
-          rm -f "${PROMPT_FILE}"
-
-          # Restore the real GitHub output file for controlled outputs only.
-          export GITHUB_OUTPUT="$REAL_GITHUB_OUTPUT"
-
-          # Capture Pi SDK version
-          PI_VERSION=$(pi --version 2>/dev/null | head -1 || echo "unknown")
-
-          # Find the latest session file created by Pi (file path only, never directories)
-          SESSION_DIR="${HOME}/.pi/agent/sessions"
-          SESSION_JSONL=""
-          if [[ -d "${SESSION_DIR}" ]]; then
-            SESSION_JSONL=$(find "${SESSION_DIR}" -type f -name "session.jsonl" -printf '%T@ %p\n' 2>/dev/null | sort -nr | head -n 1 | cut -d' ' -f2- || true)
-          fi
-
-          # Accept only canonical Pi session files under ~/.pi/agent/sessions.
-          if [[ -n "${SESSION_JSONL}" ]]; then
-            if [[ ! -f "${SESSION_JSONL}" || "${SESSION_JSONL}" != "${SESSION_DIR}"/* || "$(basename "${SESSION_JSONL}")" != "session.jsonl" ]]; then
-              SESSION_JSONL=""
-            fi
-          fi
-
-          # Export session to HTML if session file exists
-          SESSION_HTML=""
-          if [[ -n "${SESSION_JSONL}" && -f "${SESSION_JSONL}" ]]; then
-            SESSION_HTML="${SESSION_JSONL%.jsonl}.html"
-            pi --export "${SESSION_JSONL}" "${SESSION_HTML}" || true
-            if [[ ! -f "${SESSION_HTML}" ]]; then
-              SESSION_HTML=""
-            fi
-          fi
-
-          echo "session_html_path=${SESSION_HTML}" >> "$GITHUB_OUTPUT"
-          echo "session_jsonl_path=${SESSION_JSONL}" >> "$GITHUB_OUTPUT"
-          echo "pi_version=${PI_VERSION}" >> "$GITHUB_OUTPUT"
-          [[ ${PI_EXIT_CODE} -eq 0 ]] && echo "success=true" >> "$GITHUB_OUTPUT" || echo "success=false" >> "$GITHUB_OUTPUT"
-
-      - name: Build PR report from Pi output
-        if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_jsonl_path != '' && inputs.post_pr_comment }}
-        id: report
-        env:
-          PI_VERSION: ${{ steps.pi.outputs.pi_version }}
-          PI_MODEL: ${{ inputs.model }}
-          PI_THINKING: ${{ inputs.thinking_level }}
-          GH_RUN_ID: ${{ github.run_id }}
-          GH_REPO: ${{ github.repository }}
-          GH_SERVER_URL: ${{ github.server_url }}
-          PI_RESPONSE: "Review completed by Pi coding agent."
-        run: |
-          set -euo pipefail
-          python3 .cli-skill-infra/scripts/build-pr-report.py "${{ steps.pi.outputs.session_jsonl_path }}"
-          echo "report_path=pr_report.md" >> $GITHUB_OUTPUT
-
-      - name: Upsert PR comment
-        if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.report.outputs.report_path != '' && inputs.pr_number != '' }}
-        uses: peter-evans/create-or-update-comment@v5
+        uses: earendil-works/pi-coding-agent@v1
         with:
-          issue-number: ${{ inputs.pr_number }}
-          body-file: ${{ steps.report.outputs.report_path }}
-          edit-mode: replace
-          body-includes: "<!-- cli-review-report -->"
+          provider: ${{ inputs.provider }}
+          model: ${{ inputs.model }}
+          api-key: ${{ secrets.llm_token }}
+          prompt: |
+            Review this pull request. Before starting, use get_issue_or_pr_thread to
+            fetch any existing review comments so you don't duplicate feedback that
+            has already been given. Focus on issues, bugs, and security concerns.
+            Post your findings as a PR review when done.
+
+            Run ${{ inputs.command }} from the cli-skill in this repository.
+
+            Scope rules:
+            - If command is /cli-review, perform only CLI standard compliance checks.
+            - Use .cli-skill-infra/cli-skill/references/cli-standard.md as the sole review standard.
+
+            Repository target path: ${{ inputs.target_path }}
+
+            Output requirements:
+            - Follow the section structure defined in `.cli-skill-infra/cli-skill/references/cli-review-output-format.md` exactly.
+            - The overall score MUST be computed by running `python3 .cli-skill-infra/scripts/calculate_cli_score.py <json_file>` (fallback: `python3 scripts/calculate_cli_score.py <json_file>`) — do not calculate or estimate it manually.
+            - Keep findings evidence-based and standards-mapped.
 
       - name: Upload Pi session HTML artifact
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_html_path != '' }}
