@@ -226,7 +226,7 @@ jobs:
           sed -i "s|__PI_COMMAND__|${PI_COMMAND}|g; s|__PI_TARGET_PATH__|${PI_TARGET_PATH}|g" "${PROMPT_FILE}"
 
           # Run Pi agent with explicit provider/model and (optionally) the fusion extension
-          PI_CONSOLE_LOG=$(mktemp)
+          set +e
           pi -p \
             --provider "${PI_PROVIDER}" \
             --model "${PI_MODEL}" \
@@ -235,15 +235,19 @@ jobs:
             ${EXTENSION_FLAG} \
             < "${PROMPT_FILE}"
           PI_EXIT_CODE=$?
+          set -e
+          rm -f "${PROMPT_FILE}"
           
           # Capture Pi SDK version
           PI_VERSION=$(pi --version 2>/dev/null | head -1 || echo "unknown")
           
-          # Find the latest session file created by pi
+          # Find the latest session file created by Pi (file path only, never directories)
           SESSION_DIR="${HOME}/.pi/agent/sessions"
+          SESSION_JSONL=""
           if [[ -d "${SESSION_DIR}" ]]; then
-            SESSION_JSONL=$(find "${SESSION_DIR}" -type f -name "session.jsonl" | xargs ls -t | head -1 || echo "")
-          else
+            SESSION_JSONL=$(find "${SESSION_DIR}" -type f -name "session.jsonl" -printf '%T@ %p\n' 2>/dev/null | sort -nr | head -n 1 | cut -d' ' -f2- || true)
+          fi
+          if [[ -n "${SESSION_JSONL}" && ! -f "${SESSION_JSONL}" ]]; then
             SESSION_JSONL=""
           fi
           
