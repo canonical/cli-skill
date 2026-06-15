@@ -99,8 +99,6 @@ jobs:
         run: |
           set -euo pipefail
           export NVM_DIR="$HOME/.nvm"
-          curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-          . "$NVM_DIR/nvm.sh"
           nvm install 24
           nvm use 24
           NODE_BIN_DIR="$(dirname "$(nvm which 24)")"
@@ -255,7 +253,6 @@ jobs:
           
           echo "session_html_path=${SESSION_HTML}" >> $GITHUB_OUTPUT
           echo "session_jsonl_path=${SESSION_JSONL}" >> $GITHUB_OUTPUT
-          echo "console_log_path=${PI_CONSOLE_LOG}" >> $GITHUB_OUTPUT
           echo "pi_version=${PI_VERSION}" >> $GITHUB_OUTPUT
           [[ ${PI_EXIT_CODE} -eq 0 ]] && echo "success=true" >> $GITHUB_OUTPUT || echo "success=false" >> $GITHUB_OUTPUT
 
