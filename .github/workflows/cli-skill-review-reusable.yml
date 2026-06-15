@@ -280,7 +280,7 @@ jobs:
 
       - name: Upsert PR comment
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.report.outputs.report_path != '' && inputs.pr_number != '' }}
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@v5
         with:
           issue-number: ${{ inputs.pr_number }}
           body-file: ${{ steps.report.outputs.report_path }}
