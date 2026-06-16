@@ -112,10 +112,10 @@ func TestColorizedHelp(t *testing.T) {
 		root := newRoot()
 		got := colorizedHelp(root)
 
-		if !strings.Contains(got, "\033[1;30mUsage:\033[0m") {
+		if !strings.Contains(got, "\033[1;96mUsage:\033[0m") {
 			t.Fatalf("expected colored Usage section, got: %q", got)
 		}
-		if !strings.Contains(got, "\033[1;30mGlobal options:\033[0m") {
+		if !strings.Contains(got, "\033[1;96mGlobal options:\033[0m") {
 			t.Fatalf("expected colored Global options section, got: %q", got)
 		}
 		if strings.Contains(got, "\nFlags:\n") {
@@ -133,7 +133,7 @@ func TestColorizedHelp(t *testing.T) {
 		if !strings.Contains(got, "\033[1mUsage:\033[0m") {
 			t.Fatalf("expected bold Usage fallback, got: %q", got)
 		}
-		if strings.Contains(got, "\033[1;30mUsage:\033[0m") {
+		if strings.Contains(got, "\033[1;96mUsage:\033[0m") {
 			t.Fatalf("did not expect colorized Usage with NO_COLOR")
 		}
 	})

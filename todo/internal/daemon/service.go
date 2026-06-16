@@ -11,8 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
-
 	"todo/internal/common"
 	"todo/internal/model"
 	"todo/internal/store"
@@ -61,7 +59,7 @@ type ScheduleSpec struct {
 
 type AddScheduleRequest struct {
 	ID     string   `json:"id"`
-	TodoID string   `json:"todo_id"`
+	TodoID int64    `json:"todo_id"`
 	Kind   string   `json:"kind"`
 	Before string   `json:"before,omitempty"`
 	Every  string   `json:"every,omitempty"`
@@ -73,26 +71,23 @@ func (s *Service) CreateTodo(ctx context.Context, req CreateTodoRequest) (model.
 	if strings.TrimSpace(req.Title) == "" {
 		return model.Todo{}, fmt.Errorf("title is required")
 	}
-	id := strings.TrimSpace(req.ID)
-	if id == "" {
-		id = uuid.NewString()
-	}
 	now := time.Now().UTC()
 	todo := model.Todo{
-		ID:        id,
 		Title:     req.Title,
 		DueAt:     req.DueAt,
 		State:     model.TodoStateOpen,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
-	if err := s.store.CreateTodo(ctx, todo); err != nil {
+	id, err := s.store.CreateTodo(ctx, todo)
+	if err != nil {
 		return model.Todo{}, err
 	}
+	todo.ID = id
 	for i := range req.Schedule {
 		sp := req.Schedule[i]
 		scReq := AddScheduleRequest{
-			ID:     fmt.Sprintf("%s-sch-%d", todo.ID, i+1),
+			ID:     fmt.Sprintf("%d-sch-%d", todo.ID, i+1),
 			TodoID: todo.ID,
 			Kind:   sp.Kind,
 			Before: sp.Before,
@@ -107,22 +102,22 @@ func (s *Service) CreateTodo(ctx context.Context, req CreateTodoRequest) (model.
 	return todo, nil
 }
 
-func (s *Service) UpdateTodo(ctx context.Context, id string, req UpdateTodoRequest) error {
+func (s *Service) UpdateTodo(ctx context.Context, id int64, req UpdateTodoRequest) error {
 	if req.Title == nil && req.DueAt == nil && !req.ClearDue {
 		return fmt.Errorf("at least one field must be changed")
 	}
 	return s.store.UpdateTodo(ctx, id, req.Title, req.DueAt, req.ClearDue)
 }
 
-func (s *Service) CloseTodo(ctx context.Context, id string) error {
+func (s *Service) CloseTodo(ctx context.Context, id int64) error {
 	return s.store.TransitionTodo(ctx, id, model.TodoStateClosed)
 }
 
-func (s *Service) ReopenTodo(ctx context.Context, id string) error {
+func (s *Service) ReopenTodo(ctx context.Context, id int64) error {
 	return s.store.TransitionTodo(ctx, id, model.TodoStateReopened)
 }
 
-func (s *Service) RejectTodo(ctx context.Context, id string) error {
+func (s *Service) RejectTodo(ctx context.Context, id int64) error {
 	return s.store.TransitionTodo(ctx, id, model.TodoStateRejected)
 }
 
@@ -165,7 +160,7 @@ func (s *Service) AddSchedule(ctx context.Context, req AddScheduleRequest) (mode
 	if strings.TrimSpace(req.ID) == "" {
 		return model.Schedule{}, fmt.Errorf("schedule id is required")
 	}
-	if strings.TrimSpace(req.TodoID) == "" {
+	if req.TodoID <= 0 {
 		return model.Schedule{}, fmt.Errorf("todo id is required")
 	}
 	if req.Kind != model.ScheduleKindUpcoming && req.Kind != model.ScheduleKindOverdue {
@@ -214,13 +209,13 @@ func (s *Service) AddSchedule(ctx context.Context, req AddScheduleRequest) (mode
 		return model.Schedule{}, err
 	}
 	if todo.DueAt == nil {
-		return model.Schedule{}, fmt.Errorf("todo %q has no due date", req.TodoID)
+		return model.Schedule{}, fmt.Errorf("todo %d has no due date", req.TodoID)
 	}
 
 	now := time.Now().UTC()
 	sc := model.Schedule{
 		ID:         req.ID,
-		TodoID:     req.TodoID,
+		TodoID:     fmt.Sprintf("%d", req.TodoID),
 		Kind:       req.Kind,
 		Before:     req.Before,
 		Every:      req.Every,
@@ -316,7 +311,7 @@ func (s *Service) sendToMOTD(ctx context.Context, sc model.Schedule, todo model.
 		return delivered, err
 	}
 	message := buildReminderMessage(sc, todo)
-	if err := s.store.QueueMOTDMessage(ctx, todo.ID, sc.ID, message); err != nil {
+	if err := s.store.QueueMOTDMessage(ctx, fmt.Sprintf("%d", todo.ID), sc.ID, message); err != nil {
 		_ = s.store.UpsertDeliveryResult(ctx, sc.ID, targetType, targetID, plannedAt, false, err.Error())
 		return false, err
 	}
@@ -407,9 +402,9 @@ func buildReminderMessage(sc model.Schedule, todo model.Todo) string {
 		due = todo.DueAt.Local().Format("2006-01-02 15:04 MST")
 	}
 	if sc.Kind == model.ScheduleKindUpcoming {
-		return fmt.Sprintf("Upcoming todo: %s (%s) due at %s", todo.Title, todo.ID, due)
+		return fmt.Sprintf("Upcoming todo: %s (%d) due at %s", todo.Title, todo.ID, due)
 	}
-	return fmt.Sprintf("Overdue todo: %s (%s) was due at %s", todo.Title, todo.ID, due)
+	return fmt.Sprintf("Overdue todo: %s (%d) was due at %s", todo.Title, todo.ID, due)
 }
 
 func boolPtr(v bool) *bool {

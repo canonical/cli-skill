@@ -60,7 +60,7 @@ func (s *Store) initSchema() error {
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS todos (
-	id TEXT PRIMARY KEY,
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	title TEXT NOT NULL,
 	due_at TEXT,
 	state TEXT NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS sinks (
 
 CREATE TABLE IF NOT EXISTS schedules (
 	id TEXT PRIMARY KEY,
-	todo_id TEXT NOT NULL,
+	todo_id INTEGER NOT NULL,
 	kind TEXT NOT NULL,
 	before_dur TEXT,
 	every_dur TEXT,
@@ -126,11 +126,10 @@ CREATE TABLE IF NOT EXISTS motd_messages (
 	return err
 }
 
-func (s *Store) CreateTodo(ctx context.Context, t model.Todo) error {
-	_, err := s.db.ExecContext(ctx, `
-INSERT INTO todos(id, title, due_at, state, created_at, updated_at, closed_at, rejected_at)
-VALUES(?, ?, ?, ?, ?, ?, ?, ?)`,
-		t.ID,
+func (s *Store) CreateTodo(ctx context.Context, t model.Todo) (int64, error) {
+	result, err := s.db.ExecContext(ctx, `
+INSERT INTO todos(title, due_at, state, created_at, updated_at, closed_at, rejected_at)
+VALUES(?, ?, ?, ?, ?, ?, ?)`,
 		t.Title,
 		timePtrToDB(t.DueAt),
 		t.State,
@@ -139,10 +138,14 @@ VALUES(?, ?, ?, ?, ?, ?, ?, ?)`,
 		timePtrToDB(t.ClosedAt),
 		timePtrToDB(t.RejectedAt),
 	)
-	return err
+	if err != nil {
+		return 0, err
+	}
+	id, err := result.LastInsertId()
+	return id, err
 }
 
-func (s *Store) UpdateTodo(ctx context.Context, id string, title *string, dueAt *time.Time, clearDue bool) error {
+func (s *Store) UpdateTodo(ctx context.Context, id int64, title *string, dueAt *time.Time, clearDue bool) error {
 	todo, err := s.GetTodo(ctx, id)
 	if err != nil {
 		return err
@@ -162,7 +165,7 @@ UPDATE todos SET title=?, due_at=?, updated_at=? WHERE id=?`,
 	return err
 }
 
-func (s *Store) TransitionTodo(ctx context.Context, id string, state string) error {
+func (s *Store) TransitionTodo(ctx context.Context, id int64, state string) error {
 	if !slices.Contains([]string{model.TodoStateClosed, model.TodoStateReopened, model.TodoStateRejected}, state) {
 		return fmt.Errorf("unsupported state transition %q", state)
 	}
@@ -188,9 +191,9 @@ WHERE id=?`,
 	return err
 }
 
-func (s *Store) GetTodo(ctx context.Context, id string) (model.Todo, error) {
+func (s *Store) GetTodo(ctx context.Context, id int64) (model.Todo, error) {
 	var row struct {
-		ID         string
+		ID         int64
 		Title      string
 		DueAt      sql.NullString
 		State      string
@@ -246,7 +249,8 @@ func (s *Store) ListTodos(ctx context.Context, f TodoFilter) ([]model.Todo, erro
 
 	result := make([]model.Todo, 0)
 	for rows.Next() {
-		var id, title, state, createdAt, updatedAt string
+		var id int64
+		var title, state, createdAt, updatedAt string
 		var dueAt, closedAt, rejectedAt sql.NullString
 		if err := rows.Scan(&id, &title, &dueAt, &state, &createdAt, &updatedAt, &closedAt, &rejectedAt); err != nil {
 			return nil, err
@@ -687,7 +691,8 @@ WHERE s.status=? AND t.due_at IS NOT NULL
 		var before, every sql.NullString
 		var targetMOTD int
 		var createdAt string
-		var todoID, title, state, todoCreated, todoUpdated string
+		var todoID int64
+		var title, state, todoCreated, todoUpdated string
 		var dueAt, closedAt, rejectedAt sql.NullString
 		if err := rows.Scan(
 			&sc.ID, &sc.TodoID, &sc.Kind, &before, &every, &sc.Status, &targetMOTD, &createdAt,
@@ -723,7 +728,7 @@ func (s *Store) ActiveSchedulesWithTodos(ctx context.Context) ([]model.Schedule,
 	return s.listActiveSchedulesWithTodos(ctx)
 }
 
-func scanTodo(id, title string, dueAt sql.NullString, state, createdAt, updatedAt string, closedAt, rejectedAt sql.NullString) (model.Todo, error) {
+func scanTodo(id int64, title string, dueAt sql.NullString, state, createdAt, updatedAt string, closedAt, rejectedAt sql.NullString) (model.Todo, error) {
 	var t model.Todo
 	t.ID = id
 	t.Title = title

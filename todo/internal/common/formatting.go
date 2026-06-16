@@ -48,9 +48,9 @@ func FormatSection(text string) string {
 	colors := DetectColorSupport()
 
 	if colors.Supported {
-		// Use bold dark gray for section headers
-		// \033[1;30m = bold dark gray, \033[0m = reset
-		return "\033[1;30m" + text + "\033[0m"
+		// Use bold bright cyan for high contrast headers.
+		// \033[1;96m = bold bright cyan, \033[0m = reset
+		return "\033[1;96m" + text + "\033[0m"
 	}
 
 	// Fallback to bold (without color)
@@ -102,6 +102,6 @@ func ColorSection(text string) string {
 		// Fallback to bold
 		return "\033[1m" + text + "\033[0m"
 	}
-	// Use bold dark gray for section headers
-	return "\033[1;30m" + text + "\033[0m"
+	// Use bold bright cyan for high contrast headers.
+	return "\033[1;96m" + text + "\033[0m"
 }

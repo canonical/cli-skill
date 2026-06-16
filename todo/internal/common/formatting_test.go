@@ -60,7 +60,7 @@ func TestFormattingHelpers(t *testing.T) {
 		t.Setenv("TERM", "xterm-256color")
 
 		got := ColorSection("Usage:")
-		want := "\033[1;30mUsage:\033[0m"
+		want := "\033[1;96mUsage:\033[0m"
 		if got != want {
 			t.Fatalf("unexpected ColorSection output: got %q want %q", got, want)
 		}
@@ -82,7 +82,7 @@ func TestFormattingHelpers(t *testing.T) {
 		t.Setenv("TERM", "xterm-256color")
 
 		got := FormatSection("Flags:")
-		want := "\033[1;30mFlags:\033[0m"
+		want := "\033[1;96mFlags:\033[0m"
 		if got != want {
 			t.Fatalf("unexpected FormatSection output: got %q want %q", got, want)
 		}
@@ -110,7 +110,7 @@ func TestFormattingHelpers(t *testing.T) {
 	})
 
 	t.Run("strip formatting removes ansi escapes", func(t *testing.T) {
-		in := "\033[1;30mUsage:\033[0m test \033[1mtext\033[0m"
+		in := "\033[1;96mUsage:\033[0m test \033[1mtext\033[0m"
 		got := StripFormatting(in)
 		if got != "Usage: test text" {
 			t.Fatalf("unexpected StripFormatting result: got %q", got)

@@ -20,7 +20,7 @@ const (
 )
 
 type Todo struct {
-	ID         string     `json:"id"`
+	ID         int64      `json:"id"`
 	Title      string     `json:"title"`
 	DueAt      *time.Time `json:"due_at,omitempty"`
 	State      string     `json:"state"`

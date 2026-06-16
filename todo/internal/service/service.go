@@ -10,10 +10,9 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
-
-	"github.com/google/uuid"
 
 	"todo/internal/common"
 	"todo/internal/model"
@@ -75,34 +74,47 @@ func (s *Service) CreateTodo(ctx context.Context, req CreateTodoRequest) (model.
 		return model.Todo{}, fmt.Errorf("title is required")
 	}
 	id := strings.TrimSpace(req.ID)
+	var todoID int64
 	if id == "" {
-		id = uuid.NewString()
+		// Create todo and server generates ID
+		now := time.Now().UTC()
+		todo := model.Todo{
+			Title:     strings.TrimSpace(req.Title),
+			DueAt:     req.DueAt,
+			State:     model.TodoStateOpen,
+			CreatedAt: now,
+			UpdatedAt: now,
+		}
+		var err error
+		todoID, err = s.store.CreateTodo(ctx, todo)
+		if err != nil {
+			return model.Todo{}, err
+		}
+	} else {
+		// User provided explicit ID - not supported with int64
+		return model.Todo{}, fmt.Errorf("explicit todo ids are no longer supported")
 	}
-	now := time.Now().UTC()
-	todo := model.Todo{
-		ID:        id,
-		Title:     strings.TrimSpace(req.Title),
-		DueAt:     req.DueAt,
-		State:     model.TodoStateOpen,
-		CreatedAt: now,
-		UpdatedAt: now,
-	}
-	if err := s.store.CreateTodo(ctx, todo); err != nil {
+	todo, err := s.store.GetTodo(ctx, todoID)
+	if err != nil {
 		return model.Todo{}, err
 	}
 	for i := range req.Schedules {
 		sched := req.Schedules[i]
-		sched.TodoID = todo.ID
+		sched.TodoID = fmt.Sprintf("%d", todo.ID)
 		if _, err := s.AddSchedule(ctx, sched); err != nil {
 			return model.Todo{}, err
 		}
 	}
-	return s.store.GetTodo(ctx, todo.ID)
+	return todo, nil
 }
 
-func (s *Service) UpdateTodo(ctx context.Context, id string, req UpdateTodoRequest) (model.Todo, error) {
-	if strings.TrimSpace(id) == "" {
+func (s *Service) UpdateTodo(ctx context.Context, idStr string, req UpdateTodoRequest) (model.Todo, error) {
+	if strings.TrimSpace(idStr) == "" {
 		return model.Todo{}, fmt.Errorf("todo id is required")
+	}
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return model.Todo{}, fmt.Errorf("invalid todo id")
 	}
 	if req.Title == nil && req.DueAt == nil && !req.ClearDue {
 		return model.Todo{}, fmt.Errorf("nothing to update")
@@ -113,28 +125,44 @@ func (s *Service) UpdateTodo(ctx context.Context, id string, req UpdateTodoReque
 	return s.store.GetTodo(ctx, id)
 }
 
-func (s *Service) CloseTodo(ctx context.Context, id string) (model.Todo, error) {
+func (s *Service) CloseTodo(ctx context.Context, idStr string) (model.Todo, error) {
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return model.Todo{}, fmt.Errorf("invalid todo id")
+	}
 	if err := s.store.TransitionTodo(ctx, id, model.TodoStateClosed); err != nil {
 		return model.Todo{}, err
 	}
 	return s.store.GetTodo(ctx, id)
 }
 
-func (s *Service) ReopenTodo(ctx context.Context, id string) (model.Todo, error) {
+func (s *Service) ReopenTodo(ctx context.Context, idStr string) (model.Todo, error) {
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return model.Todo{}, fmt.Errorf("invalid todo id")
+	}
 	if err := s.store.TransitionTodo(ctx, id, model.TodoStateReopened); err != nil {
 		return model.Todo{}, err
 	}
 	return s.store.GetTodo(ctx, id)
 }
 
-func (s *Service) RejectTodo(ctx context.Context, id string) (model.Todo, error) {
+func (s *Service) RejectTodo(ctx context.Context, idStr string) (model.Todo, error) {
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return model.Todo{}, fmt.Errorf("invalid todo id")
+	}
 	if err := s.store.TransitionTodo(ctx, id, model.TodoStateRejected); err != nil {
 		return model.Todo{}, err
 	}
 	return s.store.GetTodo(ctx, id)
 }
 
-func (s *Service) ShowTodo(ctx context.Context, id string) (model.Todo, error) {
+func (s *Service) ShowTodo(ctx context.Context, idStr string) (model.Todo, error) {
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return model.Todo{}, fmt.Errorf("invalid todo id")
+	}
 	return s.store.GetTodo(ctx, id)
 }
 
@@ -230,7 +258,11 @@ func (s *Service) AddSchedule(ctx context.Context, req ScheduleSpec) (model.Sche
 			return model.Schedule{}, fmt.Errorf("--before is not valid for overdue schedules")
 		}
 	}
-	todo, err := s.store.GetTodo(ctx, req.TodoID)
+	todoID, err := strconv.ParseInt(req.TodoID, 10, 64)
+	if err != nil {
+		return model.Schedule{}, fmt.Errorf("invalid todo id")
+	}
+	todo, err := s.store.GetTodo(ctx, todoID)
 	if err != nil {
 		return model.Schedule{}, err
 	}
@@ -387,7 +419,7 @@ func (s *Service) EvaluateAndDispatchSchedules(ctx context.Context) error {
 				}
 				if shouldAttempt {
 					msg := fmt.Sprintf("[%s] %s (due %s)", strings.ToUpper(sc.Kind), todo.Title, todo.DueAt.Local().Format("2006-01-02 15:04 MST"))
-					err = s.store.QueueMOTDMessage(ctx, todo.ID, sc.ID, msg)
+					err = s.store.QueueMOTDMessage(ctx, fmt.Sprintf("%d", todo.ID), sc.ID, msg)
 					if err != nil {
 						_ = s.store.UpsertDeliveryResult(ctx, sc.ID, "motd", "local", plannedAt, false, err.Error())
 					} else {

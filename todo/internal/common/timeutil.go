@@ -69,6 +69,57 @@ func FormatTime(t *time.Time, useRFC3339 bool) string {
 	return t.Local().Format("2006-01-02 15:04 MST")
 }
 
+func FormatRelativeTime(t *time.Time) string {
+	if t == nil {
+		return ""
+	}
+	now := time.Now()
+	diff := t.Sub(now)
+	
+	// Check if time is in the past
+	if diff < 0 {
+		diff = -diff
+		days := diff.Hours() / 24
+		if days < 1 {
+			hours := diff.Hours()
+			if hours < 1 {
+				minutes := diff.Minutes()
+				return fmt.Sprintf("%.0f min ago", minutes)
+			}
+			return fmt.Sprintf("%.0f hours ago", hours)
+		}
+		if days < 30 {
+			return fmt.Sprintf("%.0f days ago", days)
+		}
+		months := days / 30
+		if months < 12 {
+			return fmt.Sprintf("%.0f months ago", months)
+		}
+		years := days / 365
+		return fmt.Sprintf("%.0f years ago", years)
+	}
+	
+	// Future time
+	days := diff.Hours() / 24
+	if days < 1 {
+		hours := diff.Hours()
+		if hours < 1 {
+			minutes := diff.Minutes()
+			return fmt.Sprintf("in %.0f min", minutes)
+		}
+		return fmt.Sprintf("in %.0f hours", hours)
+	}
+	if days < 30 {
+		return fmt.Sprintf("in %.0f days", days)
+	}
+	months := days / 30
+	if months < 12 {
+		return fmt.Sprintf("in %.0f months", months)
+	}
+	years := days / 365
+	return fmt.Sprintf("in %.0f years", years)
+}
+
 func parseRelativeDateTime(input string, base time.Time) (time.Time, bool) {
 	v := strings.ToLower(strings.TrimSpace(input))
 	switch v {

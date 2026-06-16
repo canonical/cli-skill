@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -331,14 +332,18 @@ func main() {
 		Short: "Add an immutable schedule",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			todoID, _ := cmd.Flags().GetString("todo")
+			todoIDStr, _ := cmd.Flags().GetString("todo")
 			kind, _ := cmd.Flags().GetString("kind")
 			before, _ := cmd.Flags().GetString("before")
 			every, _ := cmd.Flags().GetString("every")
 			sinks, _ := cmd.Flags().GetStringArray("sink")
 			motd, _ := cmd.Flags().GetBool("motd")
-			if strings.TrimSpace(todoID) == "" {
+			if strings.TrimSpace(todoIDStr) == "" {
 				return fmt.Errorf("--todo is required")
+			}
+			todoID, err := strconv.ParseInt(todoIDStr, 10, 64)
+			if err != nil {
+				return fmt.Errorf("invalid todo id: %w", err)
 			}
 			if strings.TrimSpace(kind) == "" {
 				return fmt.Errorf("--kind is required")
@@ -441,11 +446,56 @@ func printTodos(todos []model.Todo, format string, rfc3339 bool) error {
 		fmt.Fprintln(os.Stderr, "No todos found")
 		return nil
 	}
-	fmt.Printf("%-24s  %-12s  %-16s  %s\n", "ID", "STATE", "DUE", "TITLE")
-	for _, t := range todos {
-		due := common.FormatTime(t.DueAt, rfc3339)
-		fmt.Printf("%-24s  %-12s  %-16s  %s\n", t.ID, t.State, due, t.Title)
+	
+	// Build rows with formatted data
+	type row struct {
+		id    string
+		state string
+		due   string
+		title string
 	}
+	var rows []row
+	for _, t := range todos {
+		var dueStr string
+		if rfc3339 {
+			dueStr = common.FormatTime(t.DueAt, true)
+		} else {
+			dueStr = common.FormatRelativeTime(t.DueAt)
+		}
+		rows = append(rows, row{
+			id:    fmt.Sprintf("%d", t.ID),
+			state: t.State,
+			due:   dueStr,
+			title: t.Title,
+		})
+	}
+	
+	// Calculate column widths (minimum width for header)
+	idWidth := len("ID")
+	stateWidth := len("STATE")
+	dueWidth := len("DUE")
+	
+	for _, r := range rows {
+		if len(r.id) > idWidth {
+			idWidth = len(r.id)
+		}
+		if len(r.state) > stateWidth {
+			stateWidth = len(r.state)
+		}
+		if len(r.due) > dueWidth {
+			dueWidth = len(r.due)
+		}
+	}
+	
+	// Print header with 2-space separator
+	sep := "  "
+	fmt.Printf("%-*s%s%-*s%s%-*s%s%s\n", idWidth, "ID", sep, stateWidth, "STATE", sep, dueWidth, "DUE", sep, "TITLE")
+	
+	// Print rows
+	for _, r := range rows {
+		fmt.Printf("%-*s%s%-*s%s%-*s%s%s\n", idWidth, r.id, sep, stateWidth, r.state, sep, dueWidth, r.due, sep, r.title)
+	}
+	
 	return nil
 }
 
@@ -457,7 +507,7 @@ func printJSONOrTable(v any, format string, rfc3339 bool) error {
 	}
 	switch t := v.(type) {
 	case model.Todo:
-		fmt.Printf("id: %s\n", t.ID)
+		fmt.Printf("id: %d\n", t.ID)
 		fmt.Printf("title: %s\n", t.Title)
 		fmt.Printf("state: %s\n", t.State)
 		fmt.Printf("due: %s\n", common.FormatTime(t.DueAt, rfc3339))

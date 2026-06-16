@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -201,9 +202,14 @@ func (s *Server) handleTodos(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleTodoByID(w http.ResponseWriter, r *http.Request) {
 	path := strings.TrimPrefix(r.URL.Path, "/todos/")
 	parts := strings.Split(path, "/")
-	id := parts[0]
-	if id == "" {
+	idStr := parts[0]
+	if idStr == "" {
 		writeErr(w, http.StatusBadRequest, "todo id is required")
+		return
+	}
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		writeErr(w, http.StatusBadRequest, "invalid todo id")
 		return
 	}
 	if len(parts) == 1 {
@@ -237,20 +243,20 @@ func (s *Server) handleTodoByID(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusMethodNotAllowed, "method not allowed")
 		return
 	}
-	var err error
+	var errResult error
 	switch action {
 	case "close":
-		err = s.svc.CloseTodo(r.Context(), id)
+		errResult = s.svc.CloseTodo(r.Context(), id)
 	case "reopen":
-		err = s.svc.ReopenTodo(r.Context(), id)
+		errResult = s.svc.ReopenTodo(r.Context(), id)
 	case "reject":
-		err = s.svc.RejectTodo(r.Context(), id)
+		errResult = s.svc.RejectTodo(r.Context(), id)
 	default:
 		writeErr(w, http.StatusNotFound, "not found")
 		return
 	}
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error())
+	if errResult != nil {
+		writeErr(w, http.StatusBadRequest, errResult.Error())
 		return
 	}
 	todo, _ := s.st.GetTodo(r.Context(), id)
