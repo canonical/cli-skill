@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -23,31 +23,53 @@ type Server struct {
 	st       *store.Store
 	svc      *Service
 	dbPath   string
-	addr     string
+	socket   string
 	httpSrv  *http.Server
+	listener net.Listener
 	stopOnce sync.Once
 	stopCh   chan struct{}
 }
 
-func NewServer(dbPath, addr string) (*Server, error) {
+const DefaultSocketPath = "/run/todod.socket"
+
+func SocketPath() string {
+	if socketPath := strings.TrimSpace(os.Getenv("TODOD_SOCKET_PATH")); socketPath != "" {
+		return socketPath
+	}
+	return DefaultSocketPath
+}
+
+func NewServer(dbPath string) (*Server, error) {
 	if err := os.MkdirAll(filepath.Dir(dbPath), 0o755); err != nil {
+		return nil, err
+	}
+	socketPath := SocketPath()
+	if err := os.MkdirAll(filepath.Dir(socketPath), 0o755); err != nil {
+		return nil, err
+	}
+	if err := os.Remove(socketPath); err != nil && !errors.Is(err, os.ErrNotExist) {
+		return nil, err
+	}
+	listener, err := net.Listen("unix", socketPath)
+	if err != nil {
 		return nil, err
 	}
 	st, err := store.Open(dbPath)
 	if err != nil {
+		_ = listener.Close()
 		return nil, err
 	}
 	s := &Server{
-		st:     st,
-		svc:    NewService(st),
-		dbPath: dbPath,
-		addr:   addr,
-		stopCh: make(chan struct{}),
+		st:       st,
+		svc:      NewService(st),
+		dbPath:   dbPath,
+		socket:   socketPath,
+		listener: listener,
+		stopCh:   make(chan struct{}),
 	}
 	mux := http.NewServeMux()
 	s.registerRoutes(mux)
 	s.httpSrv = &http.Server{
-		Addr:              addr,
 		Handler:           loggingMiddleware(mux),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
@@ -87,8 +109,8 @@ func (s *Server) Run(ctx context.Context) error {
 		}
 	}()
 
-	log.Printf("todod listening on %s", s.addr)
-	err := s.httpSrv.ListenAndServe()
+	log.Printf("todod listening on unix socket %s", s.socket)
+	err := s.httpSrv.Serve(s.listener)
 	if errors.Is(err, http.ErrServerClosed) {
 		return nil
 	}
@@ -101,6 +123,12 @@ func (s *Server) Stop() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		_ = s.httpSrv.Shutdown(ctx)
+		if s.listener != nil {
+			_ = s.listener.Close()
+		}
+		if s.socket != "" {
+			_ = os.Remove(s.socket)
+		}
 		_ = s.st.Close()
 	})
 }
@@ -400,14 +428,4 @@ func loggingMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 		log.Printf("%s %s %s", r.Method, r.URL.Path, time.Since(start).Round(time.Millisecond))
 	})
-}
-
-func ParseAddr(host string, port int) string {
-	if strings.TrimSpace(host) == "" {
-		host = "127.0.0.1"
-	}
-	if port <= 0 {
-		port = 44180
-	}
-	return fmt.Sprintf("%s:%d", host, port)
 }

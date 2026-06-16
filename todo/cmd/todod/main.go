@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"time"
@@ -23,8 +24,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	var host string
-	var port int
 	var dbPath string
 	var format string
 
@@ -37,31 +36,29 @@ func main() {
 		Use:   "start",
 		Short: "Start daemon",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			addr := daemon.ParseAddr(host, port)
 			db := dbPath
 			if db == "" {
 				db = store.DefaultDBPath(home)
 			}
-			srv, err := daemon.NewServer(db, addr)
+			srv, err := daemon.NewServer(db)
 			if err != nil {
 				return err
 			}
 			return srv.Run(context.Background())
 		},
 	}
-	startCmd.Flags().StringVar(&host, "host", "127.0.0.1", "HTTP listen host")
-	startCmd.Flags().IntVar(&port, "port", 44180, "HTTP listen port")
 	startCmd.Flags().StringVar(&dbPath, "db", "", "SQLite database path")
 
 	statusCmd := &cobra.Command{
 		Use:   "status",
 		Short: "Show daemon status",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			addr := daemon.ParseAddr(host, port)
+			sock := daemon.SocketPath()
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
-			req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+addr+"/status", nil)
-			resp, err := http.DefaultClient.Do(req)
+			client := newSocketHTTPClient(sock, 5*time.Second)
+			req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "http://unix/status", nil)
+			resp, err := client.Do(req)
 			if err != nil {
 				return err
 			}
@@ -78,7 +75,7 @@ func main() {
 				enc.SetIndent("", "  ")
 				return enc.Encode(payload)
 			}
-			fmt.Printf("todod: %s\n", addr)
+			fmt.Printf("todod: %s\n", sock)
 			fmt.Printf("database: %v\n", payload["database_path"])
 			fmt.Printf("open todos: %v\n", payload["active_todo_count"])
 			fmt.Printf("active schedules: %v\n", payload["active_schedule_count"])
@@ -86,19 +83,18 @@ func main() {
 			return nil
 		},
 	}
-	statusCmd.Flags().StringVar(&host, "host", "127.0.0.1", "HTTP daemon host")
-	statusCmd.Flags().IntVar(&port, "port", 44180, "HTTP daemon port")
 	statusCmd.Flags().StringVar(&format, "format", "table", "Output format: table|json")
 
 	stopCmd := &cobra.Command{
 		Use:   "stop",
 		Short: "Stop daemon",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			addr := daemon.ParseAddr(host, port)
+			sock := daemon.SocketPath()
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
-			req, _ := http.NewRequestWithContext(ctx, http.MethodPost, "http://"+addr+"/shutdown", nil)
-			resp, err := http.DefaultClient.Do(req)
+			client := newSocketHTTPClient(sock, 5*time.Second)
+			req, _ := http.NewRequestWithContext(ctx, http.MethodPost, "http://unix/shutdown", nil)
+			resp, err := client.Do(req)
 			if err != nil {
 				return err
 			}
@@ -110,8 +106,6 @@ func main() {
 			return nil
 		},
 	}
-	stopCmd.Flags().StringVar(&host, "host", "127.0.0.1", "HTTP daemon host")
-	stopCmd.Flags().IntVar(&port, "port", 44180, "HTTP daemon port")
 
 	versionCmd := &cobra.Command{
 		Use:   "version",
@@ -126,4 +120,14 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+func newSocketHTTPClient(socketPath string, timeout time.Duration) *http.Client {
+	transport := &http.Transport{
+		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+			var dialer net.Dialer
+			return dialer.DialContext(ctx, "unix", socketPath)
+		},
+	}
+	return &http.Client{Timeout: timeout, Transport: transport}
 }

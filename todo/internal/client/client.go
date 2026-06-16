@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
@@ -20,14 +21,19 @@ type Client struct {
 	http    *http.Client
 }
 
-func New(addr string, timeout time.Duration) *Client {
-	if addr == "" {
-		addr = daemon.ParseAddr("127.0.0.1", 44180)
+func New(timeout time.Duration) *Client {
+	socketPath := daemon.SocketPath()
+	transport := &http.Transport{
+		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+			var dialer net.Dialer
+			return dialer.DialContext(ctx, "unix", socketPath)
+		},
 	}
 	return &Client{
-		baseURL: "http://" + addr,
+		baseURL: "http://unix",
 		http: &http.Client{
-			Timeout: timeout,
+			Timeout:   timeout,
+			Transport: transport,
 		},
 	}
 }

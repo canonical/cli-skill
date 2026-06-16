@@ -9,7 +9,7 @@ Task management CLI and daemon implemented in Go with Cobra and SQLite.
 
 ## Defaults
 
-- Transport: HTTP on `127.0.0.1:44180`
+- Transport: HTTP over Unix socket at `/run/todod.socket`
 - Database: `~/.local/share/todo/todo.db`
 - Date input: RFC3339 and human-readable dates
 - Date output: human-readable by default, with `--rfc3339` to force RFC3339 output
@@ -51,9 +51,9 @@ When MOTD integration is not detected, `todo status` prints:
 
 ### Daemon
 
-- `todod start [--host ...] [--port ...] [--db ...]`
-- `todod status [--host ...] [--port ...] [--format table|json]`
-- `todod stop [--host ...] [--port ...]`
+- `todod start [--db ...]`
+- `todod status [--format table|json]`
+- `todod stop`
 - `todod version`
 
 ## Schedule semantics

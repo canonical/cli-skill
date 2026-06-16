@@ -11,7 +11,8 @@ import (
 func newTestServer(t *testing.T) *Server {
 	t.Helper()
 	dbPath := filepath.Join(t.TempDir(), "todo-test.db")
-	srv, err := NewServer(dbPath, "127.0.0.1:0")
+	t.Setenv("TODOD_SOCKET_PATH", filepath.Join(t.TempDir(), "todod-test.sock"))
+	srv, err := NewServer(dbPath)
 	if err != nil {
 		t.Fatalf("failed to create server: %v", err)
 	}

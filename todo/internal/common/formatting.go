@@ -2,6 +2,7 @@ package common
 
 import (
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -42,20 +43,32 @@ func DetectColorSupport() TerminalColors {
 	}
 }
 
+// detectBackground detects if the terminal has a dark or light background.
+// Returns "dark", "light", or "" if unknown.
+func detectBackground() string {
+	// Check COLORFGBG environment variable (set by many terminal emulators)
+	// Format is "foreground;background" where background is the ANSI color index
+	if colorfgbg := os.Getenv("COLORFGBG"); colorfgbg != "" {
+		parts := strings.Split(colorfgbg, ";")
+		if len(parts) >= 2 {
+			if bg, err := strconv.Atoi(parts[len(parts)-1]); err == nil {
+				// 0 = black, 8 = dark gray → dark background
+				// 7 = white, 15 = bright white → light background
+				if bg < 8 {
+					return "dark"
+				}
+				return "light"
+			}
+		}
+	}
+	return ""
+}
+
 // FormatSection formats a section header with color or bold
 // Uses ANSI escape codes for color if supported, otherwise uses bold
 func FormatSection(text string) string {
-	colors := DetectColorSupport()
-
-	if colors.Supported {
-		// Use bold bright cyan for high contrast headers.
-		// \033[1;96m = bold bright cyan, \033[0m = reset
-		return "\033[1;96m" + text + "\033[0m"
-	}
-
-	// Fallback to bold (without color)
-	// \033[1m = bold, \033[0m = reset
-	return "\033[1m" + text + "\033[0m"
+	// FormatSection uses the same logic as ColorSection
+	return ColorSection(text)
 }
 
 // StripFormatting removes ANSI escape codes from a string
@@ -95,13 +108,25 @@ func Bold(text string) string {
 	return text
 }
 
-// ColorSection creates a formatted section header
+// ColorSection creates a formatted section header.
+// Uses light gray on dark backgrounds, dark gray on light backgrounds,
+// and bold with the terminal's default foreground when background is unknown.
 func ColorSection(text string) string {
 	colors := DetectColorSupport()
 	if !colors.Supported {
-		// Fallback to bold
 		return "\033[1m" + text + "\033[0m"
 	}
-	// Use bold bright cyan for high contrast headers.
-	return "\033[1;96m" + text + "\033[0m"
+
+	switch detectBackground() {
+	case "dark":
+		// Light gray foreground — readable on dark backgrounds
+		return "\033[37m" + text + "\033[0m"
+	case "light":
+		// Dark foreground — readable on light backgrounds
+		return "\033[30m" + text + "\033[0m"
+	default:
+		// Unknown background: use bold with terminal's default foreground color
+		// so it reads well on both dark and light backgrounds
+		return "\033[1m" + text + "\033[0m"
+	}
 }

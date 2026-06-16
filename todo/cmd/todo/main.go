@@ -20,36 +20,44 @@ import (
 const version = "0.1.0"
 
 func main() {
-	var host string
-	var port int
-	var timeout time.Duration
-	var format string
-	var rfc3339 bool
-
 	root := &cobra.Command{
 		Use:   "todo",
 		Short: "Todo client",
 		Long:  "Todo client for managing tasks with deadlines, delivery sinks, and schedules.",
 	}
-	root.PersistentFlags().StringVar(&host, "host", "127.0.0.1", "Daemon host")
-	root.PersistentFlags().IntVar(&port, "port", 44180, "Daemon port")
-	root.PersistentFlags().DurationVar(&timeout, "timeout", 10*time.Second, "Request timeout")
-	root.PersistentFlags().StringVar(&format, "format", "table", "Output format: table|json")
-	root.PersistentFlags().BoolVar(&rfc3339, "rfc3339", false, "Force RFC3339 date output")
 
 	// Add command groups for help organization
 	root.AddGroup(&cobra.Group{ID: "todos", Title: "Todos:"})
 	root.AddGroup(&cobra.Group{ID: "sinks", Title: "Sinks:"})
 	root.AddGroup(&cobra.Group{ID: "schedules", Title: "Schedules:"})
 	root.AddGroup(&cobra.Group{ID: "other", Title: "Other:"})
+	root.SetHelpCommandGroupID("other")
+	root.SetCompletionCommandGroupID("other")
 
 	// Set custom help function with color formatting
 	root.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		fmt.Println(colorizedHelp(cmd))
 	})
 
-	newClient := func() *client.Client {
-		return client.New(daemon.ParseAddr(host, port), timeout)
+	todosTopicCmd := &cobra.Command{
+		Use:   "todos",
+		Short: "What todos mean in this app",
+		Long: `Todos are the main things you are tracking in the app.
+
+A todo represents a task, deadline, or commitment you want to keep visible until it is done, rejected, or no longer relevant.
+
+From a user perspective:
+- create a todo when you want to track a single piece of work
+- give it a due date when timing matters
+- update it as details change
+- close it when the work is finished
+- reject it when you decide it should not be done
+
+Schedules and sinks build on top of todos. A schedule decides when reminders should happen, and a sink decides where those reminders should go.`,
+	}
+
+	newClient := func(cmd *cobra.Command) *client.Client {
+		return client.New(10 * time.Second)
 	}
 
 	listCmd := &cobra.Command{
@@ -57,30 +65,34 @@ func main() {
 		Short: "List todos",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			state, _ := cmd.Flags().GetString("state")
-			cli := newClient()
+			fmt, rfc := outputFlags(cmd)
+			cli := newClient(cmd)
 			ctx := context.Background()
 			todos, err := cli.ListTodos(ctx, state)
 			if err != nil {
 				return err
 			}
-			return printTodos(todos, format, rfc3339)
+			return printTodos(todos, fmt, rfc)
 		},
 	}
 	listCmd.Flags().String("state", "", "Filter state: open|closed|reopened|rejected")
+	addOutputFlags(listCmd)
 
 	showCmd := &cobra.Command{
 		Use:   "show <todo-id>",
 		Short: "Show a todo",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cli := newClient()
+			fmt, rfc := outputFlags(cmd)
+			cli := newClient(cmd)
 			todo, err := cli.ShowTodo(context.Background(), args[0])
 			if err != nil {
 				return err
 			}
-			return printJSONOrTable(todo, format, rfc3339)
+			return printJSONOrTable(todo, fmt, rfc)
 		},
 	}
+	addOutputFlags(showCmd)
 
 	createCmd := &cobra.Command{
 		Use:   "create <title>",
@@ -109,16 +121,18 @@ func main() {
 				}
 				req.Schedule = append(req.Schedule, spec)
 			}
-			cli := newClient()
+			fmt, rfc := outputFlags(cmd)
+			cli := newClient(cmd)
 			todo, err := cli.CreateTodo(context.Background(), req)
 			if err != nil {
 				return err
 			}
-			return printJSONOrTable(todo, format, rfc3339)
+			return printJSONOrTable(todo, fmt, rfc)
 		},
 	}
 	createCmd.Flags().String("due", "", "Optional due date (RFC3339 or human-readable)")
 	createCmd.Flags().StringArray("schedule", nil, "Optional schedule spec (upcoming[:before=24h]:motd|sink=<id>, overdue[:every=1d]:motd|sink=<id>)")
+	addOutputFlags(createCmd)
 
 	updateCmd := &cobra.Command{
 		Use:   "update <todo-id>",
@@ -141,38 +155,41 @@ func main() {
 				req.DueAt = &t
 			}
 			req.ClearDue = clearDue
-			cli := newClient()
+			fmt, rfc := outputFlags(cmd)
+			cli := newClient(cmd)
 			todo, err := cli.UpdateTodo(context.Background(), args[0], req)
 			if err != nil {
 				return err
 			}
-			return printJSONOrTable(todo, format, rfc3339)
+			return printJSONOrTable(todo, fmt, rfc)
 		},
 	}
 	updateCmd.Flags().String("title", "", "New title")
 	updateCmd.Flags().String("due", "", "New due date (RFC3339 or human-readable)")
 	updateCmd.Flags().Bool("clear-due", false, "Clear due date")
+	addOutputFlags(updateCmd)
 
 	closeCmd := todoActionCmd("close <todo-id>", "Close a todo", func(cli *client.Client, id string) (model.Todo, error) {
 		return cli.CloseTodo(context.Background(), id)
-	}, &format, &rfc3339, newClient)
+	}, newClient)
 	reopenCmd := todoActionCmd("reopen <todo-id>", "Reopen a todo", func(cli *client.Client, id string) (model.Todo, error) {
 		return cli.ReopenTodo(context.Background(), id)
-	}, &format, &rfc3339, newClient)
+	}, newClient)
 	rejectCmd := todoActionCmd("reject <todo-id>", "Reject a todo", func(cli *client.Client, id string) (model.Todo, error) {
 		return cli.RejectTodo(context.Background(), id)
-	}, &format, &rfc3339, newClient)
+	}, newClient)
 
 	statusCmd := &cobra.Command{
 		Use:   "status",
 		Short: "Show todo system status",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cli := newClient()
+			outFmt, _ := outputFlags(cmd)
+			cli := newClient(cmd)
 			payload, err := cli.Status(context.Background())
 			if err != nil {
 				return err
 			}
-			if format == "json" {
+			if outFmt == "json" {
 				enc := json.NewEncoder(os.Stdout)
 				enc.SetIndent("", "  ")
 				return enc.Encode(payload)
@@ -190,6 +207,7 @@ func main() {
 			return nil
 		},
 	}
+	statusCmd.Flags().String("format", "table", "Output format: table|json")
 
 	versionCmd := &cobra.Command{
 		Use:   "version",
@@ -203,7 +221,7 @@ func main() {
 		Use:   "motd-message",
 		Short: "Print pending MOTD reminder messages",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cli := newClient()
+			cli := newClient(cmd)
 			msgs, err := cli.MOTDMessage(context.Background())
 			if err != nil {
 				return err
@@ -219,6 +237,17 @@ func main() {
 	sinksCmd := &cobra.Command{
 		Use:   "sinks",
 		Short: "List sinks",
+		Long: `Sinks are reminder destinations.
+
+In the todo app, a sink is where a reminder gets delivered outside the local terminal experience.
+
+From a user perspective:
+- create a sink when you want reminders sent to another system
+- point the sink at a webhook URL
+- subscribe it to upcoming or overdue events
+- attach schedules to one or more sinks to decide where notifications go
+
+Use the sinks command to inspect the sinks you have configured.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var enabled *bool
 			enabledStr, _ := cmd.Flags().GetString("enabled")
@@ -230,30 +259,34 @@ func main() {
 				enabled = &v
 			}
 			event, _ := cmd.Flags().GetString("event")
-			cli := newClient()
+			fmt, rfc := outputFlags(cmd)
+			cli := newClient(cmd)
 			sinks, err := cli.ListSinks(context.Background(), enabled, event)
 			if err != nil {
 				return err
 			}
-			return printJSONOrTable(sinks, format, rfc3339)
+			return printJSONOrTable(sinks, fmt, rfc)
 		},
 	}
 	sinksCmd.Flags().String("enabled", "", "Filter enabled: true|false")
 	sinksCmd.Flags().String("event", "", "Filter event: upcoming|overdue")
+	addOutputFlags(sinksCmd)
 
 	sinkCmd := &cobra.Command{
 		Use:   "sink <sink-id>",
 		Short: "Show a sink",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cli := newClient()
+			fmt, rfc := outputFlags(cmd)
+			cli := newClient(cmd)
 			sink, err := cli.ShowSink(context.Background(), args[0])
 			if err != nil {
 				return err
 			}
-			return printJSONOrTable(sink, format, rfc3339)
+			return printJSONOrTable(sink, fmt, rfc)
 		},
 	}
+	addOutputFlags(sinkCmd)
 
 	createSinkCmd := &cobra.Command{
 		Use:   "create-sink <sink-id>",
@@ -266,23 +299,25 @@ func main() {
 				return fmt.Errorf("--url is required")
 			}
 			req := daemon.CreateSinkRequest{ID: args[0], URL: url, Events: events}
-			cli := newClient()
+			fmt, rfc := outputFlags(cmd)
+			cli := newClient(cmd)
 			sink, err := cli.CreateSink(context.Background(), req)
 			if err != nil {
 				return err
 			}
-			return printJSONOrTable(sink, format, rfc3339)
+			return printJSONOrTable(sink, fmt, rfc)
 		},
 	}
 	createSinkCmd.Flags().String("url", "", "Webhook URL")
 	createSinkCmd.Flags().StringArray("event", nil, "Event subscriptions (upcoming|overdue)")
+	addOutputFlags(createSinkCmd)
 
 	deleteSinkCmd := &cobra.Command{
 		Use:   "delete-sink <sink-id>",
 		Short: "Delete a sink",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cli := newClient()
+			cli := newClient(cmd)
 			if err := cli.DeleteSink(context.Background(), args[0]); err != nil {
 				return err
 			}
@@ -295,37 +330,51 @@ func main() {
 	schedulesCmd := &cobra.Command{
 		Use:   "schedules",
 		Short: "List schedules",
+		Long: `Schedules define when reminders should be sent for a todo.
+
+In the todo app, a schedule connects a todo to one or more reminder times and destinations.
+
+From a user perspective:
+- use an upcoming schedule to remind yourself before a due date
+- use an overdue schedule to keep reminding after a due date has passed
+- send reminders to MOTD, to sinks, or both
+
+Schedules make todos active over time instead of being just stored records.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			todoID, _ := cmd.Flags().GetString("todo")
 			kind, _ := cmd.Flags().GetString("kind")
 			status, _ := cmd.Flags().GetString("status")
 			target, _ := cmd.Flags().GetString("target")
-			cli := newClient()
+			fmt, rfc := outputFlags(cmd)
+			cli := newClient(cmd)
 			schedules, err := cli.ListSchedules(context.Background(), todoID, kind, status, target)
 			if err != nil {
 				return err
 			}
-			return printJSONOrTable(schedules, format, rfc3339)
+			return printJSONOrTable(schedules, fmt, rfc)
 		},
 	}
 	schedulesCmd.Flags().String("todo", "", "Optional todo id filter")
 	schedulesCmd.Flags().String("kind", "", "Filter kind: upcoming|overdue")
 	schedulesCmd.Flags().String("status", "", "Filter status: active|sent")
 	schedulesCmd.Flags().String("target", "", "Filter target: sink|motd")
+	addOutputFlags(schedulesCmd)
 
 	scheduleCmd := &cobra.Command{
 		Use:   "schedule <schedule-id>",
 		Short: "Show a schedule",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cli := newClient()
+			fmt, rfc := outputFlags(cmd)
+			cli := newClient(cmd)
 			sc, err := cli.ShowSchedule(context.Background(), args[0])
 			if err != nil {
 				return err
 			}
-			return printJSONOrTable(sc, format, rfc3339)
+			return printJSONOrTable(sc, fmt, rfc)
 		},
 	}
+	addOutputFlags(scheduleCmd)
 
 	addScheduleCmd := &cobra.Command{
 		Use:   "add-schedule <schedule-id>",
@@ -357,12 +406,13 @@ func main() {
 				MOTD:   motd,
 				SinkID: sinks,
 			}
-			cli := newClient()
+			fmt, rfc := outputFlags(cmd)
+			cli := newClient(cmd)
 			sc, err := cli.AddSchedule(context.Background(), req)
 			if err != nil {
 				return err
 			}
-			return printJSONOrTable(sc, format, rfc3339)
+			return printJSONOrTable(sc, fmt, rfc)
 		},
 	}
 	addScheduleCmd.Flags().String("todo", "", "Todo id")
@@ -371,13 +421,14 @@ func main() {
 	addScheduleCmd.Flags().String("every", "", "Overdue reminder frequency, default 1d")
 	addScheduleCmd.Flags().StringArray("sink", nil, "Optional sink id (repeatable)")
 	addScheduleCmd.Flags().Bool("motd", false, "Deliver via shell MOTD channel")
+	addOutputFlags(addScheduleCmd)
 
 	removeScheduleCmd := &cobra.Command{
 		Use:   "remove-schedule <schedule-id>",
 		Short: "Remove a schedule",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cli := newClient()
+			cli := newClient(cmd)
 			if err := cli.RemoveSchedule(context.Background(), args[0]); err != nil {
 				return err
 			}
@@ -413,6 +464,7 @@ func main() {
 	root.AddCommand(sinksCmd, sinkCmd, createSinkCmd, deleteSinkCmd)
 	root.AddCommand(schedulesCmd, scheduleCmd, addScheduleCmd, removeScheduleCmd)
 	root.AddCommand(motdMessageCmd, statusCmd, versionCmd)
+	root.AddCommand(todosTopicCmd)
 
 	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -420,20 +472,40 @@ func main() {
 	}
 }
 
-func todoActionCmd(use, short string, fn func(*client.Client, string) (model.Todo, error), format *string, rfc3339 *bool, newClient func() *client.Client) *cobra.Command {
-	return &cobra.Command{
+func todoActionCmd(use, short string, fn func(*client.Client, string) (model.Todo, error), newClient func(*cobra.Command) *client.Client) *cobra.Command {
+	cmd := &cobra.Command{
 		Use:   use,
 		Short: short,
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cli := newClient()
+			fmt, rfc := outputFlags(cmd)
+			cli := newClient(cmd)
 			todo, err := fn(cli, args[0])
 			if err != nil {
 				return err
 			}
-			return printJSONOrTable(todo, *format, *rfc3339)
+			return printJSONOrTable(todo, fmt, rfc)
 		},
 	}
+	addOutputFlags(cmd)
+	return cmd
+}
+
+// addOutputFlags registers --format and --rfc3339 on a command.
+func addOutputFlags(cmd *cobra.Command) {
+	cmd.Flags().String("format", "table", "Output format: table|json")
+	cmd.Flags().Bool("rfc3339", false, "Show dates in RFC3339 format")
+}
+
+// outputFlags reads --format and --rfc3339 from a command.
+// json and yaml formats imply rfc3339.
+func outputFlags(cmd *cobra.Command) (format string, rfc3339 bool) {
+	format, _ = cmd.Flags().GetString("format")
+	rfc3339, _ = cmd.Flags().GetBool("rfc3339")
+	if format == "json" || format == "yaml" {
+		rfc3339 = true
+	}
+	return
 }
 
 func printTodos(todos []model.Todo, format string, rfc3339 bool) error {
@@ -557,6 +629,10 @@ func parseInlineSchedule(raw string) (daemon.ScheduleSpec, error) {
 
 // colorizedHelp takes a cobra command and returns its help text with color formatting
 func colorizedHelp(cmd *cobra.Command) string {
+	if cmd.Parent() == nil {
+		return colorizeSections(rootHelp(cmd))
+	}
+
 	var b strings.Builder
 	b.WriteString("\033[1m")
 	b.WriteString(cmd.Root().Name())
@@ -576,6 +652,110 @@ func colorizedHelp(cmd *cobra.Command) string {
 		help = strings.Replace(help, "\nFlags:\n", "\nGlobal options:\n", 1)
 	}
 
+	return colorizeSections(help)
+}
+
+func rootHelp(cmd *cobra.Command) string {
+	var b strings.Builder
+	b.WriteString("\033[1m")
+	b.WriteString(cmd.Root().Name())
+	b.WriteString(" ")
+	b.WriteString(version)
+	b.WriteString("\033[0m\n\n")
+	if cmd.Long != "" {
+		b.WriteString(cmd.Long)
+		b.WriteString("\n\n")
+	} else if cmd.Short != "" {
+		b.WriteString(cmd.Short)
+		b.WriteString("\n\n")
+	}
+	b.WriteString("Usage:\n")
+	b.WriteString("  todo [command]\n\n")
+
+	writeCommandSection(&b, cmd, "Todos:", "todos")
+	b.WriteString("\n")
+	writeCommandSection(&b, cmd, "Schedules:", "schedules")
+	b.WriteString("\n")
+	b.WriteString("Other:\n")
+	b.WriteString(formatOtherSection(cmd))
+	b.WriteString("\nGlobal options:\n")
+	b.WriteString("  -h, --help   help for todo\n\n")
+	b.WriteString("Use \"todo [command] --help\" for more information about a command.\n")
+	b.WriteString("Use \"todo help <topic>\" for more information about a concept, for example \"todo help todos\".\n")
+	return b.String()
+}
+
+func writeCommandSection(b *strings.Builder, cmd *cobra.Command, title, groupID string) {
+	b.WriteString(title)
+	b.WriteString("\n")
+	entries := sectionEntries(cmd, groupID)
+	width := longestName(entries)
+	if width < 15 {
+		width = 15
+	}
+	for _, entry := range entries {
+		b.WriteString(fmt.Sprintf("  %-*s %s\n", width, entry.Name, entry.Short))
+	}
+}
+
+type helpEntry struct {
+	Name  string
+	Short string
+}
+
+func sectionEntries(cmd *cobra.Command, groupID string) []helpEntry {
+	entries := make([]helpEntry, 0)
+	for _, sub := range cmd.Commands() {
+		if !sub.IsAvailableCommand() || sub.IsAdditionalHelpTopicCommand() {
+			continue
+		}
+		if sub.GroupID == groupID {
+			entries = append(entries, helpEntry{Name: sub.Name(), Short: sub.Short})
+		}
+	}
+	return entries
+}
+
+func longestName(entries []helpEntry) int {
+	width := 0
+	for _, entry := range entries {
+		if len(entry.Name) > width {
+			width = len(entry.Name)
+		}
+	}
+	return width
+}
+
+func formatOtherSection(cmd *cobra.Command) string {
+	var b strings.Builder
+	width := 15
+	b.WriteString(fmt.Sprintf("  %-*s %s\n", width, "Sinks", "create-sink, delete-sink, sink, sinks"))
+	for _, name := range []string{"completion", "help", "motd-message", "status", "version"} {
+		entry, ok := findEntry(cmd, name)
+		if !ok {
+			if name == "help" {
+				b.WriteString(fmt.Sprintf("  %-*s %s\n", width, "help", "Help about any command"))
+			}
+			continue
+		}
+		b.WriteString(fmt.Sprintf("  %-*s %s\n", width, entry.Name, entry.Short))
+	}
+	return b.String()
+}
+
+func findEntry(cmd *cobra.Command, name string) (helpEntry, bool) {
+	for _, sub := range cmd.Commands() {
+		if !sub.IsAvailableCommand() {
+			continue
+		}
+		if sub.Name() == name {
+			return helpEntry{Name: sub.Name(), Short: sub.Short}, true
+		}
+	}
+	return helpEntry{}, false
+}
+
+func colorizeSections(help string) string {
 	// Protect overlapping labels before generic replacements.
 	help = strings.ReplaceAll(help, "Global Flags:", "__TODO_GLOBAL_FLAGS__")
 

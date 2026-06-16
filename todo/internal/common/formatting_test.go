@@ -55,14 +55,39 @@ func TestDetectColorSupport(t *testing.T) {
 }
 
 func TestFormattingHelpers(t *testing.T) {
-	t.Run("color section uses color when supported", func(t *testing.T) {
+	t.Run("color section uses bold when background is unknown", func(t *testing.T) {
 		t.Setenv("NO_COLOR", "")
 		t.Setenv("TERM", "xterm-256color")
+		t.Setenv("COLORFGBG", "")
 
 		got := ColorSection("Usage:")
-		want := "\033[1;96mUsage:\033[0m"
+		want := "\033[1mUsage:\033[0m"
 		if got != want {
 			t.Fatalf("unexpected ColorSection output: got %q want %q", got, want)
+		}
+	})
+
+	t.Run("color section uses light gray for dark backgrounds", func(t *testing.T) {
+		t.Setenv("NO_COLOR", "")
+		t.Setenv("TERM", "xterm-256color")
+		t.Setenv("COLORFGBG", "15;0")
+
+		got := ColorSection("Usage:")
+		want := "\033[37mUsage:\033[0m"
+		if got != want {
+			t.Fatalf("unexpected ColorSection output for dark bg: got %q want %q", got, want)
+		}
+	})
+
+	t.Run("color section uses dark gray for light backgrounds", func(t *testing.T) {
+		t.Setenv("NO_COLOR", "")
+		t.Setenv("TERM", "xterm-256color")
+		t.Setenv("COLORFGBG", "0;15")
+
+		got := ColorSection("Usage:")
+		want := "\033[30mUsage:\033[0m"
+		if got != want {
+			t.Fatalf("unexpected ColorSection output for light bg: got %q want %q", got, want)
 		}
 	})
 
@@ -80,9 +105,10 @@ func TestFormattingHelpers(t *testing.T) {
 	t.Run("format section mirrors color section behavior", func(t *testing.T) {
 		t.Setenv("NO_COLOR", "")
 		t.Setenv("TERM", "xterm-256color")
+		t.Setenv("COLORFGBG", "")
 
 		got := FormatSection("Flags:")
-		want := "\033[1;96mFlags:\033[0m"
+		want := "\033[1mFlags:\033[0m"
 		if got != want {
 			t.Fatalf("unexpected FormatSection output: got %q want %q", got, want)
 		}
