@@ -20,21 +20,18 @@ Task management CLI and daemon implemented in Go with Cobra and SQLite.
 
 - `todo list [--state ...]`
 - `todo show <todo-id>`
-- `todo create <todo-id> <title> [--due <date>] [--schedule <spec>...]`
+- `todo create <title> [--due <date>] [--schedule <spec>...]`
 - `todo update <todo-id> [--title ...] [--due ...] [--clear-due]`
 - `todo close <todo-id>`
 - `todo reopen <todo-id>`
 - `todo reject <todo-id>`
 
-### Sinks (secondary object)
+### Sinks (secondary object, immutable)
 
 - `todo sinks [--enabled true|false] [--event upcoming|overdue]`
 - `todo sink <sink-id>`
 - `todo create-sink <sink-id> --url <url> [--event ...]`
-- `todo update-sink <sink-id> [--url ...] [--event ...] [--clear-events]`
 - `todo delete-sink <sink-id>`
-- `todo enable-sink <sink-id>`
-- `todo disable-sink <sink-id>`
 
 ### Schedules (secondary object, immutable)
 

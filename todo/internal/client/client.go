@@ -151,26 +151,8 @@ func (c *Client) ShowSink(ctx context.Context, id string) (model.Sink, error) {
 	return out, err
 }
 
-func (c *Client) UpdateSink(ctx context.Context, id string, req daemon.UpdateSinkRequest) (model.Sink, error) {
-	var out model.Sink
-	err := c.do(ctx, http.MethodPatch, "/sinks/"+id, req, &out)
-	return out, err
-}
-
 func (c *Client) DeleteSink(ctx context.Context, id string) error {
 	return c.do(ctx, http.MethodDelete, "/sinks/"+id, nil, nil)
-}
-
-func (c *Client) EnableSink(ctx context.Context, id string) (model.Sink, error) {
-	var out model.Sink
-	err := c.do(ctx, http.MethodPost, "/sinks/"+id+"/enable", nil, &out)
-	return out, err
-}
-
-func (c *Client) DisableSink(ctx context.Context, id string) (model.Sink, error) {
-	var out model.Sink
-	err := c.do(ctx, http.MethodPost, "/sinks/"+id+"/disable", nil, &out)
-	return out, err
 }
 
 func (c *Client) AddSchedule(ctx context.Context, req daemon.AddScheduleRequest) (model.Schedule, error) {

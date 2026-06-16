@@ -13,6 +13,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
+
 	"todo/internal/common"
 	"todo/internal/model"
 	"todo/internal/store"
@@ -46,12 +48,6 @@ type CreateSinkRequest struct {
 	Enabled bool
 }
 
-type UpdateSinkRequest struct {
-	URL         *string
-	Events      []string
-	ClearEvents bool
-}
-
 type ScheduleSpec struct {
 	ID       string
 	TodoID   string
@@ -75,15 +71,16 @@ type StatusResponse struct {
 }
 
 func (s *Service) CreateTodo(ctx context.Context, req CreateTodoRequest) (model.Todo, error) {
-	if strings.TrimSpace(req.ID) == "" {
-		return model.Todo{}, fmt.Errorf("todo id is required")
-	}
 	if strings.TrimSpace(req.Title) == "" {
 		return model.Todo{}, fmt.Errorf("title is required")
 	}
+	id := strings.TrimSpace(req.ID)
+	if id == "" {
+		id = uuid.NewString()
+	}
 	now := time.Now().UTC()
 	todo := model.Todo{
-		ID:        req.ID,
+		ID:        id,
 		Title:     strings.TrimSpace(req.Title),
 		DueAt:     req.DueAt,
 		State:     model.TodoStateOpen,
@@ -190,22 +187,8 @@ func (s *Service) CreateSink(ctx context.Context, req CreateSinkRequest) (model.
 	return s.store.GetSink(ctx, sink.ID)
 }
 
-func (s *Service) UpdateSink(ctx context.Context, id string, req UpdateSinkRequest) (model.Sink, error) {
-	if err := s.store.UpdateSink(ctx, id, req.URL, normalizeEvents(req.Events), req.ClearEvents); err != nil {
-		return model.Sink{}, err
-	}
-	return s.store.GetSink(ctx, id)
-}
-
 func (s *Service) DeleteSink(ctx context.Context, id string) error {
 	return s.store.DeleteSink(ctx, id)
-}
-
-func (s *Service) SetSinkEnabled(ctx context.Context, id string, enabled bool) (model.Sink, error) {
-	if err := s.store.SetSinkEnabled(ctx, id, enabled); err != nil {
-		return model.Sink{}, err
-	}
-	return s.store.GetSink(ctx, id)
 }
 
 func (s *Service) ShowSink(ctx context.Context, id string) (model.Sink, error) {

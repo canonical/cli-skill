@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
+
 	"todo/internal/common"
 	"todo/internal/model"
 	"todo/internal/store"
@@ -31,7 +33,7 @@ func NewService(st *store.Store) *Service {
 }
 
 type CreateTodoRequest struct {
-	ID       string         `json:"id"`
+	ID       string         `json:"id,omitempty"`
 	Title    string         `json:"title"`
 	DueAt    *time.Time     `json:"due_at,omitempty"`
 	Schedule []ScheduleSpec `json:"schedule,omitempty"`
@@ -47,12 +49,6 @@ type CreateSinkRequest struct {
 	ID     string   `json:"id"`
 	URL    string   `json:"url"`
 	Events []string `json:"events,omitempty"`
-}
-
-type UpdateSinkRequest struct {
-	URL         *string  `json:"url,omitempty"`
-	Events      []string `json:"events,omitempty"`
-	ClearEvents bool     `json:"clear_events"`
 }
 
 type ScheduleSpec struct {
@@ -74,15 +70,16 @@ type AddScheduleRequest struct {
 }
 
 func (s *Service) CreateTodo(ctx context.Context, req CreateTodoRequest) (model.Todo, error) {
-	if strings.TrimSpace(req.ID) == "" {
-		return model.Todo{}, fmt.Errorf("todo id is required")
-	}
 	if strings.TrimSpace(req.Title) == "" {
 		return model.Todo{}, fmt.Errorf("title is required")
 	}
+	id := strings.TrimSpace(req.ID)
+	if id == "" {
+		id = uuid.NewString()
+	}
 	now := time.Now().UTC()
 	todo := model.Todo{
-		ID:        req.ID,
+		ID:        id,
 		Title:     req.Title,
 		DueAt:     req.DueAt,
 		State:     model.TodoStateOpen,
@@ -95,8 +92,8 @@ func (s *Service) CreateTodo(ctx context.Context, req CreateTodoRequest) (model.
 	for i := range req.Schedule {
 		sp := req.Schedule[i]
 		scReq := AddScheduleRequest{
-			ID:     fmt.Sprintf("%s-sch-%d", req.ID, i+1),
-			TodoID: req.ID,
+			ID:     fmt.Sprintf("%s-sch-%d", todo.ID, i+1),
+			TodoID: todo.ID,
 			Kind:   sp.Kind,
 			Before: sp.Before,
 			Every:  sp.Every,
@@ -158,26 +155,6 @@ func (s *Service) CreateSink(ctx context.Context, req CreateSinkRequest) (model.
 		return model.Sink{}, err
 	}
 	return sink, nil
-}
-
-func (s *Service) UpdateSink(ctx context.Context, id string, req UpdateSinkRequest) error {
-	if req.URL == nil && len(req.Events) == 0 && !req.ClearEvents {
-		return fmt.Errorf("at least one field must be changed")
-	}
-	for _, e := range req.Events {
-		if e != model.ScheduleKindUpcoming && e != model.ScheduleKindOverdue {
-			return fmt.Errorf("invalid sink event %q", e)
-		}
-	}
-	return s.store.UpdateSink(ctx, id, req.URL, req.Events, req.ClearEvents)
-}
-
-func (s *Service) EnableSink(ctx context.Context, id string) error {
-	return s.store.SetSinkEnabled(ctx, id, true)
-}
-
-func (s *Service) DisableSink(ctx context.Context, id string) error {
-	return s.store.SetSinkEnabled(ctx, id, false)
 }
 
 func (s *Service) DeleteSink(ctx context.Context, id string) error {

@@ -307,18 +307,6 @@ func (s *Server) handleSinkByID(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			writeJSON(w, http.StatusOK, sink)
-		case http.MethodPatch:
-			var req UpdateSinkRequest
-			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-				writeErr(w, http.StatusBadRequest, "invalid json")
-				return
-			}
-			if err := s.svc.UpdateSink(r.Context(), id, req); err != nil {
-				writeErr(w, http.StatusBadRequest, err.Error())
-				return
-			}
-			sink, _ := s.st.GetSink(r.Context(), id)
-			writeJSON(w, http.StatusOK, sink)
 		case http.MethodDelete:
 			if err := s.svc.DeleteSink(r.Context(), id); err != nil {
 				writeErr(w, http.StatusBadRequest, err.Error())
@@ -330,27 +318,7 @@ func (s *Server) handleSinkByID(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	if r.Method != http.MethodPost {
-		writeErr(w, http.StatusMethodNotAllowed, "method not allowed")
-		return
-	}
-	action := parts[1]
-	var err error
-	switch action {
-	case "enable":
-		err = s.svc.EnableSink(r.Context(), id)
-	case "disable":
-		err = s.svc.DisableSink(r.Context(), id)
-	default:
-		writeErr(w, http.StatusNotFound, "not found")
-		return
-	}
-	if err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	sink, _ := s.st.GetSink(r.Context(), id)
-	writeJSON(w, http.StatusOK, sink)
+	writeErr(w, http.StatusNotFound, "not found")
 }
 
 func (s *Server) handleSchedules(w http.ResponseWriter, r *http.Request) {

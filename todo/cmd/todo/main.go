@@ -70,9 +70,9 @@ func main() {
 	}
 
 	createCmd := &cobra.Command{
-		Use:   "create <todo-id> <title>",
+		Use:   "create <title>",
 		Short: "Create a todo",
-		Args:  cobra.MinimumNArgs(2),
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			dueInput, _ := cmd.Flags().GetString("due")
 			scheduleFlags, _ := cmd.Flags().GetStringArray("schedule")
@@ -86,8 +86,7 @@ func main() {
 				dueAt = &t
 			}
 			req := daemon.CreateTodoRequest{
-				ID:    args[0],
-				Title: strings.Join(args[1:], " "),
+				Title: strings.Join(args, " "),
 				DueAt: dueAt,
 			}
 			for i, raw := range scheduleFlags {
@@ -265,31 +264,6 @@ func main() {
 	createSinkCmd.Flags().String("url", "", "Webhook URL")
 	createSinkCmd.Flags().StringArray("event", nil, "Event subscriptions (upcoming|overdue)")
 
-	updateSinkCmd := &cobra.Command{
-		Use:   "update-sink <sink-id>",
-		Short: "Update a sink",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			url, _ := cmd.Flags().GetString("url")
-			events, _ := cmd.Flags().GetStringArray("event")
-			clearEvents, _ := cmd.Flags().GetBool("clear-events")
-			var urlPtr *string
-			if strings.TrimSpace(url) != "" {
-				urlPtr = &url
-			}
-			req := daemon.UpdateSinkRequest{URL: urlPtr, Events: events, ClearEvents: clearEvents}
-			cli := newClient()
-			sink, err := cli.UpdateSink(context.Background(), args[0], req)
-			if err != nil {
-				return err
-			}
-			return printJSONOrTable(sink, format, rfc3339)
-		},
-	}
-	updateSinkCmd.Flags().String("url", "", "New webhook URL")
-	updateSinkCmd.Flags().StringArray("event", nil, "Replace events (upcoming|overdue)")
-	updateSinkCmd.Flags().Bool("clear-events", false, "Clear event subscriptions")
-
 	deleteSinkCmd := &cobra.Command{
 		Use:   "delete-sink <sink-id>",
 		Short: "Delete a sink",
@@ -301,34 +275,6 @@ func main() {
 			}
 			fmt.Println("sink deleted")
 			return nil
-		},
-	}
-
-	enableSinkCmd := &cobra.Command{
-		Use:   "enable-sink <sink-id>",
-		Short: "Enable a sink",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cli := newClient()
-			sink, err := cli.EnableSink(context.Background(), args[0])
-			if err != nil {
-				return err
-			}
-			return printJSONOrTable(sink, format, rfc3339)
-		},
-	}
-
-	disableSinkCmd := &cobra.Command{
-		Use:   "disable-sink <sink-id>",
-		Short: "Disable a sink",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cli := newClient()
-			sink, err := cli.DisableSink(context.Background(), args[0])
-			if err != nil {
-				return err
-			}
-			return printJSONOrTable(sink, format, rfc3339)
 		},
 	}
 
@@ -424,7 +370,7 @@ func main() {
 	}
 
 	root.AddCommand(listCmd, showCmd, createCmd, updateCmd, closeCmd, reopenCmd, rejectCmd)
-	root.AddCommand(sinksCmd, sinkCmd, createSinkCmd, updateSinkCmd, deleteSinkCmd, enableSinkCmd, disableSinkCmd)
+	root.AddCommand(sinksCmd, sinkCmd, createSinkCmd, deleteSinkCmd)
 	root.AddCommand(schedulesCmd, scheduleCmd, addScheduleCmd, removeScheduleCmd)
 	root.AddCommand(motdMessageCmd, statusCmd, versionCmd)
 

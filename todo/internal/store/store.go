@@ -275,34 +275,6 @@ VALUES(?, ?, ?, ?, ?, ?)`,
 	return err
 }
 
-func (s *Store) UpdateSink(ctx context.Context, id string, url *string, events []string, clearEvents bool) error {
-	sink, err := s.GetSink(ctx, id)
-	if err != nil {
-		return err
-	}
-	if url != nil {
-		sink.URL = *url
-	}
-	if clearEvents {
-		sink.Events = nil
-	} else if len(events) > 0 {
-		sink.Events = events
-	}
-	eventsJSON, _ := json.Marshal(sink.Events)
-	_, err = s.db.ExecContext(ctx, `UPDATE sinks SET url=?, events_json=?, updated_at=? WHERE id=?`,
-		sink.URL,
-		string(eventsJSON),
-		time.Now().UTC().Format(time.RFC3339),
-		id,
-	)
-	return err
-}
-
-func (s *Store) SetSinkEnabled(ctx context.Context, id string, enabled bool) error {
-	_, err := s.db.ExecContext(ctx, `UPDATE sinks SET enabled=?, updated_at=? WHERE id=?`, boolToInt(enabled), time.Now().UTC().Format(time.RFC3339), id)
-	return err
-}
-
 func (s *Store) DeleteSink(ctx context.Context, id string) error {
 	_, err := s.db.ExecContext(ctx, `DELETE FROM sinks WHERE id=?`, id)
 	return err
