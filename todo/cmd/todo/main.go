@@ -28,12 +28,24 @@ func main() {
 	root := &cobra.Command{
 		Use:   "todo",
 		Short: "Todo client",
+		Long:  "Todo client for managing tasks with deadlines, delivery sinks, and schedules.",
 	}
 	root.PersistentFlags().StringVar(&host, "host", "127.0.0.1", "Daemon host")
 	root.PersistentFlags().IntVar(&port, "port", 44180, "Daemon port")
 	root.PersistentFlags().DurationVar(&timeout, "timeout", 10*time.Second, "Request timeout")
 	root.PersistentFlags().StringVar(&format, "format", "table", "Output format: table|json")
 	root.PersistentFlags().BoolVar(&rfc3339, "rfc3339", false, "Force RFC3339 date output")
+
+	// Add command groups for help organization
+	root.AddGroup(&cobra.Group{ID: "todos", Title: "Todos:"})
+	root.AddGroup(&cobra.Group{ID: "sinks", Title: "Sinks:"})
+	root.AddGroup(&cobra.Group{ID: "schedules", Title: "Schedules:"})
+	root.AddGroup(&cobra.Group{ID: "other", Title: "Other:"})
+
+	// Set custom help function with color formatting
+	root.SetHelpFunc(func(cmd *cobra.Command, args []string) {
+		fmt.Println(colorizedHelp(cmd))
+	})
 
 	newClient := func() *client.Client {
 		return client.New(daemon.ParseAddr(host, port), timeout)
@@ -369,6 +381,29 @@ func main() {
 		},
 	}
 
+	// Set command groups for better help organization
+	listCmd.GroupID = "todos"
+	showCmd.GroupID = "todos"
+	createCmd.GroupID = "todos"
+	updateCmd.GroupID = "todos"
+	closeCmd.GroupID = "todos"
+	reopenCmd.GroupID = "todos"
+	rejectCmd.GroupID = "todos"
+
+	sinksCmd.GroupID = "sinks"
+	sinkCmd.GroupID = "sinks"
+	createSinkCmd.GroupID = "sinks"
+	deleteSinkCmd.GroupID = "sinks"
+
+	schedulesCmd.GroupID = "schedules"
+	scheduleCmd.GroupID = "schedules"
+	addScheduleCmd.GroupID = "schedules"
+	removeScheduleCmd.GroupID = "schedules"
+
+	motdMessageCmd.GroupID = "other"
+	statusCmd.GroupID = "other"
+	versionCmd.GroupID = "other"
+
 	root.AddCommand(listCmd, showCmd, createCmd, updateCmd, closeCmd, reopenCmd, rejectCmd)
 	root.AddCommand(sinksCmd, sinkCmd, createSinkCmd, deleteSinkCmd)
 	root.AddCommand(schedulesCmd, scheduleCmd, addScheduleCmd, removeScheduleCmd)
@@ -468,4 +503,55 @@ func parseInlineSchedule(raw string) (daemon.ScheduleSpec, error) {
 		out.MOTD = true
 	}
 	return out, nil
+}
+
+// colorizedHelp takes a cobra command and returns its help text with color formatting
+func colorizedHelp(cmd *cobra.Command) string {
+	var b strings.Builder
+	b.WriteString("\033[1m")
+	b.WriteString(cmd.Root().Name())
+	b.WriteString(" ")
+	b.WriteString(version)
+	b.WriteString("\033[0m\n\n")
+	if cmd.Long != "" {
+		b.WriteString(cmd.Long)
+		b.WriteString("\n\n")
+	} else if cmd.Short != "" {
+		b.WriteString(cmd.Short)
+		b.WriteString("\n\n")
+	}
+	b.WriteString(cmd.UsageString())
+	help := b.String()
+	if cmd.Parent() == nil {
+		help = strings.Replace(help, "\nFlags:\n", "\nGlobal options:\n", 1)
+	}
+
+	// Protect overlapping labels before generic replacements.
+	help = strings.ReplaceAll(help, "Global Flags:", "__TODO_GLOBAL_FLAGS__")
+
+	// Apply color formatting to section headers
+	sections := []string{
+		"Usage:",
+		"Summary:",
+		"Todos:",
+		"Sinks:",
+		"Schedules:",
+		"Other:",
+		"Available Commands:",
+		"Additional Commands:",
+		"Global options:",
+		"Flags:",
+		"Examples:",
+		"Related commands:",
+	}
+
+	// Apply color formatting to each section header
+	for _, section := range sections {
+		colored := common.ColorSection(section)
+		help = strings.ReplaceAll(help, section, colored)
+	}
+
+	help = strings.ReplaceAll(help, "__TODO_GLOBAL_FLAGS__", common.ColorSection("Global Flags:"))
+
+	return help
 }
