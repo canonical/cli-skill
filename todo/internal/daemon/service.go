@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"todo/internal/common"
 	"todo/internal/model"
 	"todo/internal/store"
 )
@@ -203,7 +204,7 @@ func (s *Service) AddSchedule(ctx context.Context, req AddScheduleRequest) (mode
 		if req.Before == "" {
 			req.Before = "24h"
 		}
-		if _, err := time.ParseDuration(req.Before); err != nil {
+		if _, err := common.ParseHumanDuration(req.Before); err != nil {
 			return model.Schedule{}, fmt.Errorf("invalid before duration: %w", err)
 		}
 	}
@@ -214,7 +215,7 @@ func (s *Service) AddSchedule(ctx context.Context, req AddScheduleRequest) (mode
 		if req.Every == "" {
 			req.Every = "24h"
 		}
-		if _, err := parseFrequency(req.Every); err != nil {
+		if _, err := common.ParseHumanDuration(req.Every); err != nil {
 			return model.Schedule{}, fmt.Errorf("invalid every duration: %w", err)
 		}
 	}
@@ -400,7 +401,7 @@ func (s *Service) PullMOTDMessages(ctx context.Context) ([]string, error) {
 func computePlannedAtAndEligibility(sc model.Schedule, todo model.Todo, now time.Time) (time.Time, bool, error) {
 	due := *todo.DueAt
 	if sc.Kind == model.ScheduleKindUpcoming {
-		before, err := time.ParseDuration(sc.Before)
+		before, err := common.ParseHumanDuration(sc.Before)
 		if err != nil {
 			return time.Time{}, false, err
 		}
@@ -408,7 +409,7 @@ func computePlannedAtAndEligibility(sc model.Schedule, todo model.Todo, now time
 		return planned, !now.Before(planned), nil
 	}
 	if sc.Kind == model.ScheduleKindOverdue {
-		every, err := parseFrequency(sc.Every)
+		every, err := common.ParseHumanDuration(sc.Every)
 		if err != nil {
 			return time.Time{}, false, err
 		}
@@ -421,27 +422,6 @@ func computePlannedAtAndEligibility(sc model.Schedule, todo model.Todo, now time
 		return planned, true, nil
 	}
 	return time.Time{}, false, fmt.Errorf("unknown kind %q", sc.Kind)
-}
-
-func parseFrequency(input string) (time.Duration, error) {
-	if strings.HasSuffix(input, "w") {
-		v := strings.TrimSuffix(input, "w")
-		n, err := parseInt(v)
-		if err != nil {
-			return 0, err
-		}
-		return time.Hour * 24 * 7 * time.Duration(n), nil
-	}
-	return time.ParseDuration(input)
-}
-
-func parseInt(s string) (int, error) {
-	var n int
-	_, err := fmt.Sscanf(s, "%d", &n)
-	if err != nil || n <= 0 {
-		return 0, fmt.Errorf("invalid positive integer %q", s)
-	}
-	return n, nil
 }
 
 func buildReminderMessage(sc model.Schedule, todo model.Todo) string {

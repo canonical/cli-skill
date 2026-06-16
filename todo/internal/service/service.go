@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"todo/internal/common"
 	"todo/internal/model"
 	"todo/internal/store"
 )
@@ -63,14 +64,14 @@ type ScheduleSpec struct {
 }
 
 type StatusResponse struct {
-	Now                         time.Time `json:"now"`
-	DatabasePath                string    `json:"database_path"`
-	NeedsMOTDLoginScriptHint    bool      `json:"needs_motd_login_script_hint"`
-	MOTDLoginScriptHint         string    `json:"motd_login_script_hint"`
-	MOTDLoginScriptCheckPath    string    `json:"motd_login_script_check_path"`
-	ActiveTodoCount             int       `json:"active_todo_count"`
-	ActiveScheduleCount         int       `json:"active_schedule_count"`
-	EnabledSinkCount            int       `json:"enabled_sink_count"`
+	Now                      time.Time `json:"now"`
+	DatabasePath             string    `json:"database_path"`
+	NeedsMOTDLoginScriptHint bool      `json:"needs_motd_login_script_hint"`
+	MOTDLoginScriptHint      string    `json:"motd_login_script_hint"`
+	MOTDLoginScriptCheckPath string    `json:"motd_login_script_check_path"`
+	ActiveTodoCount          int       `json:"active_todo_count"`
+	ActiveScheduleCount      int       `json:"active_schedule_count"`
+	EnabledSinkCount         int       `json:"enabled_sink_count"`
 }
 
 func (s *Service) CreateTodo(ctx context.Context, req CreateTodoRequest) (model.Todo, error) {
@@ -229,7 +230,7 @@ func (s *Service) AddSchedule(ctx context.Context, req ScheduleSpec) (model.Sche
 		if strings.TrimSpace(req.Before) == "" {
 			req.Before = "24h"
 		}
-		if _, err := time.ParseDuration(req.Before); err != nil {
+		if _, err := common.ParseHumanDuration(req.Before); err != nil {
 			return model.Schedule{}, fmt.Errorf("invalid --before duration: %w", err)
 		}
 		if req.Every != "" {
@@ -239,7 +240,7 @@ func (s *Service) AddSchedule(ctx context.Context, req ScheduleSpec) (model.Sche
 		if strings.TrimSpace(req.Every) == "" {
 			req.Every = "24h"
 		}
-		if _, err := parseFrequency(req.Every); err != nil {
+		if _, err := common.ParseHumanDuration(req.Every); err != nil {
 			return model.Schedule{}, fmt.Errorf("invalid --every duration: %w", err)
 		}
 		if req.Before != "" {
@@ -343,29 +344,13 @@ func dedupe(in []string) []string {
 	return out
 }
 
-func parseFrequency(v string) (time.Duration, error) {
-	v = strings.TrimSpace(strings.ToLower(v))
-	if strings.HasSuffix(v, "w") {
-		n := strings.TrimSuffix(v, "w")
-		if n == "" {
-			return 0, fmt.Errorf("invalid weekly frequency")
-		}
-		var weeks int
-		if _, err := fmt.Sscanf(n, "%d", &weeks); err != nil || weeks <= 0 {
-			return 0, fmt.Errorf("invalid weekly frequency")
-		}
-		return time.Duration(weeks) * 7 * 24 * time.Hour, nil
-	}
-	return time.ParseDuration(v)
-}
-
 func computeSchedulePlannedAt(sc model.Schedule, todo model.Todo, now time.Time) (time.Time, bool, error) {
 	if todo.DueAt == nil {
 		return time.Time{}, false, nil
 	}
 	due := todo.DueAt.UTC()
 	if sc.Kind == model.ScheduleKindUpcoming {
-		d, err := time.ParseDuration(sc.Before)
+		d, err := common.ParseHumanDuration(sc.Before)
 		if err != nil {
 			return time.Time{}, false, err
 		}
@@ -375,7 +360,7 @@ func computeSchedulePlannedAt(sc model.Schedule, todo model.Todo, now time.Time)
 		}
 		return planned, true, nil
 	}
-	freq, err := parseFrequency(sc.Every)
+	freq, err := common.ParseHumanDuration(sc.Every)
 	if err != nil {
 		return time.Time{}, false, err
 	}
