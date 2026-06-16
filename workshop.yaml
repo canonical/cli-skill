@@ -23,6 +23,8 @@ sdks:
     channel: latest/stable
   - name: pi-coding-agent
     channel: latest/edge
+  - name: go
+    channel: latest/stable
   - name: node
     channel: latest/stable
   - name: uv
