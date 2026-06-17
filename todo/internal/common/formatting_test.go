@@ -1,12 +1,23 @@
 package common
 
-import "testing"
+import (
+	"os"
+	"testing"
+
+	"github.com/muesli/termenv"
+)
+
+func forceProfile(profile termenv.Profile) func() {
+	return SetColorProfileResolverForTesting(func(*termenv.Output) termenv.Profile {
+		return profile
+	})
+}
 
 func TestDetectColorSupport(t *testing.T) {
 	t.Run("respects no color", func(t *testing.T) {
+		restore := forceProfile(termenv.ANSI256)
+		defer restore()
 		t.Setenv("NO_COLOR", "1")
-		t.Setenv("TERM", "xterm-256color")
-		t.Setenv("COLORTERM", "truecolor")
 
 		c := DetectColorSupport()
 		if c.Supported {
@@ -15,9 +26,9 @@ func TestDetectColorSupport(t *testing.T) {
 	})
 
 	t.Run("supports 256 color terminals", func(t *testing.T) {
-		t.Setenv("NO_COLOR", "")
-		t.Setenv("TERM", "xterm-256color")
-		t.Setenv("COLORTERM", "")
+		restore := forceProfile(termenv.ANSI256)
+		defer restore()
+		_ = os.Unsetenv("NO_COLOR")
 
 		c := DetectColorSupport()
 		if !c.Supported {
@@ -29,9 +40,9 @@ func TestDetectColorSupport(t *testing.T) {
 	})
 
 	t.Run("supports truecolor terminals", func(t *testing.T) {
-		t.Setenv("NO_COLOR", "")
-		t.Setenv("TERM", "xterm")
-		t.Setenv("COLORTERM", "truecolor")
+		restore := forceProfile(termenv.TrueColor)
+		defer restore()
+		_ = os.Unsetenv("NO_COLOR")
 
 		c := DetectColorSupport()
 		if !c.Supported {
@@ -43,9 +54,10 @@ func TestDetectColorSupport(t *testing.T) {
 	})
 
 	t.Run("dumb terminals are not supported", func(t *testing.T) {
-		t.Setenv("NO_COLOR", "")
+		restore := forceProfile(termenv.Ascii)
+		defer restore()
+		_ = os.Unsetenv("NO_COLOR")
 		t.Setenv("TERM", "dumb")
-		t.Setenv("COLORTERM", "")
 
 		c := DetectColorSupport()
 		if c.Supported {
@@ -56,9 +68,11 @@ func TestDetectColorSupport(t *testing.T) {
 
 func TestFormattingHelpers(t *testing.T) {
 	t.Run("color section uses bold when background is unknown", func(t *testing.T) {
-		t.Setenv("NO_COLOR", "")
-		t.Setenv("TERM", "xterm-256color")
-		t.Setenv("COLORFGBG", "")
+		restoreProfile := forceProfile(termenv.ANSI256)
+		defer restoreProfile()
+		restoreBg := SetBackgroundModeDetectorForTesting(func(*termenv.Output) string { return "" })
+		defer restoreBg()
+		_ = os.Unsetenv("NO_COLOR")
 
 		got := ColorSection("Usage:")
 		want := "\033[1mUsage:\033[0m"
@@ -68,9 +82,11 @@ func TestFormattingHelpers(t *testing.T) {
 	})
 
 	t.Run("color section uses light gray for dark backgrounds", func(t *testing.T) {
-		t.Setenv("NO_COLOR", "")
-		t.Setenv("TERM", "xterm-256color")
-		t.Setenv("COLORFGBG", "15;0")
+		restoreProfile := forceProfile(termenv.ANSI256)
+		defer restoreProfile()
+		restoreBg := SetBackgroundModeDetectorForTesting(func(*termenv.Output) string { return "dark" })
+		defer restoreBg()
+		_ = os.Unsetenv("NO_COLOR")
 
 		got := ColorSection("Usage:")
 		want := "\033[37mUsage:\033[0m"
@@ -80,9 +96,11 @@ func TestFormattingHelpers(t *testing.T) {
 	})
 
 	t.Run("color section uses dark gray for light backgrounds", func(t *testing.T) {
-		t.Setenv("NO_COLOR", "")
-		t.Setenv("TERM", "xterm-256color")
-		t.Setenv("COLORFGBG", "0;15")
+		restoreProfile := forceProfile(termenv.ANSI256)
+		defer restoreProfile()
+		restoreBg := SetBackgroundModeDetectorForTesting(func(*termenv.Output) string { return "light" })
+		defer restoreBg()
+		_ = os.Unsetenv("NO_COLOR")
 
 		got := ColorSection("Usage:")
 		want := "\033[30mUsage:\033[0m"
@@ -92,20 +110,23 @@ func TestFormattingHelpers(t *testing.T) {
 	})
 
 	t.Run("color section falls back to bold for no color", func(t *testing.T) {
+		restore := forceProfile(termenv.ANSI256)
+		defer restore()
 		t.Setenv("NO_COLOR", "1")
-		t.Setenv("TERM", "xterm-256color")
 
 		got := ColorSection("Usage:")
-		want := "\033[1mUsage:\033[0m"
+		want := "Usage:"
 		if got != want {
 			t.Fatalf("unexpected ColorSection fallback: got %q want %q", got, want)
 		}
 	})
 
 	t.Run("format section mirrors color section behavior", func(t *testing.T) {
-		t.Setenv("NO_COLOR", "")
-		t.Setenv("TERM", "xterm-256color")
-		t.Setenv("COLORFGBG", "")
+		restoreProfile := forceProfile(termenv.ANSI256)
+		defer restoreProfile()
+		restoreBg := SetBackgroundModeDetectorForTesting(func(*termenv.Output) string { return "" })
+		defer restoreBg()
+		_ = os.Unsetenv("NO_COLOR")
 
 		got := FormatSection("Flags:")
 		want := "\033[1mFlags:\033[0m"
@@ -115,23 +136,25 @@ func TestFormattingHelpers(t *testing.T) {
 	})
 
 	t.Run("bold only when colors are disabled", func(t *testing.T) {
+		restore := forceProfile(termenv.ANSI256)
+		defer restore()
 		t.Setenv("NO_COLOR", "1")
-		t.Setenv("TERM", "xterm-256color")
 
 		got := Bold("todo")
-		want := "\033[1mtodo\033[0m"
+		want := "todo"
 		if got != want {
 			t.Fatalf("unexpected Bold output: got %q want %q", got, want)
 		}
 	})
 
-	t.Run("bold passes through with colors enabled", func(t *testing.T) {
-		t.Setenv("NO_COLOR", "")
-		t.Setenv("TERM", "xterm-256color")
+	t.Run("bold uses ansi when colors enabled", func(t *testing.T) {
+		restore := forceProfile(termenv.ANSI256)
+		defer restore()
+		_ = os.Unsetenv("NO_COLOR")
 
 		got := Bold("todo")
-		if got != "todo" {
-			t.Fatalf("expected plain text when colors are enabled, got %q", got)
+		if got != "\033[1mtodo\033[0m" {
+			t.Fatalf("expected bold ansi text when colors are enabled, got %q", got)
 		}
 	})
 
@@ -140,6 +163,28 @@ func TestFormattingHelpers(t *testing.T) {
 		got := StripFormatting(in)
 		if got != "Usage: test text" {
 			t.Fatalf("unexpected StripFormatting result: got %q", got)
+		}
+	})
+
+	t.Run("render inline tags strips tags when colors disabled", func(t *testing.T) {
+		restore := forceProfile(termenv.ANSI256)
+		defer restore()
+		t.Setenv("NO_COLOR", "1")
+
+		got := RenderInlineTags("<b>todo</b> <green>ok</green>")
+		if got != "todo ok" {
+			t.Fatalf("unexpected plain output: got %q", got)
+		}
+	})
+
+	t.Run("render inline tags uses ansi when colors enabled", func(t *testing.T) {
+		restore := forceProfile(termenv.ANSI256)
+		defer restore()
+		_ = os.Unsetenv("NO_COLOR")
+
+		got := RenderInlineTags("<green>ok</green>")
+		if got != "\033[32mok\033[0m" {
+			t.Fatalf("unexpected colored output: got %q", got)
 		}
 	})
 }

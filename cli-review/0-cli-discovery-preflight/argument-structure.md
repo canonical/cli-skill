@@ -82,7 +82,7 @@ The CLI uses long-form flags (no short aliases), with Cobra defaults (`--help`, 
 ### `remove-schedule <schedule-id>`
 - `<schedule-id>` required positional
 
-### `motd-message`
+### `reminder-status`
 - no command-specific args
 
 ### `status`

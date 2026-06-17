@@ -2,8 +2,9 @@ package common
 
 import (
 	"os"
-	"strconv"
 	"strings"
+
+	"github.com/muesli/termenv"
 )
 
 // TerminalColors represents color support capabilities
@@ -13,28 +14,83 @@ type TerminalColors struct {
 	HasTruecolor bool
 }
 
-// DetectColorSupport checks if the terminal supports colors
-// It checks:
-// - NO_COLOR environment variable (disables colors if set)
-// - TERM environment variable
-// - Presence of COLORTERM
+var newTermOutput = func() *termenv.Output {
+	return termenv.NewOutput(os.Stdout)
+}
+
+var resolveColorProfile = func(out *termenv.Output) termenv.Profile {
+	return out.ColorProfile()
+}
+
+var detectBackgroundMode = func(out *termenv.Output) string {
+	if out.HasDarkBackground() {
+		return "dark"
+	}
+	if out.ColorProfile() != termenv.Ascii {
+		return "light"
+	}
+	return ""
+}
+
+// SetTermOutputFactoryForTesting overrides terminal output detection for tests.
+// It returns a restore function that must be called to reset the default behavior.
+func SetTermOutputFactoryForTesting(factory func() *termenv.Output) func() {
+	prev := newTermOutput
+	newTermOutput = factory
+	return func() {
+		newTermOutput = prev
+	}
+}
+
+// SetColorProfileResolverForTesting overrides profile resolution for tests.
+// It returns a restore function that must be called to reset the default behavior.
+func SetColorProfileResolverForTesting(resolver func(*termenv.Output) termenv.Profile) func() {
+	prev := resolveColorProfile
+	resolveColorProfile = resolver
+	return func() {
+		resolveColorProfile = prev
+	}
+}
+
+// SetBackgroundModeDetectorForTesting overrides background mode detection for tests.
+// It returns a restore function that must be called to reset the default behavior.
+func SetBackgroundModeDetectorForTesting(detector func(*termenv.Output) string) func() {
+	prev := detectBackgroundMode
+	detectBackgroundMode = detector
+	return func() {
+		detectBackgroundMode = prev
+	}
+}
+
+var tagToANSI = map[string]string{
+	"<b>":      "\033[1m",
+	"</b>":     "\033[0m",
+	"<light>":  "\033[37m",
+	"</light>": "\033[0m",
+	"<dark>":   "\033[30m",
+	"</dark>":  "\033[0m",
+	"<green>":  "\033[32m",
+	"</green>": "\033[0m",
+}
+
+var knownTags = []string{
+	"<b>", "</b>",
+	"<light>", "</light>",
+	"<dark>", "</dark>",
+	"<green>", "</green>",
+}
+
+// DetectColorSupport checks terminal color capabilities via termenv.
 func DetectColorSupport() TerminalColors {
-	// Respect NO_COLOR directive
-	if os.Getenv("NO_COLOR") != "" {
+	out := newTermOutput()
+	if out.EnvNoColor() {
 		return TerminalColors{Supported: false}
 	}
 
-	term := os.Getenv("TERM")
-
-	// Check for truecolor support
-	colorterm := os.Getenv("COLORTERM")
-	hasTruecolor := colorterm == "truecolor" || colorterm == "24bit"
-
-	// Check for 256 color support
-	has256 := strings.Contains(term, "256color")
-
-	// Basic color support detection
-	supported := term != "" && term != "dumb" && (has256 || hasTruecolor || strings.HasPrefix(term, "xterm") || strings.HasPrefix(term, "screen"))
+	profile := resolveColorProfile(out)
+	supported := profile != termenv.Ascii
+	hasTruecolor := profile == termenv.TrueColor
+	has256 := profile == termenv.ANSI256 || hasTruecolor
 
 	return TerminalColors{
 		Supported:    supported,
@@ -43,24 +99,47 @@ func DetectColorSupport() TerminalColors {
 	}
 }
 
-// detectBackground detects if the terminal has a dark or light background.
-// Returns "dark", "light", or "" if unknown.
+// StripInlineTags removes known style tags such as <b>, <light>, and <green>.
+func StripInlineTags(text string) string {
+	out := text
+	for _, tag := range knownTags {
+		out = strings.ReplaceAll(out, tag, "")
+	}
+	return out
+}
+
+// RenderInlineTags converts inline style tags into ANSI escapes when supported.
+// If color output is not supported, tags are removed and plain text is returned.
+func RenderInlineTags(text string) string {
+	if !DetectColorSupport().Supported {
+		return StripInlineTags(text)
+	}
+
+out := text
+	for tag, ansi := range tagToANSI {
+		out = strings.ReplaceAll(out, tag, ansi)
+	}
+	return out
+}
+
+// detectBackground uses termenv to detect dark/light terminal background.
 func detectBackground() string {
-	// Check COLORFGBG environment variable (set by many terminal emulators)
-	// Format is "foreground;background" where background is the ANSI color index
-	if colorfgbg := os.Getenv("COLORFGBG"); colorfgbg != "" {
-		parts := strings.Split(colorfgbg, ";")
-		if len(parts) >= 2 {
-			if bg, err := strconv.Atoi(parts[len(parts)-1]); err == nil {
-				// 0 = black, 8 = dark gray → dark background
-				// 7 = white, 15 = bright white → light background
-				if bg < 8 {
-					return "dark"
-				}
-				return "light"
-			}
+	if !DetectColorSupport().Supported {
+		return ""
+	}
+
+	out := newTermOutput()
+	if mode := detectBackgroundMode(out); mode != "" {
+		return mode
+	}
+
+	if resolveColorProfile(out) == termenv.Ascii {
+		fallbackOut := termenv.NewOutput(os.Stdout, termenv.WithTTY(true))
+		if mode := detectBackgroundMode(fallbackOut); mode != "" {
+			return mode
 		}
 	}
+
 	return ""
 }
 
@@ -96,16 +175,12 @@ func StripFormatting(text string) string {
 			i++
 		}
 	}
-	return result
+	return StripInlineTags(result)
 }
 
 // Bold formats text with bold when colors aren't supported
 func Bold(text string) string {
-	colors := DetectColorSupport()
-	if !colors.Supported {
-		return "\033[1m" + text + "\033[0m"
-	}
-	return text
+	return RenderInlineTags("<b>" + text + "</b>")
 }
 
 // ColorSection creates a formatted section header.
@@ -114,19 +189,15 @@ func Bold(text string) string {
 func ColorSection(text string) string {
 	colors := DetectColorSupport()
 	if !colors.Supported {
-		return "\033[1m" + text + "\033[0m"
+		return text
 	}
 
 	switch detectBackground() {
 	case "dark":
-		// Light gray foreground — readable on dark backgrounds
-		return "\033[37m" + text + "\033[0m"
+		return RenderInlineTags("<light>" + text + "</light>")
 	case "light":
-		// Dark foreground — readable on light backgrounds
-		return "\033[30m" + text + "\033[0m"
+		return RenderInlineTags("<dark>" + text + "</dark>")
 	default:
-		// Unknown background: use bold with terminal's default foreground color
-		// so it reads well on both dark and light backgrounds
-		return "\033[1m" + text + "\033[0m"
+		return RenderInlineTags("<b>" + text + "</b>")
 	}
 }

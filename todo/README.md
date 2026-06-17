@@ -4,7 +4,7 @@ Task management CLI and daemon implemented in Go with Cobra and SQLite.
 
 ## Components
 
-- `todo`: CLI client for task, schedule, sink, MOTD-message, and status commands.
+- `todo`: CLI client for task, schedule, sink, reminder-status, and status commands.
 - `todod`: user-space daemon exposing an HTTP API and managing persistence/scheduling.
 
 ## Defaults
@@ -42,12 +42,12 @@ Task management CLI and daemon implemented in Go with Cobra and SQLite.
 
 ### MOTD + status
 
-- `todo motd-message`
+- `todo reminder-status`
 - `todo status`
 
 When MOTD integration is not detected, `todo status` prints:
 
-`To show todo reminders on login, run: echo 'todo motd-message' >> ~/.profile`
+`To show todo reminders on login, run: echo 'todo reminder-status' >> ~/.profile`
 
 ### Daemon
 

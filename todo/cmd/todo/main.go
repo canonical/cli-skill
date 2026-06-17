@@ -217,8 +217,8 @@ Schedules and sinks build on top of todos. A schedule decides when reminders sho
 		},
 	}
 
-	motdMessageCmd := &cobra.Command{
-		Use:   "motd-message",
+	reminderStatusCmd := &cobra.Command{
+		Use:   "reminder-status",
 		Short: "Print pending MOTD reminder messages",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cli := newClient(cmd)
@@ -456,14 +456,13 @@ Schedules make todos active over time instead of being just stored records.`,
 	addScheduleCmd.GroupID = "schedules"
 	removeScheduleCmd.GroupID = "schedules"
 
-	motdMessageCmd.GroupID = "other"
+	reminderStatusCmd.GroupID = "other"
 	statusCmd.GroupID = "other"
 	versionCmd.GroupID = "other"
-
 	root.AddCommand(listCmd, showCmd, createCmd, updateCmd, closeCmd, reopenCmd, rejectCmd)
 	root.AddCommand(sinksCmd, sinkCmd, createSinkCmd, deleteSinkCmd)
 	root.AddCommand(schedulesCmd, scheduleCmd, addScheduleCmd, removeScheduleCmd)
-	root.AddCommand(motdMessageCmd, statusCmd, versionCmd)
+	root.AddCommand(reminderStatusCmd, statusCmd, versionCmd)
 	root.AddCommand(todosTopicCmd)
 
 	if err := root.Execute(); err != nil {
@@ -634,11 +633,11 @@ func colorizedHelp(cmd *cobra.Command) string {
 	}
 
 	var b strings.Builder
-	b.WriteString("\033[1m")
+	b.WriteString("<b>")
 	b.WriteString(cmd.Root().Name())
 	b.WriteString(" ")
 	b.WriteString(version)
-	b.WriteString("\033[0m\n\n")
+	b.WriteString("</b>\n\n")
 	if cmd.Long != "" {
 		b.WriteString(cmd.Long)
 		b.WriteString("\n\n")
@@ -657,11 +656,11 @@ func colorizedHelp(cmd *cobra.Command) string {
 
 func rootHelp(cmd *cobra.Command) string {
 	var b strings.Builder
-	b.WriteString("\033[1m")
+	b.WriteString("<b>")
 	b.WriteString(cmd.Root().Name())
 	b.WriteString(" ")
 	b.WriteString(version)
-	b.WriteString("\033[0m\n\n")
+	b.WriteString("</b>\n\n")
 	if cmd.Long != "" {
 		b.WriteString(cmd.Long)
 		b.WriteString("\n\n")
@@ -730,7 +729,7 @@ func formatOtherSection(cmd *cobra.Command) string {
 	var b strings.Builder
 	width := 15
 	b.WriteString(fmt.Sprintf("  %-*s %s\n", width, "Sinks", "create-sink, delete-sink, sink, sinks"))
-	for _, name := range []string{"completion", "help", "motd-message", "status", "version"} {
+	for _, name := range []string{"completion", "help", "reminder-status", "status", "version"} {
 		entry, ok := findEntry(cmd, name)
 		if !ok {
 			if name == "help" {
@@ -782,6 +781,5 @@ func colorizeSections(help string) string {
 	}
 
 	help = strings.ReplaceAll(help, "__TODO_GLOBAL_FLAGS__", common.ColorSection("Global Flags:"))
-
-	return help
+	return common.RenderInlineTags(help)
 }

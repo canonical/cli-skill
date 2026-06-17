@@ -326,7 +326,7 @@ func (s *Service) Status(ctx context.Context, dbPath string) (StatusResponse, er
 		Now:                      time.Now().UTC(),
 		DatabasePath:             dbPath,
 		NeedsMOTDLoginScriptHint: needsHint,
-		MOTDLoginScriptHint:      "To show todo reminders on login, run: echo 'todo motd-message' >> ~/.profile",
+		MOTDLoginScriptHint:      "To show todo reminders on login, run: echo 'todo reminder-status' >> ~/.profile",
 		MOTDLoginScriptCheckPath: profile,
 		ActiveTodoCount:          len(todos),
 		ActiveScheduleCount:      len(schedules),
@@ -339,7 +339,7 @@ func profileHasMotdMessage(path string) bool {
 	if err != nil {
 		return false
 	}
-	return bytes.Contains(bytes.ToLower(b), []byte("todo motd-message"))
+	return bytes.Contains(bytes.ToLower(b), []byte("todo reminder-status"))
 }
 
 func dedupe(in []string) []string {

@@ -174,7 +174,7 @@ func (s *Server) handleStatus(w http.ResponseWriter, r *http.Request) {
 	home, _ := os.UserHomeDir()
 	profile := filepath.Join(home, ".profile")
 	b, _ := os.ReadFile(profile)
-	hasMotd := strings.Contains(strings.ToLower(string(b)), "todo motd-message")
+		hasMotd := strings.Contains(strings.ToLower(string(b)), "todo reminder-status")
 	writeJSON(w, http.StatusOK, map[string]any{
 		"now":                            time.Now().UTC().Format(time.RFC3339),
 		"database_path":                  s.dbPath,
@@ -182,7 +182,7 @@ func (s *Server) handleStatus(w http.ResponseWriter, r *http.Request) {
 		"active_schedule_count":          len(schedules),
 		"enabled_sink_count":             len(sinks),
 		"needs_motd_login_script_hint":   !hasMotd,
-		"motd_login_script_hint":         "To show todo reminders on login, run: echo 'todo motd-message' >> ~/.profile",
+			"motd_login_script_hint":         "To show todo reminders on login, run: echo 'todo reminder-status' >> ~/.profile",
 		"motd_login_script_check_path":   profile,
 	})
 }

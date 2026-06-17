@@ -67,7 +67,7 @@
 
 ### State/info commands
 
-- `motd-message`
+- `reminder-status`
   - What: Print queued MOTD reminder messages.
   - How: Calls `GET /motd/message`.
 - `status`

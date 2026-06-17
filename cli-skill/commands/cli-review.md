@@ -36,6 +36,10 @@ CLI standard compliance review only.
   * Unrated: use if no standard rule applies, or if the finding is not certain, there is a SHOULD rule, the rule applies to a debug/secret command, use of non-standard verbs when there is a standard verb that fits the action
 - All SHOULD rules must be unrated violations - report them, but don't include them in the scoring. This can be a use of non-standard verbs, or in cases where the standard says "you should", or "prefer".
 
+## Additional rules that amend the CLI standard
+- In addition to the verbs listed in the CLI standard, these are standard verbs that can be used in full compliance with the CLI standard: add / remove, submit, request, revoke, init, enable / disable, save, refresh, switch, restore, forget, report, set / remove, try, download, clean, pull, build, stage, prime, pack, test, abort, validate, watch
+- If a new verb not listed in the standard or the additional rules is used, only add an UNRATED finding if (1) there is a similar word in the list AND the chosen word is not clearly better, or (2) the chosen word is difficult to understand, ambiguous, or not standard english
+
 ## Out Of Scope
 
 - Any check not defined by `cli-skill/references/cli-standard.md`

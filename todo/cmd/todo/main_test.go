@@ -1,10 +1,14 @@
 package main
 
 import (
+	"os"
 	"strings"
 	"testing"
 
+	"github.com/muesli/termenv"
 	"github.com/spf13/cobra"
+
+	"todo/internal/common"
 )
 
 func TestParseInlineSchedule(t *testing.T) {
@@ -115,16 +119,22 @@ func TestColorizedHelp(t *testing.T) {
 		deleteSinkCmd.GroupID = "sinks"
 		versionCmd := &cobra.Command{Use: "version", Short: "Show version", Run: func(cmd *cobra.Command, args []string) {}}
 		versionCmd.GroupID = "other"
-		motdCmd := &cobra.Command{Use: "motd-message", Short: "Print pending MOTD reminder messages", Run: func(cmd *cobra.Command, args []string) {}}
-		motdCmd.GroupID = "other"
+		reminderStatusCmd := &cobra.Command{Use: "reminder-status", Short: "Print pending MOTD reminder messages", Run: func(cmd *cobra.Command, args []string) {}}
+		reminderStatusCmd.GroupID = "other"
 		statusCmd := &cobra.Command{Use: "status", Short: "Show todo system status", Run: func(cmd *cobra.Command, args []string) {}}
 		statusCmd.GroupID = "other"
-		root.AddCommand(listCmd, scheduleCmd, sinksCmd, sinkCmd, createSinkCmd, deleteSinkCmd, versionCmd, motdCmd, statusCmd)
+		root.AddCommand(listCmd, scheduleCmd, sinksCmd, sinkCmd, createSinkCmd, deleteSinkCmd, versionCmd, reminderStatusCmd, statusCmd)
 		return root
 	}
 
 	t.Run("uses color for sections when color is supported", func(t *testing.T) {
-		t.Setenv("NO_COLOR", "")
+		restoreProfile := common.SetColorProfileResolverForTesting(func(*termenv.Output) termenv.Profile {
+			return termenv.ANSI256
+		})
+		defer restoreProfile()
+		restoreBg := common.SetBackgroundModeDetectorForTesting(func(*termenv.Output) string { return "dark" })
+		defer restoreBg()
+		_ = os.Unsetenv("NO_COLOR")
 		t.Setenv("TERM", "xterm-256color")
 		t.Setenv("COLORFGBG", "15;0") // explicit dark background
 
@@ -159,23 +169,23 @@ func TestColorizedHelp(t *testing.T) {
 		}
 	})
 
-	t.Run("uses bold fallback with NO_COLOR", func(t *testing.T) {
+	t.Run("uses plain section headers with NO_COLOR", func(t *testing.T) {
 		t.Setenv("NO_COLOR", "1")
 		t.Setenv("TERM", "xterm-256color")
 
 		root := newRoot()
 		got := colorizedHelp(root)
 
-		if !strings.Contains(got, "\033[1mUsage:\033[0m") {
-			t.Fatalf("expected bold Usage fallback, got: %q", got)
+		if !strings.Contains(got, "Usage:") {
+			t.Fatalf("expected plain Usage section, got: %q", got)
 		}
-		if strings.Contains(got, "\033[37mUsage:\033[0m") || strings.Contains(got, "\033[30mUsage:\033[0m") {
+		if strings.Contains(got, "\033[37mUsage:\033[0m") || strings.Contains(got, "\033[30mUsage:\033[0m") || strings.Contains(got, "\033[1mUsage:\033[0m") {
 			t.Fatalf("did not expect colored Usage with NO_COLOR")
 		}
 	})
 
 	t.Run("keeps global flags label for subcommands", func(t *testing.T) {
-		t.Setenv("NO_COLOR", "")
+		_ = os.Unsetenv("NO_COLOR")
 		t.Setenv("TERM", "xterm-256color")
 
 		root := newRoot()
