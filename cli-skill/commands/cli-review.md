@@ -28,6 +28,8 @@ CLI standard compliance review only.
 
 - Check compliance with `cli-skill/references/cli-standard.md` only, do not use semantic criteria, or heuristics
 - Findings must map to clauses from the standard, suggestions in the standard will result in unrated findings
+- Every finding MUST include all evidence fields: `command_path`, `evidence`, `rule_clause`.
+- Reviewer MUST deduplicate scored findings using key `rule_clause|command_path|evidence` before severity assignment.
 - Non-compliance and compliant evidence based on observed CLI behavior/docs/code
 - Use these rules to determine severity. Severity can only be [High|Medium|Low|Unrated]:
   * High: violations of command structure and naming (SHOULD RULES DO NOT COUNT, THEY ARE UNRATED but should be included), use of positional parameters, accessibility/color violations (IF NO COLOR IS USED, eg. only plain or boldbold, NO_COLOR need not be detected)
@@ -35,6 +37,13 @@ CLI standard compliance review only.
   * Low: formatting violations, duplicate short/long flags
   * Unrated: use if no standard rule applies, or if the finding is not certain, there is a SHOULD rule, the rule applies to a debug/secret command, use of non-standard verbs when there is a standard verb that fits the action
 - All SHOULD rules must be unrated violations - report them, but don't include them in the scoring. This can be a use of non-standard verbs, or in cases where the standard says "you should", or "prefer".
+
+## Additional rules that amend the CLI standard
+- In addition to the verbs listed in the CLI standard, these are standard verbs that can be used in full compliance with the CLI standard: add / remove, submit, request, revoke, init, enable / disable, save, refresh, switch, restore, forget, report, set / remove, try, download, clean, pull, build, stage, prime, pack, test, abort, validate, watch
+- If a new verb not listed in the standard or the additional rules is used, only add an UNRATED finding if (1) there is a similar word in the list AND the chosen word is not clearly better, or (2) the chosen word is difficult to understand, ambiguous, or not standard english
+- Command-family verb consistency findings (for example add/create, remove/delete) MUST be scored only when at least one command in that specific family was changed in the variant. ONLY inconsistencies that use any of the standard verbs are UNRATED. 
+- Findings missing any required evidence field MUST be dropped from scored output.
+- If a planned mutation is not present in the source code, reviewer MUST mark the finding as UNRATED.
 
 ## Out Of Scope
 
@@ -74,7 +83,7 @@ To calculate the score:
 The script implements the standard algorithm: Start with 100%, weight W=100/#commands. For each High violation, reduce by W; Medium violation by 0.5*W; Low violation by 0.2*W. Clamp to 0-100%.
 
 ### CLI Change Requirements
-Analyze the files that have been changes as part of this PR. Create a detailed summary of how each change affects the compliance of the CLI.
+Analyze the files that have been changes as part of this PR. Create a list of changes, each with a detailed summary of how each change affects the compliance of the CLI.
 
 ### Compliance Matrix Requirements
 
