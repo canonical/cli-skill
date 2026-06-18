@@ -1,9 +1,0 @@
-{
-  "provider": "google",
-  "model": "gemini-3.5-flash",
-  "variation_dir": "/project/tests/todo-07",
-  "session_file": "/project/tests/todo-07/session.json",
-  "returncode": 0,
-  "stdout_chars": 1282,
-  "stderr_chars": 0
-}

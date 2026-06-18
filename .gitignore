@@ -8,3 +8,6 @@ qwen36-snap
 **/session.jsonl
 session.jsonl
 **/__pycache__
+todo/bin
+todo/cli-review
+.cli-skill-install-state.json
