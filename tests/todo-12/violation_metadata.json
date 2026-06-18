@@ -1,0 +1,14 @@
+{
+  "variation_id": 12,
+  "violations": [
+    {
+      "rule_id": "required-flag-clarity",
+      "rule_title": "Required flags must be clearly indicated in help",
+      "description": "Required flags like --todo in add-schedule must be marked required in cobra or documented",
+      "file_path": "cmd/todo/main.go",
+      "change_description": "Made --todo flag appear optional (violates clarity)",
+      "severity": "HIGH",
+      "expected_detection": true
+    }
+  ]
+}

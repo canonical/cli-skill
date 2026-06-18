@@ -1,0 +1,20 @@
+{
+  "commands": 23,
+  "issues": [
+    {
+      "severity": "Medium",
+      "category": "Avoid Ambiguity",
+      "message": "The help topic for 'todos' is registered using the name 'list', creating an ambiguous command name and conflict with the actual 'list' command."
+    },
+    {
+      "severity": "Medium",
+      "category": "Action Verb Alignment",
+      "message": "The close command uses the inconsistent verb-adjective phrase 'mark-closed' instead of the standard verb 'close', violating the action verb clarity guideline."
+    },
+    {
+      "severity": "Low",
+      "category": "Error Message Consistency",
+      "message": "The error message returned when an invalid Todo ID is provided is inconsistent in tone and formatting with the rest of the CLI error outputs (uses title case, punctuation, and parentheses)."
+    }
+  ]
+}

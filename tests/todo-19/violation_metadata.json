@@ -1,0 +1,14 @@
+{
+  "variation_id": 19,
+  "violations": [
+    {
+      "rule_id": "filter-flag-naming",
+      "rule_title": "Filter flags must follow consistent naming pattern",
+      "description": "Filter flags should use names that reflect what is being filtered (e.g., --state, --kind)",
+      "file_path": "cmd/todo/main.go",
+      "change_description": "Changed '--state' to '--filter-state' (violates filter naming)",
+      "severity": "LOW",
+      "expected_detection": true
+    }
+  ]
+}

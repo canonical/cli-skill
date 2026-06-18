@@ -1,0 +1,45 @@
+{
+  "commands": 23,
+  "issues": [
+    {
+      "severity": "Medium",
+      "category": "Grammar + Vocabulary",
+      "message": "Inconsistent verbs are used to create secondary objects. Sinks use create-sink whereas schedules use add-schedule."
+    },
+    {
+      "severity": "Medium",
+      "category": "Grammar + Vocabulary",
+      "message": "Inconsistent verbs are used to delete secondary objects. Sinks use delete-sink whereas schedules use remove-schedule."
+    },
+    {
+      "severity": "Medium",
+      "category": "Grammar + Vocabulary",
+      "message": "Inconsistent output flag name used across commands. The client registers --output instead of the standard --format, causing functional bugs with outputFlags parser."
+    },
+    {
+      "severity": "Low",
+      "category": "Tabular Data",
+      "message": "Listing commands (sinks, schedules) output JSON formatting by default instead of a tabular structure."
+    },
+    {
+      "severity": "Low",
+      "category": "Tabular Data",
+      "message": "Table column headers printed by todo list are not rendered in bold."
+    },
+    {
+      "severity": "Low",
+      "category": "Tabular Data",
+      "message": "Command options do not support the --no-headers flag."
+    },
+    {
+      "severity": "Low",
+      "category": "Tone of Voice",
+      "message": "Daemon status and stop commands use failed error messages instead of cannot."
+    },
+    {
+      "severity": "Unrated",
+      "category": "Logging Output",
+      "message": "Exact time is formatted using a custom Go layout rather than ISO 8601 when --rfc3339 is absent."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "variation_id": 2,
+  "violations": [
+    {
+      "rule_id": "sink-list-shorthand",
+      "rule_title": "Sink listing must use 'sinks' not 'list-sinks'",
+      "description": "Use shorthand 'sinks' for listing secondary objects instead of 'list-sinks'",
+      "file_path": "cmd/todo/main.go",
+      "change_description": "Renamed 'sinks' to 'list-sinks' (violates list shorthand)",
+      "severity": "LOW",
+      "expected_detection": true
+    }
+  ]
+}

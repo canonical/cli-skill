@@ -1,0 +1,14 @@
+{
+  "variation_id": 6,
+  "violations": [
+    {
+      "rule_id": "flag-plural-for-arrays",
+      "rule_title": "Flag names must be plural when accepting multiple values",
+      "description": "Use '--sinks' (plural) for array flags, '--sink' (singular) for single value",
+      "file_path": "cmd/todo/main.go",
+      "change_description": "Changed '--sink' to '--sinks' (violates singular flag for arrays)",
+      "severity": "MEDIUM",
+      "expected_detection": true
+    }
+  ]
+}

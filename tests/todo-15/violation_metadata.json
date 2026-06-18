@@ -1,0 +1,14 @@
+{
+  "variation_id": 15,
+  "violations": [
+    {
+      "rule_id": "mutually-exclusive-flags",
+      "rule_title": "Mutually exclusive flags should be documented or handled",
+      "description": "Flags like --clear-due and --due should be mutually exclusive and documented",
+      "file_path": "cmd/todo/main.go",
+      "change_description": "Missing mutual exclusion between --due and --clear-due",
+      "severity": "HIGH",
+      "expected_detection": true
+    }
+  ]
+}

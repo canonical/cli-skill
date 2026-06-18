@@ -1,0 +1,10 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "High",
+      "category": "Command Naming",
+      "message": "The list command for todos is named 'list-todos' instead of 'list', violating the primary-object shorthand pattern."
+    }
+  ]
+}

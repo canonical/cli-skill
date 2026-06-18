@@ -1,0 +1,597 @@
+{
+  "harness_version": "2.0",
+  "total_variations": 20,
+  "total_violations_injected": 24,
+  "total_violations_detected": 127,
+  "total_false_negatives": 0,
+  "detection_coverage_percent": 529.1666666666667,
+  "severity_summary": {
+    "HIGH": {
+      "injected": 8,
+      "detected": 8,
+      "coverage_percent": 100.0
+    }
+  },
+  "results": [
+    {
+      "variation_id": "todo-01",
+      "violations_injected": 1,
+      "findings_detected": 1,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 1,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 1
+        },
+        {
+          "severity": "Medium",
+          "count": 0
+        },
+        {
+          "severity": "Low",
+          "count": 0
+        },
+        {
+          "severity": "Unrated",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-02",
+      "violations_injected": 1,
+      "findings_detected": 1,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 1
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 0
+        },
+        {
+          "severity": "Low",
+          "count": 1
+        },
+        {
+          "severity": "Unrated",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-03",
+      "violations_injected": 1,
+      "findings_detected": 1,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 1
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 0
+        },
+        {
+          "severity": "Low",
+          "count": 1
+        },
+        {
+          "severity": "Unrated",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-04",
+      "violations_injected": 1,
+      "findings_detected": 8,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 1,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 1
+        },
+        {
+          "severity": "Medium",
+          "count": 2
+        },
+        {
+          "severity": "Low",
+          "count": 4
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-05",
+      "violations_injected": 1,
+      "findings_detected": 8,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 1,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 1
+        },
+        {
+          "severity": "Medium",
+          "count": 2
+        },
+        {
+          "severity": "Low",
+          "count": 4
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-06",
+      "violations_injected": 1,
+      "findings_detected": 6,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 1
+        },
+        {
+          "severity": "Low",
+          "count": 4
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-07",
+      "violations_injected": 1,
+      "findings_detected": 8,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 3
+        },
+        {
+          "severity": "Low",
+          "count": 4
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-08",
+      "violations_injected": 0,
+      "findings_detected": 7,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 2
+        },
+        {
+          "severity": "Low",
+          "count": 4
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-09",
+      "violations_injected": 0,
+      "findings_detected": 7,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 2
+        },
+        {
+          "severity": "Low",
+          "count": 4
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-10",
+      "violations_injected": 2,
+      "findings_detected": 9,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 1
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 3
+        },
+        {
+          "severity": "Low",
+          "count": 5
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-11",
+      "violations_injected": 1,
+      "findings_detected": 8,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 1
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 2
+        },
+        {
+          "severity": "Low",
+          "count": 5
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-12",
+      "violations_injected": 1,
+      "findings_detected": 8,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 1,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 1
+        },
+        {
+          "severity": "Medium",
+          "count": 2
+        },
+        {
+          "severity": "Low",
+          "count": 4
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-13",
+      "violations_injected": 1,
+      "findings_detected": 8,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 3
+        },
+        {
+          "severity": "Low",
+          "count": 4
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-14",
+      "violations_injected": 2,
+      "findings_detected": 9,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 2
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 2
+        },
+        {
+          "severity": "Low",
+          "count": 6
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-15",
+      "violations_injected": 1,
+      "findings_detected": 1,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 1,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 1
+        },
+        {
+          "severity": "Medium",
+          "count": 0
+        },
+        {
+          "severity": "Low",
+          "count": 0
+        },
+        {
+          "severity": "Unrated",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-16",
+      "violations_injected": 3,
+      "findings_detected": 10,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 3,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 3
+        },
+        {
+          "severity": "Medium",
+          "count": 2
+        },
+        {
+          "severity": "Low",
+          "count": 4
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-17",
+      "violations_injected": 1,
+      "findings_detected": 8,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 3
+        },
+        {
+          "severity": "Low",
+          "count": 4
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-18",
+      "violations_injected": 1,
+      "findings_detected": 8,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 0
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 3
+        },
+        {
+          "severity": "Low",
+          "count": 4
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-19",
+      "violations_injected": 1,
+      "findings_detected": 8,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 1
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 2
+        },
+        {
+          "severity": "Low",
+          "count": 5
+        },
+        {
+          "severity": "Unrated",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "variation_id": "todo-20",
+      "violations_injected": 3,
+      "findings_detected": 3,
+      "false_negatives": 0,
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 2,
+        "LOW": 1
+      },
+      "detected_issues": [
+        {
+          "severity": "High",
+          "count": 0
+        },
+        {
+          "severity": "Medium",
+          "count": 2
+        },
+        {
+          "severity": "Low",
+          "count": 1
+        },
+        {
+          "severity": "Unrated",
+          "count": 0
+        }
+      ]
+    }
+  ]
+}

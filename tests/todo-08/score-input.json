@@ -1,0 +1,40 @@
+{
+  "commands": 23,
+  "issues": [
+    {
+      "severity": "Medium",
+      "category": "Command Naming",
+      "message": "Inconsistent verbs are used to create secondary objects. Sinks use 'create-sink' whereas schedules use 'add-schedule' (should be 'create-schedule')."
+    },
+    {
+      "severity": "Medium",
+      "category": "Command Naming",
+      "message": "Inconsistent verbs are used to delete secondary objects. Sinks use 'delete-sink' whereas schedules use 'remove-schedule' (should be 'delete-schedule')."
+    },
+    {
+      "severity": "Low",
+      "category": "Tabular Data",
+      "message": "Listing commands ('sinks', 'schedules') output JSON formatting by default instead of a tabular structure when '--format table' is specified or defaulted."
+    },
+    {
+      "severity": "Low",
+      "category": "Tabular Data",
+      "message": "Table column headers printed by 'todo list' are not rendered in bold font."
+    },
+    {
+      "severity": "Low",
+      "category": "Tabular Data",
+      "message": "Table column headers cannot be hidden via a '--no-headers' flag."
+    },
+    {
+      "severity": "Low",
+      "category": "Tone of Voice",
+      "message": "Daemon status and stop commands use 'failed' error messages instead of 'cannot'."
+    },
+    {
+      "severity": "Unrated",
+      "category": "Logging Output",
+      "message": "Default exact date/time formatting (without --rfc3339) uses non-ISO-8601 format (2006-01-02 15:04 MST)."
+    }
+  ]
+}

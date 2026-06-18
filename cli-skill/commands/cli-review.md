@@ -28,6 +28,8 @@ CLI standard compliance review only.
 
 - Check compliance with `cli-skill/references/cli-standard.md` only, do not use semantic criteria, or heuristics
 - Findings must map to clauses from the standard, suggestions in the standard will result in unrated findings
+- Every finding MUST include all evidence fields: `command_path`, `evidence`, `rule_clause`.
+- Reviewer MUST deduplicate scored findings using key `rule_clause|command_path|evidence` before severity assignment.
 - Non-compliance and compliant evidence based on observed CLI behavior/docs/code
 - Use these rules to determine severity. Severity can only be [High|Medium|Low|Unrated]:
   * High: violations of command structure and naming (SHOULD RULES DO NOT COUNT, THEY ARE UNRATED but should be included), use of positional parameters, accessibility/color violations (IF NO COLOR IS USED, eg. only plain or boldbold, NO_COLOR need not be detected)
@@ -39,6 +41,9 @@ CLI standard compliance review only.
 ## Additional rules that amend the CLI standard
 - In addition to the verbs listed in the CLI standard, these are standard verbs that can be used in full compliance with the CLI standard: add / remove, submit, request, revoke, init, enable / disable, save, refresh, switch, restore, forget, report, set / remove, try, download, clean, pull, build, stage, prime, pack, test, abort, validate, watch
 - If a new verb not listed in the standard or the additional rules is used, only add an UNRATED finding if (1) there is a similar word in the list AND the chosen word is not clearly better, or (2) the chosen word is difficult to understand, ambiguous, or not standard english
+- Command-family verb consistency findings (for example add/create, remove/delete) MUST be scored only when at least one command in that specific family was changed in the variant. ONLY inconsistencies that use any of the standard verbs are UNRATED. 
+- Findings missing any required evidence field MUST be dropped from scored output.
+- If a planned mutation is not present in the source code, reviewer MUST mark the finding as UNRATED.
 
 ## Out Of Scope
 
