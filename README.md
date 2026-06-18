@@ -94,14 +94,12 @@ permissions:
 
 jobs:
   cli-review:
-    uses: shaftoe/cli-skill/.github/workflows/cli-skill-review-reusable.yml@v1
+    uses: canonical/cli-skill/.github/workflows/cli-skill-review-reusable.yml@v1
     with:
       command: /cli-review
       provider: openrouter
-      model: openrouter/fusion
+      model: openrouter/gemini-3.5-flash
       thinking_level: medium
-      fusion_analysis_models: "~anthropic/claude-opus-latest,~openai/gpt-latest,~google/gemini-pro-latest"
-      fusion_synthesis_model: "~openai/gpt-latest"
       pr_number: ${{ github.event.pull_request.number }}
       post_pr_comment: true
       fail_on_agent_error: true
