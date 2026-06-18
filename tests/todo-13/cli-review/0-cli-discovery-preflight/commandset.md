@@ -1,87 +1,93 @@
 # Command Set
 
-Full list of CLI commands and hierarchy.
+## Tool: `todo`
 
-## Client CLI (`todo`)
+### Primary-object commands (todos)
 
-### Todos Commands
-- **`todo list`**
-  - **Short Description**: List todos.
-  - **How it Works**: Fetches the list of todos from the daemon client via `ListTodos(ctx, state)`. Supports filtering by state and displays the results in a tabular format (ID, STATE, DUE, TITLE) or JSON.
-- **`todo show <todo-id>`**
-  - **Short Description**: Show details of a specific todo.
-  - **How it Works**: Fetches the specified todo via `ShowTodo(ctx, id)` and prints it as a key-value detail or JSON.
-- **`todo create <title>`**
-  - **Short Description**: Create a new todo.
-  - **How it Works**: Parses optional due date and inline schedules from flags, then calls `CreateTodo(ctx, req)` on the client.
-- **`todo update <todo-id>`**
-  - **Short Description**: Update a todo.
-  - **How it Works**: Parses title, due date, or clear-due changes and calls `UpdateTodo(ctx, id, req)`.
-- **`todo close <todo-id>`**
-  - **Short Description**: Close a todo.
-  - **How it Works**: Marks a todo as closed using `CloseTodo(ctx, id)`.
-- **`todo reopen <todo-id>`**
-  - **Short Description**: Reopen a closed or rejected todo.
-  - **How it Works**: Reopens a todo using `ReopenTodo(ctx, id)`.
-- **`todo reject <todo-id>`**
-  - **Short Description**: Reject a todo.
-  - **How it Works**: Marks a todo as rejected using `RejectTodo(ctx, id)`.
+- `list`
+  - What: List todo items.
+  - How: Reads optional `--state`; calls `client.ListTodos` -> daemon `GET /todos`.
+- `show <todo-id>`
+  - What: Show one todo.
+  - How: Calls `client.ShowTodo` -> daemon `GET /todos/{id}`.
+- `create <todo-id> <title>`
+  - What: Create a todo, optional due date and inline schedules.
+  - How: Parses `--due` and repeatable `--schedule`, builds `CreateTodoRequest`, calls `POST /todos`.
+- `update <todo-id>`
+  - What: Update title and/or due date.
+  - How: Parses `--title`, `--due`, `--clear-due`, calls `PATCH /todos/{id}`.
+- `close <todo-id>`
+  - What: Transition todo to closed.
+  - How: Calls `POST /todos/{id}/close`.
+- `reopen <todo-id>`
+  - What: Transition todo to reopened.
+  - How: Calls `POST /todos/{id}/reopen`.
+- `reject <todo-id>`
+  - What: Transition todo to rejected.
+  - How: Calls `POST /todos/{id}/reject`.
 
-### Sinks Commands
-- **`todo sinks`**
-  - **Short Description**: List sinks.
-  - **How it Works**: Lists configured sinks via `ListSinks(ctx, enabled, event)`.
-- **`todo sink <sink-id>`**
-  - **Short Description**: Show a sink.
-  - **How it Works**: Shows details of a specific sink via `ShowSink(ctx, id)`.
-- **`todo create-sink <sink-id>`**
-  - **Short Description**: Create a sink.
-  - **How it Works**: Creates a new webhook sink using `CreateSink(ctx, req)`.
-- **`todo delete-sink <sink-id>`**
-  - **Short Description**: Delete a sink.
-  - **How it Works**: Deletes a sink via `DeleteSink(ctx, id)`.
+### Secondary-object commands (sinks)
 
-### Schedules Commands
-- **`todo schedules`**
-  - **Short Description**: List schedules.
-  - **How it Works**: Lists configured reminder schedules via `ListSchedules(ctx, todo, kind, status, target)`.
-- **`todo schedule <schedule-id>`**
-  - **Short Description**: Show a schedule.
-  - **How it Works**: Shows details of a specific schedule via `ShowSchedule(ctx, id)`.
-- **`todo add-schedule <schedule-id>`**
-  - **Short Description**: Add an immutable schedule.
-  - **How it Works**: Adds a reminder schedule connected to a todo using `AddSchedule(ctx, req)`.
-- **`todo remove-schedule <schedule-id>`**
-  - **Short Description**: Remove a schedule.
-  - **How it Works**: Removes a schedule via `RemoveSchedule(ctx, id)`.
+- `sinks`
+  - What: List sinks.
+  - How: Reads `--enabled`, `--event`; calls `GET /sinks`.
+- `sink <sink-id>`
+  - What: Show one sink.
+  - How: Calls `GET /sinks/{id}`.
+- `create-sink <sink-id>`
+  - What: Create sink.
+  - How: Uses `--url`, repeatable `--event`; calls `POST /sinks`.
+- `update-sink <sink-id>`
+  - What: Update sink values.
+  - How: Uses `--url`, `--event`, `--clear-events`; calls `PATCH /sinks/{id}`.
+- `delete-sink <sink-id>`
+  - What: Delete sink.
+  - How: Calls `DELETE /sinks/{id}`.
+- `enable-sink <sink-id>`
+  - What: Enable sink.
+  - How: Calls `POST /sinks/{id}/enable`.
+- `disable-sink <sink-id>`
+  - What: Disable sink.
+  - How: Calls `POST /sinks/{id}/disable`.
 
-### Other Commands
-- **`todo status`**
-  - **Short Description**: Show todo system status.
-  - **How it Works**: Queries system status via `Status(ctx)` and formats the result as a text block or JSON.
-- **`todo reminder-status`**
-  - **Short Description**: Print pending MOTD reminder messages.
-  - **How it Works**: Fetches MOTD reminder messages via `MOTDMessage(ctx)` and prints them.
-- **`todo version`**
-  - **Short Description**: Show client version.
-  - **How it Works**: Prints the constant version of the client.
-- **`todo todos`**
-  - **Short Description**: Concepts and help topic about what todos mean in this app.
-  - **How it Works**: Explains the core todo models and concept hierarchies.
+### Secondary-object commands (schedules)
 
----
+- `schedules`
+  - What: List schedules.
+  - How: Uses `--todo`, `--kind`, `--status`, `--target`; calls `GET /schedules`.
+- `schedule <schedule-id>`
+  - What: Show one schedule.
+  - How: Calls `GET /schedules/{id}`.
+- `add-schedule <schedule-id>`
+  - What: Add immutable schedule.
+  - How: Uses `--todo`, `--kind`, `--before`, `--every`, `--sink`, `--motd`; calls `POST /schedules`.
+- `remove-schedule <schedule-id>`
+  - What: Remove schedule.
+  - How: Calls `DELETE /schedules/{id}`.
 
-## Daemon CLI (`todod`)
+### State/info commands
 
-- **`todod start`**
-  - **Short Description**: Start the daemon.
-  - **How it Works**: Initializes and runs the daemon SQLite server listening on a UNIX socket.
-- **`todod stop`**
-  - **Short Description**: Stop the daemon.
-  - **How it Works**: Sends a POST request to `/shutdown` of the running daemon.
-- **`todod status`**
-  - **Short Description**: Show daemon status.
-  - **How it Works**: Sends a GET request to `/status` of the running daemon.
-- **`todod version`**
-  - **Short Description**: Show daemon version.
-  - **How it Works**: Prints the version of the daemon.
+- `reminder-status`
+  - What: Print queued MOTD reminder messages.
+  - How: Calls `GET /motd/message`.
+- `status`
+  - What: Show system status and MOTD setup hint.
+  - How: Calls `GET /status`; renders table/json.
+- `version`
+  - What: Show client version.
+  - How: Prints local constant.
+
+## Tool: `todod`
+
+- `start`
+  - What: Start daemon.
+  - How: Reads `--host`, `--port`, `--db`; constructs server and runs HTTP service.
+- `stop`
+  - What: Stop daemon.
+  - How: Calls `POST /shutdown`.
+- `status`
+  - What: Show daemon status.
+  - How: Calls `GET /status`; renders table/json.
+- `version`
+  - What: Show daemon version.
+  - How: Prints local constant.

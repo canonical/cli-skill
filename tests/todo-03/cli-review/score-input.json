@@ -1,0 +1,10 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "Low",
+      "category": "Grammar + Vocabulary",
+      "message": "The command for listing schedules was renamed from 'schedules' to 'list-schedules', violating the secondary-object list shorthand standard."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "High",
+      "category": "Parameters, Flags and Options",
+      "message": "Missing mutual exclusion between --due and --clear-due in update command of todo client"
+    }
+  ]
+}

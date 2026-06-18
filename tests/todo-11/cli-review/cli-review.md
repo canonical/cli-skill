@@ -1,20 +1,26 @@
 # Canonical CLI automated review report
 *This report is AI-generated. Please [report issues with the cli-skill](https://github.com/canonical/cli-skill/issues/new/choose) so we can improve this report.*
 
-**Scope:** CLI standard compliance review of `/project/tests/todo-11`
+**Scope:** CLI standard compliance review of `cmd/todo/main.go` and `cmd/todod/main.go` in `/project/tests/todo-11`
 
 ## Summary
 
 | **Severity** | **Count** | **Guideline Categories** |
 | --- | --- | --- |
-| High | 0 | None |
-| Medium | 2 | Grammar + Vocabulary |
-| Low | 5 | Tabular Data, Tone of Voice, Parameters, Flags and Options |
-| Unrated | 1 | Logging Output |
-| **Total** | **8** | |
+| High | 0 | — |
+| Medium | 0 | — |
+| Low | 1 | Parameters, Flags and Options |
+| Unrated | 0 | — |
+| **Total** | **1** | |
 
-**Overall rating:** 91.30 🟢 **Good**
+**Overall rating:** 99.09 💚 **Excellent**
 > The scoring algorithm starts with 100%, number of commands N, weight W=100/N. For each High violation, reduce by 2*W; Medium violation by 1*W; Low violation by 0.5*W. Clamp to 0-100.
+
+---
+
+## CLI changes in this PR
+
+* **Changed `--state` flag to `--filter-state` on the `list` command:** This change decreases compliance by introducing an unnecessarily wordy and inconsistent flag naming pattern. Filter flags should reflect the property being filtered directly (e.g., `--state`) rather than carrying generic prefixes like `filter-`.
 
 ---
 
@@ -22,134 +28,40 @@
 
 | Finding | Rule Summary | Evidence | Notes |
 |---------|--------------|----------|-------|
-| [MEDIUM-1](#medium-1-inconsistent-verbs-for-secondary-object-creation) | Inconsistent verbs are used to create secondary objects. Sinks use `create-sink` whereas schedules use `add-schedule`. | [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#commonly-used-commands) | Rename `add-schedule` to `create-schedule` for consistency. |
-| [MEDIUM-2](#medium-2-inconsistent-verbs-for-secondary-object-deletion) | Inconsistent verbs are used to delete secondary objects. Sinks use `delete-sink` whereas schedules use `remove-schedule`. | [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#commonly-used-commands) | Rename `remove-schedule` to `delete-schedule` for consistency. |
-| [LOW-1](#low-1-default-formatting-for-listing-commands-sinks-and-schedules-does-not-support-table-display) | Listing commands (`sinks`, `schedules`) output JSON formatting by default instead of a tabular structure. | [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) | Implement dedicated table print functions for these models. |
-| [LOW-2](#low-2-table-column-headers-are-not-bolded) | Table column headers printed by `todo list` are not rendered in bold. | [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) | Style column labels with `common.Bold` or ANSI tags. |
-| [LOW-3](#low-3-table-column-headers-cannot-be-hidden-via-no-headers-flag) | Command options do not support the `--no-headers` flag. | [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) | Add `--no-headers` to table output options. |
-| [LOW-4](#low-4-non-standard-tone-of-voice-in-daemon-error-messages) | Daemon status and stop commands use `"failed"` error messages instead of `"cannot"`. | [CLI Copy and Tone of Voice](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#cli-copy-and-tone-of-voice) | Change error formatting to use standard `"cannot"` phrase. |
-| [LOW-5](#low-5-filter-flag-on-todo-list-is-named-filter-state-instead-of-state) | Filter flag on `todo list` is named `--filter-state` instead of `--state`, which is inconsistent with filter flags on other commands. | [Parameters, Flags and Options](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#parameters-flags-and-options) | Rename the flag `--filter-state` to `--state` on the `todo list` command. |
-| [UNRATED-1](#unrated-1-non-standard-exact-time-formatting) | Exact time is formatted using a custom Go layout rather than ISO 8601 when `--rfc3339` is absent. | [Logging Output: Timestamps](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#timestamps) | Use RFC3339 format by default for exact timestamps. |
+| [LOW-1](#low-1---filter-state-violates-consistent-naming-pattern) | Filter flags must follow consistent naming patterns (e.g., `--state` instead of `--filter-state`). | `Parameters, Flags and Options` section in `cmd/todo/main.go` | Rename `--filter-state` back to `--state`. |
 
 ---
 
 ## Non-compliance Findings (with citations)
 
-### [MEDIUM-1] Inconsistent verbs for secondary object creation
-**CLI Standard citation:** [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#commonly-used-commands) — *"tool create-foo <id> | create a new instance of a secondary object"*
-**Evidence:**
-```go
-	createSinkCmd := &cobra.Command{
-		Use:   "create-sink <sink-id>",
-...
-	addScheduleCmd := &cobra.Command{
-		Use:   "add-schedule <schedule-id>",
-```
-The client CLI uses inconsistent verbs for adding secondary objects. `sinks` are added with `create-sink`, while `schedules` are added with `add-schedule`.
-**Remediation:** Rename the `add-schedule` command to `create-schedule` to align with the standard `create-foo` convention and match `create-sink`.
+### [LOW-1] `--filter-state` violates consistent naming pattern
+**CLI Standard citation:** [Parameters, Flags and Options](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#parameters-flags-and-options) — *"Arguments can be added to a command line to specify the object(s) that an action will be performed on, and to provide context to, or modify the action to be performed."*
 
-### [MEDIUM-2] Inconsistent verbs for secondary object deletion
-**CLI Standard citation:** [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#commonly-used-commands) — *"tool delete-foo <id> | delete an instance of a secondary object"*
 **Evidence:**
+- **command_path:** `todo list`
+- **rule_clause:** Parameters, Flags and Options
+- **evidence:** In `cmd/todo/main.go`, the `list` command registers `--filter-state` instead of `--state`:
 ```go
-	deleteSinkCmd := &cobra.Command{
-		Use:   "delete-sink <sink-id>",
-...
-	removeScheduleCmd := &cobra.Command{
-		Use:   "remove-schedule <schedule-id>",
+listCmd.Flags().String("filter-state", "", "Filter state: open|closed|reopened|rejected  // VIOLATION")
 ```
-The client CLI uses inconsistent verbs for deleting secondary objects. `sinks` are deleted with `delete-sink`, while `schedules` are removed with `remove-schedule`.
-**Remediation:** Rename the `remove-schedule` command to `delete-schedule` to align with the standard `delete-foo` convention and match `delete-sink`.
+This is an unnecessarily wordy flag name. Consistent naming patterns for filter flags should use names that directly reflect what is being filtered (e.g., `--state`, `--kind`) rather than prefixing them with `filter-`.
 
-### [LOW-1] Default formatting for listing commands sinks and schedules does not support table display
-**CLI Standard citation:** [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) — *"Management of objects (machines, instances, packages, …) will often require processing of relational data. When rendering data to the output stream for users, tables are often used to structure the information."*
-**Evidence:**
+**Remediation:** Change the flag registration in `cmd/todo/main.go` back to `--state`:
 ```go
-func printJSONOrTable(v any, format string, rfc3339 bool) error {
-	if format == "json" {
-		enc := json.NewEncoder(os.Stdout)
-		enc.SetIndent("", "  ")
-		return enc.Encode(v)
-	}
-	switch t := v.(type) {
-	case model.Todo:
-...
-	default:
-		enc := json.NewEncoder(os.Stdout)
-		enc.SetIndent("", "  ")
-		return enc.Encode(v)
-	}
-}
+listCmd.Flags().String("state", "", "Filter state: open|closed|reopened|rejected")
 ```
-When listing `sinks` or `schedules`, the output format defaults to `"table"`, but because these arrays are not instances of `model.Todo`, they fall through to the JSON printer and output JSON by default rather than a tabular format.
-**Remediation:** Add switch-case support in `printJSONOrTable` for `[]model.Sink` and `[]model.Schedule` and define formatting functions to display them as standard tables.
-
-### [LOW-2] Table column headers are not bolded
-**CLI Standard citation:** [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) — *"If present, column headers should use upper case (e.g. NAME, STATUS, etc) and bold font."*
-**Evidence:**
-```go
-	// Print header with 2-space separator
-	sep := "  "
-	fmt.Printf("%-*s%s%-*s%s%-*s%s%s\n", idWidth, "ID", sep, stateWidth, "STATE", sep, dueWidth, "DUE", sep, "TITLE")
-```
-Table headers are printed in plain text without styling.
-**Remediation:** Apply bold formatting tags (such as `<b>` or `common.Bold`) to header column text before outputting.
-
-### [LOW-3] Table column headers cannot be hidden via `--no-headers` flag
-**CLI Standard citation:** [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) — *"Show column headers by default but allow them to be hidden with --no-headers."*
-**Evidence:**
-No `--no-headers` flag is defined on any list or output-related commands, preventing users from hiding headers.
-**Remediation:** Add the `--no-headers` flag to output flags and conditionally skip printing headers in tabular printer functions.
-
-### [LOW-4] Non-standard Tone of Voice in daemon error messages
-**CLI Standard citation:** [CLI Copy and Tone of Voice](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#cli-copy-and-tone-of-voice) — *"Use 'cannot' instead of 'didnt / couldnt / wouldnt / failed to / unable to / etc'."*
-**Evidence:**
-```go
-			if resp.StatusCode >= 300 {
-				return fmt.Errorf("status request failed: %s", resp.Status)
-			}
-...
-			if resp.StatusCode >= 300 {
-				return fmt.Errorf("shutdown request failed: %s", resp.Status)
-			}
-```
-Error messages use `"failed"` instead of `"cannot"`.
-**Remediation:** Change error messages to use `"cannot request status"` and `"cannot shutdown"`.
-
-### [LOW-5] Filter flag on `todo list` is named `--filter-state` instead of `--state`
-**CLI Standard citation:** [Parameters, Flags and Options](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#parameters-flags-and-options) — *"Flags modify the performed action. They come in two varieties, short and long... Long flags start with a double dash (--), and are more descriptive and make it easier to imply their action."*
-**Evidence:**
-```go
-	listCmd.Flags().String("filter-state", "", "Filter state: open|closed|reopened|rejected  // VIOLATION")
-```
-The filter flag is named `--filter-state`, which violates the standard pattern where filters reflect exactly what is being filtered (e.g. `--state`). Additionally, the command runner queries `--state`, which will fail or run as empty because the flag `--state` is not defined on the command.
-**Remediation:** Rename the flag `--filter-state` to `--state` on the `todo list` command to restore consistency and prevent runtime failures.
-
-### [UNRATED-1] Non-standard exact time formatting
-**CLI Standard citation:** [Logging Output: Timestamps](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#timestamps) — *"For communicating exact time, use the date and time format defined in ISO 8601."*
-**Evidence:**
-```go
-func FormatTime(t *time.Time, useRFC3339 bool) string {
-	if t == nil {
-		return ""
-	}
-	if useRFC3339 {
-		return t.Format(time.RFC3339)
-	}
-	return t.Local().Format("2006-01-02 15:04 MST")
-}
-```
-The default exact time format (when `useRFC3339` is false) is `"2006-01-02 15:04 MST"`, which does not conform to ISO 8601.
-**Remediation:** Use RFC3339 layout as the default format for exact timestamps, or fallback to it instead of custom layouts.
 
 ---
 
 ## Compliant Findings Summary
 
-- **Verbs represent actions**: All subcommands that act on primary or secondary objects are named using standard verbs (e.g., `list`, `show`, `create`, `update`, `close`, `reopen`, `reject`).
-- **Logical command grouping**: Commands are organized into intuitive categories/groups (`Todos`, `Sinks`, `Schedules`, `Other`) in help outputs.
-- **Single short/long flags avoided**: The tool does not duplicate flags with both short and long options for the same action, prioritizing clean and descriptive long flags.
-- **Color auto-detection and NO_COLOR support**: ANSI escape styling dynamically disables itself when the standard output is redirected or the `NO_COLOR` environment variable is defined.
-- **Concise messages and direct tone of voice**: System outputs and status information avoid chattiness and explain configuration and hints concisely.
-- **Tabular spacing rules**: Spacing between printed columns conforms to the two-space delimiter requirement.
-- **Empty state stderr output**: The `list` command successfully prints its empty state message (`No todos found`) to standard error rather than standard output while retaining a successful exit code (0).
+- **State-Display Shorthand Pattern:** The `reminder-status` command conforms perfectly with the standard's state-display shorthand (`foobar-status` pattern) for secondary objects.
+- **Standard Verbs (add/remove) for Secondary Objects:** Under the updated CLI guidelines, `add` and `remove` are standard verbs permitted for secondary-object state mutations (e.g., `add-schedule` and `remove-schedule` are fully compliant).
+- **TTY-aware Color and Formatting:** The formatting helpers (`common.Bold`, `common.ColorSection`) and help outputs (`colorizedHelp`, `rootHelp`) use `RenderInlineTags` to safely render bold and colors only when termenv detects terminal capabilities and no environment overrides (`NO_COLOR`) are set.
+- **Primary-Object Command Structure:** Primary-object actions are verb-led (`list`, `show`, `create`, `update`, `close`, `reopen`, `reject`).
+- **Secondary-Object Listing/Details:** Shorthand patterns for secondary objects are adhered to (`sinks`, `sink`, `schedules`, `schedule`).
+- **Flat Secondary Mutation Hierarchy:** Verb-noun naming structure (`create-sink`, `delete-sink`) is used for sinks, and flat configuration is handled with flags (`--todo`) rather than deep subcommands.
+- **No Dual Flags:** Short and long flags are not duplicated for the same action.
+- **Help/Version Support:** The CLI supports `--help` via Cobra defaults and exposes standard `version` and `status` commands.
+- **Table Formatting Standards:** Tabular data output in `list` strictly conforms to the 2-space column separator width, capitalized/left-aligned headers, and contains zero ASCII line decorations.
+- **Proper Empty State Handling:** The empty state for `list` is human-readable, routed to `stderr`, and terminates with a success exit code of 0.

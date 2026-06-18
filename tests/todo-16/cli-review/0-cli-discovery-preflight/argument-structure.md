@@ -1,134 +1,118 @@
 # Argument Structure
 
-## Introduction and Common Patterns
+The CLI uses long-form flags (no short aliases), with Cobra defaults (`--help`, whitespace/equals value forms). Global arguments on `todo` are transport/output oriented, while command-local arguments define object selection and mutation.
 
-The client `todo` utilizes consistent global formatting options across almost all query-based commands to configure formatting and time standards.
-Additionally, commands that list plural objects (`sinks`, `schedules`, `list`) or manage individual ones support specific filtering or specification flags.
+## Common patterns
 
----
+- Positional selectors for object IDs (e.g. `<todo-id>`, `<sink-id>`, `<schedule-id>`)
+- Long flags for optional mutation/filtering
+- Repeatable flags for multivalue input (`--event`, `--sink`, `--schedule`)
+- Optional output mode switches (`--format`, `--rfc3339`)
 
-## Global and Formatting Flags
+## `todo` global arguments
 
-Almost all `todo` subcommands accept output formatting flags:
+- `--host <string>` optional, default `127.0.0.1`
+- `--port <int>` optional, default `44180`
+- `--timeout <duration>` optional, default `10s`
+- `--format <table|json>` optional, default `table`
+- `--rfc3339` optional boolean, default `false`
 
-- `--format` (string, default: `"table"`, accepted: `"table"`, `"json"`) - Sets the output formatting style.
-- `--rfc3339` (boolean, default: `false`) - Force dates to display in strict RFC3339 format instead of relative text.
+## `todo` command arguments
 
----
+### `list`
+- `--state <open|closed|reopened|rejected>` optional
 
-## Command Argument Specification Map
+### `show <todo-id>`
+- `<todo-id>` required positional
 
-### `todo` Commands
+### `create <todo-id> <title>`
+- `<todo-id>` required positional
+- `<title>` required positional (minimum one token)
+- `--due <datetime>` optional
+- `--schedule <spec>` optional repeatable
 
-#### `todo list`
-- Flags:
-  - `--state` (string, optional, accepted: `"open"`, `"closed"`, `"reopened"`, `"rejected"`) - Filter todos by state.
-  - `--format`, `--rfc3339` (Global format overrides)
+### `update <todo-id>`
+- `<todo-id>` required positional
+- `--title <string>` optional
+- `--due <datetime>` optional
+- `--clear-due` optional boolean
 
-#### `todo show <todo-id>`
-- Positional:
-  - `<todo-id>` (string, required) - The ID of the todo to retrieve.
-- Flags:
-  - `--format`, `--rfc3339` (Global format overrides)
+### `close|reopen|reject <todo-id>`
+- `<todo-id>` required positional
 
-#### `todo create <title>`
-- Positional:
-  - `<title>` (string/string array, required) - The title of the todo. Multiple space-separated arguments are joined into a single title.
-- Flags:
-  - `--due` (string, optional) - Optional due date, supports RFC3339 or human-readable formats.
-  - `--schedule` (string array, optional, repeatable) - Schedule configuration specifications.
-  - `--format`, `--rfc3339` (Global format overrides)
+### `sinks`
+- `--enabled <true|false>` optional
+- `--event <upcoming|overdue>` optional
 
-#### `todo update <todo-id>`
-- Positional:
-  - `<todo-id>` (string, required) - The ID of the todo to update.
-- Flags:
-  - `--title` (string, optional) - New title.
-  - `--due` (string, optional) - New due date.
-  - `--clear-due` (boolean, optional, default: `false`) - Clear the existing due date.
-  - `--format`, `--rfc3339` (Global format overrides)
+### `sink <sink-id>`
+- `<sink-id>` required positional
 
-#### `todo close <todo-id>` / `todo reopen <todo-id>` / `todo reject <todo-id>`
-- Positional:
-  - `<todo-id>` (string, required) - The ID of the target todo.
-- Flags:
-  - `--format`, `--rfc3339` (Global format overrides)
+### `create-sink <sink-id>`
+- `<sink-id>` required positional
+- `--url <url>` required by runtime validation
+- `--event <upcoming|overdue>` optional repeatable
 
-#### `todo sinks`
-- Flags:
-  - `--enabled` (string, optional, accepted: `"true"`, `"false"`) - Filter by enabled state.
-  - `--event` (string, optional, accepted: `"upcoming"`, `"overdue"`) - Filter by subscription event.
-  - `--format`, `--rfc3339` (Global format overrides)
+### `update-sink <sink-id>`
+- `<sink-id>` required positional
+- `--url <url>` optional
+- `--event <upcoming|overdue>` optional repeatable
+- `--clear-events` optional boolean
 
-#### `todo sink <sink-id>`
-- Positional:
-  - `<sink-id>` (string, required) - The unique sink ID.
-- Flags:
-  - `--format`, `--rfc3339` (Global format overrides)
+### `delete-sink|enable-sink|disable-sink <sink-id>`
+- `<sink-id>` required positional
 
-#### `todo create-sink <sink-id>`
-- Positional:
-  - `<sink-id>` (string, required) - The unique sink ID to assign.
-- Flags:
-  - `--url` (string, required) - Webhook URL target.
-  - `--event` (string array, optional, repeatable, accepted: `"upcoming"`, `"overdue"`) - Subscription event.
-  - `--format`, `--rfc3339` (Global format overrides)
+### `schedules`
+- `--todo <todo-id>` optional
+- `--kind <upcoming|overdue>` optional
+- `--status <active|sent>` optional
+- `--target <sink|motd>` optional
 
-#### `todo delete-sink <sink-id>`
-- Positional:
-  - `<sink-id>` (string, required) - ID of the sink to delete.
+### `schedule <schedule-id>`
+- `<schedule-id>` required positional
 
-#### `todo schedules`
-- Flags:
-  - `--todo` (string, optional) - Filter by associated todo ID.
-  - `--kind` (string, optional, accepted: `"upcoming"`, `"overdue"`) - Filter by schedule type.
-  - `--status` (string, optional, accepted: `"active"`, `"sent"`) - Filter by schedule status.
-  - `--target` (string, optional, accepted: `"sink"`, `"motd"`) - Filter by notification target.
-  - `--format`, `--rfc3339` (Global format overrides)
+### `add-schedule <schedule-id>`
+- `<schedule-id>` required positional
+- `--todo <todo-id>` required by runtime validation
+- `--kind <upcoming|overdue>` required by runtime validation
+- `--before <duration>` optional
+- `--every <duration>` optional
+- `--sink <sink-id>` optional repeatable
+- `--motd` optional boolean
 
-#### `todo schedule <schedule-id>`
-- Positional:
-  - `<schedule-id>` (string, required) - Unique schedule identifier.
-- Flags:
-  - `--format`, `--rfc3339` (Global format overrides)
+### `remove-schedule <schedule-id>`
+- `<schedule-id>` required positional
 
-#### `todo add-schedule <schedule-id>`
-- Positional:
-  - `<schedule-id>` (string, required) - ID of the schedule to register.
-- Flags:
-  - `--todo` (string, required) - Associated todo ID.
-  - `--kind` (string, required, accepted: `"upcoming"`, `"overdue"`) - Schedule kind.
-  - `--before` (string, optional, default: `"24h"`) - Lead time offset before due date.
-  - `--every` (string, optional, default: `"1d"`) - Recurrence frequency.
-  - `--sink` (string array, optional, repeatable) - Associated target webhook sink ID(s).
-  - `--motd` (boolean, optional, default: `false`) - Deliver notifications through MOTD.
-  - `--format`, `--rfc3339` (Global format overrides)
+### `reminder-status`
+- no command-specific args
 
-#### `todo remove-schedule <schedule-id>`
-- Positional:
-  - `<schedule-id>` (string, required) - ID of the schedule to remove.
+### `status`
+- no command-specific args
 
-#### `todo status`
-- Flags:
-  - `--format` (string, default: `"table"`, accepted: `"table"`, `"json"`) - Sets the output format.
+### `version`
+- no command-specific args
 
----
+## `todod` command arguments
 
-### `todod` Commands
+### `start`
+- `--host <string>` optional, default `127.0.0.1`
+- `--port <int>` optional, default `44180`
+- `--db <path>` optional (defaults to user data path)
 
-#### `todod start`
-- Flags:
-  - `--db` (string, optional) - Custom SQLite database file path.
+### `stop`
+- `--host <string>` optional
+- `--port <int>` optional
 
-#### `todod status`
-- Flags:
-  - `--format` (string, default: `"table"`, accepted: `"table"`, `"json"`) - Sets the output format.
+### `status`
+- `--host <string>` optional
+- `--port <int>` optional
+- `--format <table|json>` optional
 
-#### `todod stop`
-- None.
+### `version`
+- no command-specific args
 
----
+## Special arguments
 
-## Special Arguments
-
-- **`--` separator**: Double-dash separator is not explicitly intercepted for custom command execution by default, but it is supported by standard POSIX guidelines and Cobra's default argument processor.
+- `create` uses `cobra.MinimumNArgs(2)` with free-form title captured from all tokens after `<todo-id>`.
+- Inline schedule grammar in `--schedule` is custom and parsed manually (`kind[:before=...|every=...][:motd|sink=...]`).
+- Schedule duration strings accept relative/human forms via shared parser logic.
+- `--enabled` is modeled as a string on `sinks` (`"true"`/`"false"`), not a boolean flag.

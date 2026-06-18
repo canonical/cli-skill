@@ -1,6 +1,6 @@
 {
   "name": "canonical-cli-skill",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Cross-agent CLI review skill installer for Copilot, Pi, Claude Code, and OpenCode.",
   "license": "MIT",
   "type": "commonjs",

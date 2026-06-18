@@ -1,0 +1,10 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "Medium",
+      "category": "output-format-flag-consistency",
+      "message": "Changed '--format' to '--output' in command output flags (violates flag consistency)"
+    }
+  ]
+}

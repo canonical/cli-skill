@@ -1,0 +1,10 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "High",
+      "category": "Flags and arguments documentation",
+      "message": "Required flags like --todo in add-schedule must be marked required in cobra or documented"
+    }
+  ]
+}

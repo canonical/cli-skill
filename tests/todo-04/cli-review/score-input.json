@@ -1,0 +1,10 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "High",
+      "category": "Structure and Naming",
+      "message": "The 'reminder-status' command was renamed to 'reminders', violating the status suffix rule for state-display commands of specific secondary objects."
+    }
+  ]
+}

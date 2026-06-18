@@ -1,0 +1,10 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "High",
+      "category": "Structure and Naming",
+      "message": "The 'list' command for todos was renamed to 'list-todos', violating the shorthand rule for primary objects."
+    }
+  ]
+}

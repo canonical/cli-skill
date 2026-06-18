@@ -1,0 +1,15 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "Low",
+      "category": "Visual hierarchy and scannability",
+      "message": "The command group title 'Todo Commands' is inconsistent with other command group titles ('Sinks:', 'Schedules:', 'Other:') which use a colon suffix."
+    },
+    {
+      "severity": "Low",
+      "category": "Command description clarity",
+      "message": "The short description for 'list' command is 'Todo list', which is noun-first instead of verb-first ('List todos')."
+    }
+  ]
+}

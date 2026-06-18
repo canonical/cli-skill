@@ -1,20 +1,28 @@
 # Canonical CLI automated review report
 *This report is AI-generated. Please [report issues with the cli-skill](https://github.com/canonical/cli-skill/issues/new/choose) so we can improve this report.*
 
-**Scope:** CLI standard compliance review of `/project/tests/todo-16`
+**Scope:** CLI standard compliance review of `/project/todo/cmd/todo/main.go` and `/project/todo/cmd/todod/main.go`
 
 ## Summary
 
 | **Severity** | **Count** | **Guideline Categories** |
 | --- | --- | --- |
-| High | 3 | Command Naming, Argument Design |
-| Medium | 2 | Command Naming |
-| Low | 4 | Tabular Data, Tone of Voice |
-| Unrated | 1 | Logging Output |
-| **Total** | **10** | |
+| High | 3 | Command Naming, Positional Parameters |
+| Medium | 0 | — |
+| Low | 0 | — |
+| Unrated | 0 | — |
+| **Total** | **3** | |
 
-**Overall rating:** 78.18 🟠 **Room for Improvement**
-> The scoring algorithm starts with 100%, number of commands N, weight W=100/N. For each High violation, reduce by 2*W; Medium violation by 1*W; Low violation by 0.5*W. Clamp to 0-100.
+**Overall rating:** 86.36 🟡 **Fair**
+> The scoring algorithm starts with 100%, number of commands N, weight W=100/N. For each High violation, reduce by W; Medium violation by 0.5*W; Low violation by 0.2*W. Clamp to 0-100.
+
+---
+
+## CLI changes in this PR
+
+* **Decreased Primary-Object Listing Clarity:** The primary-object listing command was renamed from `list` to `list-todos`, introducing a high-severity violation under the standard primary-object listing shorthand (which requires the verb `list`).
+* **Non-Standard State-Display Command Naming:** The state-display command for pending reminders was renamed from `reminder-status` to `reminders`, introducing a high-severity violation under the status suffix rule (requiring specific secondary object state-display commands to use the `foobar-status` pattern).
+* **Reduced Positional Argument Clarity:** The positional argument placeholder for `todo show` was modified from `<todo-id>` to `<id>`. This violates positional argument clarity and creates inconsistency with other todo commands that use `<todo-id>`.
 
 ---
 
@@ -22,167 +30,78 @@
 
 | Finding | Rule Summary | Evidence | Notes |
 |---------|--------------|----------|-------|
-| [HIGH-1](#high-1-the-list-todos-command-uses-a-non-standard-naming-shorthand) | The list command for todos is named `list-todos` instead of `list`. | [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) | Rename `list-todos` to `list` to conform to the primary-object shorthand pattern. |
-| [HIGH-2](#high-2-the-reminders-command-violates-the-status-suffix-rule) | The `reminders` command displays pending reminders state without using the `-status` suffix. | [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) | Rename `reminders` to `reminder-status` to conform to the status suffix rule. |
-| [HIGH-3](#high-3-the-show-command-uses-a-generic-positional-argument-placeholder) | The `show` command uses a generic positional parameter `<id>` instead of `<todo-id>`. | [Positional Parameters](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#positional-parameters) | Change argument placeholder to `<todo-id>` for clarity and consistency with other commands. |
-| [MEDIUM-1](#medium-1-inconsistent-verbs-for-secondary-object-creation) | Inconsistent verbs are used to create secondary objects. Sinks use `create-sink` whereas schedules use `add-schedule`. | [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) | Rename `add-schedule` to `create-schedule` for consistency. |
-| [MEDIUM-2](#medium-2-inconsistent-verbs-for-secondary-object-deletion) | Inconsistent verbs are used to delete secondary objects. Sinks use `delete-sink` whereas schedules use `remove-schedule`. | [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) | Rename `remove-schedule` to `delete-schedule` for consistency. |
-| [LOW-1](#low-1-listing-commands-for-sinks-and-schedules-output-json-formatting-by-default) | Listing commands (`sinks`, `schedules`) output JSON formatting by default instead of a tabular structure. | [Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) | Implement dedicated table print functions for these models. |
-| [LOW-2](#low-2-table-column-headers-are-not-bolded) | Table column headers printed by `todo list-todos` are not rendered in bold. | [Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) | Style column labels with `common.Bold` or ANSI tags. |
-| [LOW-3](#low-3-table-column-headers-cannot-be-hidden-via-no-headers-flag) | Command options do not support the `--no-headers` flag. | [Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) | Add `--no-headers` to table output options. |
-| [LOW-4](#low-4-non-standard-tone-of-voice-in-daemon-error-messages) | Daemon status and stop commands use `"failed"` error messages instead of `"cannot"`. | [CLI Copy and Tone of Voice](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#cli-copy-and-tone-of-voice) | Change error formatting to use standard `"cannot"` phrase. |
-| [UNRATED-1](#unrated-1-non-standard-exact-time-formatting) | Exact time is formatted using a custom Go layout rather than ISO 8601 when `--rfc3339` is absent. | [Logging Output: Timestamps](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#timestamps) | Use RFC3339 format by default for exact timestamps. |
+| [HIGH-1](#high-1-list-todos-command-violates-primary-object-listing-standard) | The primary-object list command must be named 'list' following standard shorthand for primary objects. | [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) | Rename the command back to `list` to restore compliance. |
+| [HIGH-2](#high-2-reminders-command-violates-status-suffix-rule) | State-display commands for specific secondary objects must use the status suffix pattern (`foobar-status`). | [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) | Rename the command to `reminder-status` to conform with the standard status suffix rules. |
+| [HIGH-3](#high-3-todo-show-positional-argument-naming-violates-clarity-rules) | The positional argument placeholder for `todo show` is named `<id>` instead of `<todo-id>`, causing naming inconsistency and reducing clarity. | [Positional Parameters](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#positional-parameters) | Rename the argument placeholder from `<id>` to `<todo-id>` to match the other commands. |
 
 ---
 
 ## Non-compliance Findings (with citations)
 
-### [HIGH-1] The 'list-todos' command uses a non-standard naming shorthand
-**CLI Standard citation:** [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) — *"Use foobars as a shorthand for listing information about all instances of a specific type of secondary object instead of list-foobar ... snap list for listing snaps."* and *"tool list \| overview of all instances of primary type"*
+### [HIGH-1] list-todos command violates primary-object listing standard
+**CLI Standard citation:** [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) — *"Use foobars as a shorthand for listing information about all instances of a specific type of secondary object instead of list-foobar (e.g. snap services over snap list-services for listing services of a snap, but snap list for listing snaps)."* and *"tool list | overview of all instances of primary type"*
+
 **Evidence:**
+In `cmd/todo/main.go`:
 ```go
 	listCmd := &cobra.Command{
 		Use:   "list-todos",
 		Short: "List todos",
-		RunE: func(cmd *cobra.Command, args []string) error {
 ```
-The client CLI uses `list-todos` for listing its primary object type (`todos`), violating the primary-object shorthand pattern where the command should simply be `list`.
-**Remediation:** Rename the `list-todos` command back to `list` to conform to standard primary-object shorthand guidelines.
+The command is configured with the `Use` string `"list-todos"`, which violates the standard pattern. For primary objects, the list command must simply be named `"list"`.
 
-### [HIGH-2] The 'reminders' command violates the status suffix rule
-**CLI Standard citation:** [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) — *"For showing state without changing it, use the shorthand status over show-status. For specific secondary objects, use foobar-status over show-foobar-status (e.g. snapcraft release-status), and foobar over show-foobar."*
+**Remediation:** Change the `Use` field of `listCmd` to `"list"` in `cmd/todo/main.go` to restore compliance:
+```go
+	listCmd := &cobra.Command{
+		Use:   "list",
+```
+
+### [HIGH-2] reminders command violates status suffix rule
+**CLI Standard citation:** [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) — *"For showing state without changing it, use the shorthand status over show-status. For specific secondary objects, use foobar-status over show-foobar-status (e.g. snapcraft release-status)"*
+
 **Evidence:**
+In `cmd/todo/main.go`:
 ```go
 	reminderStatusCmd := &cobra.Command{
 		Use:   "reminders",
 		Short: "Print pending MOTD reminder messages",
 ```
-The command is named `reminders` but is designed to print pending MOTD reminder status and state messages without modification. It should use the `-status` suffix for specific secondary objects.
-**Remediation:** Rename the command to `reminder-status` to conform to standard state-display guidelines.
+The command is configured with the `Use` string `"reminders"`, which violates the status suffix rule. Because it is a state-display command for pending MOTD reminders, it must use the standard status suffix pattern (e.g., `"reminder-status"`).
 
-### [HIGH-3] The 'show' command uses a generic positional argument placeholder
-**CLI Standard citation:** [Positional Parameters](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#positional-parameters) — *"Positional parameters are difficult for people to remember and use correctly, especially if they could be used interchangeably; do not use positional parameters unless the order is natural and easily memorizable ... Those rules still apply even if it is a single parameter: ... snapcraft revisions <snap-name>"*
+**Remediation:** Change the `Use` field of `reminderStatusCmd` to `"reminder-status"` in `cmd/todo/main.go` to restore compliance:
+```go
+	reminderStatusCmd := &cobra.Command{
+		Use:   "reminder-status",
+```
+
+### [HIGH-3] todo show positional argument naming violates clarity rules
+**CLI Standard citation:** [Positional Parameters](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#positional-parameters) — *"Positional parameters are difficult for people to remember and use correctly, especially if they could be used interchangeably; do not use positional parameters unless the order is natural and easily memorizable"*
+
 **Evidence:**
+In `cmd/todo/main.go`:
 ```go
 	showCmd := &cobra.Command{
 		Use:   "show <id>",
 		Short: "Show a todo",
 ```
-The client CLI uses the generic `<id>` placeholder in the help usage of `show` instead of specifying `<todo-id>`. This reduces clarity and creates inconsistency with other related commands such as `update <todo-id>`, `close <todo-id>`, `reopen <todo-id>`, and `reject <todo-id>`.
-**Remediation:** Change the positional parameter usage text in `showCmd` to `<todo-id>` to improve clarity.
+The `show` command retrieves details for a single `todo` primary object. However, its positional argument placeholder is specified as `<id>` instead of `<todo-id>`. This creates inconsistency and ambiguity across the CLI, as other commands operating on individual todos consistently use the placeholder `<todo-id>` (e.g., `update <todo-id>`, `close <todo-id>`, `reopen <todo-id>`, `reject <todo-id>`).
 
-### [MEDIUM-1] Inconsistent verbs for secondary object creation
-**CLI Standard citation:** [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) — *"tool create-foo <id> \| create a new instance of a secondary object"*
-**Evidence:**
+**Remediation:** Change the `Use` field of `showCmd` to `"show <todo-id>"` in `cmd/todo/main.go` to restore compliance and maintain consistency across todo commands:
 ```go
-	createSinkCmd := &cobra.Command{
-		Use:   "create-sink <sink-id>",
-...
-	addScheduleCmd := &cobra.Command{
-		Use:   "add-schedule <schedule-id>",
+	showCmd := &cobra.Command{
+		Use:   "show <todo-id>",
 ```
-The client CLI uses inconsistent verbs for adding secondary objects. `sinks` are added with `create-sink`, while `schedules` are added with `add-schedule`.
-**Remediation:** Rename the `add-schedule` command to `create-schedule` to align with the standard `create-foo` convention and match `create-sink`.
-
-### [MEDIUM-2] Inconsistent verbs for secondary object deletion
-**CLI Standard citation:** [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#grammar--vocabulary) — *"tool delete-foo <id> \| delete an instance of a secondary object"*
-**Evidence:**
-```go
-	deleteSinkCmd := &cobra.Command{
-		Use:   "delete-sink <sink-id>",
-...
-	removeScheduleCmd := &cobra.Command{
-		Use:   "remove-schedule <schedule-id>",
-```
-The client CLI uses inconsistent verbs for deleting secondary objects. `sinks` are deleted with `delete-sink`, while `schedules` are removed with `remove-schedule`.
-**Remediation:** Rename the `remove-schedule` command to `delete-schedule` to align with the standard `delete-foo` convention and match `delete-sink`.
-
-### [LOW-1] Listing commands for sinks and schedules output JSON formatting by default
-**CLI Standard citation:** [Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) — *"Management of objects (machines, instances, packages, …) will often require processing of relational data. When rendering data to the output stream for users, tables are often used to structure the information."*
-**Evidence:**
-```go
-func printJSONOrTable(v any, format string, rfc3339 bool) error {
-	if format == "json" {
-		enc := json.NewEncoder(os.Stdout)
-		enc.SetIndent("", "  ")
-		return enc.Encode(v)
-	}
-	switch t := v.(type) {
-	case model.Todo:
-...
-	default:
-		enc := json.NewEncoder(os.Stdout)
-		enc.SetIndent("", "  ")
-		return enc.Encode(v)
-	}
-}
-```
-When listing `sinks` or `schedules`, the output format defaults to `"table"`, but because these arrays are not instances of `model.Todo`, they fall through to the JSON printer and output JSON by default rather than a tabular format.
-**Remediation:** Add switch-case support in `printJSONOrTable` for `[]model.Sink` and `[]model.Schedule` and define formatting functions to display them as standard tables.
-
-### [LOW-2] Table column headers are not bolded
-**CLI Standard citation:** [Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) — *"If present, column headers should use upper case (e.g. NAME, STATUS, etc) and bold font."*
-**Evidence:**
-```go
-	// Print header with 2-space separator
-	sep := "  "
-	fmt.Printf("%-*s%s%-*s%s%-*s%s%s\n", idWidth, "ID", sep, stateWidth, "STATE", sep, dueWidth, "DUE", sep, "TITLE")
-```
-Table headers are printed in plain text without styling.
-**Remediation:** Apply bold formatting tags (such as `<b>` or `common.Bold`) to header column text before outputting.
-
-### [LOW-3] Table column headers cannot be hidden via `--no-headers` flag
-**CLI Standard citation:** [Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) — *"Show column headers by default but allow them to be hidden with --no-headers."*
-**Evidence:**
-```go
-func addOutputFlags(cmd *cobra.Command) {
-	cmd.Flags().String("format", "table", "Output format: table|json")
-	cmd.Flags().Bool("rfc3339", false, "Show dates in RFC3339 format")
-}
-```
-No `--no-headers` flag is defined on any list or output-related commands, preventing users from hiding headers.
-**Remediation:** Add the `--no-headers` flag to output flags and conditionally skip printing headers in tabular printer functions.
-
-### [LOW-4] Non-standard tone of voice in daemon error messages
-**CLI Standard citation:** [CLI Copy and Tone of Voice](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#cli-copy-and-tone-of-voice) — *"Use 'cannot' instead of 'didnt / couldnt / wouldnt / failed to / unable to / etc'."*
-**Evidence:**
-```go
-			if resp.StatusCode >= 300 {
-				return fmt.Errorf("status request failed: %s", resp.Status)
-			}
-...
-			if resp.StatusCode >= 300 {
-				return fmt.Errorf("shutdown request failed: %s", resp.Status)
-			}
-```
-Error messages use `"failed"` instead of `"cannot"`.
-**Remediation:** Change error messages to use `"cannot request status"` and `"cannot shutdown"`.
-
-### [UNRATED-1] Non-standard exact time formatting
-**CLI Standard citation:** [Logging Output: Timestamps](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#timestamps) — *"For communicating exact time, use the date and time format defined in ISO 8601."*
-**Evidence:**
-```go
-func FormatTime(t *time.Time, useRFC3339 bool) string {
-	if t == nil {
-		return ""
-	}
-	if useRFC3339 {
-		return t.Format(time.RFC3339)
-	}
-	return t.Local().Format("2006-01-02 15:04 MST")
-}
-```
-The default exact time format (when `useRFC3339` is false) is `"2006-01-02 15:04 MST"`, which does not conform to ISO 8601.
-**Remediation:** Use RFC3339 layout as the default format for exact timestamps, or fallback to it instead of custom layouts.
 
 ---
 
 ## Compliant Findings Summary
 
-- **Verbs represent actions**: Most subcommands that act on primary or secondary objects are named using standard verbs (e.g., `show`, `create`, `update`, `close`, `reopen`, `reject`).
-- **Logical command grouping**: Commands are organized into intuitive categories/groups (`Todos`, `Sinks`, `Schedules`, `Other`) in help outputs.
-- **Single short/long flags avoided**: The tool does not duplicate flags with both short and long options for the same action, prioritizing clean and descriptive long flags.
-- **Color auto-detection and NO_COLOR support**: ANSI escape styling dynamically disables itself when the standard output is redirected or the `NO_COLOR` environment variable is defined.
-- **Concise messages and direct tone of voice**: System outputs and status information avoid chattiness and explain configuration and hints concisely.
-- **Tabular spacing rules**: Spacing between printed columns conforms to the two-space delimiter requirement.
-- **Empty state stderr output**: The `list-todos` command successfully prints its empty state message (`No todos found`) to standard error rather than standard output while retaining a successful exit code (0).
+- **Standard Verbs (add/remove) for Secondary Objects:** Under the updated CLI guidelines, `add` and `remove` are standard verbs permitted for secondary-object state mutations (e.g., `add-schedule` and `remove-schedule` are fully compliant).
+- **TTY-aware Color and Formatting:** The formatting helpers (`common.Bold`, `common.ColorSection`) and help outputs (`colorizedHelp`, `rootHelp`) use `RenderInlineTags` to safely render bold and colors only when termenv detects terminal capabilities and no environment overrides (`NO_COLOR`) are set.
+- **Primary-Object Command Structure:** Primary-object actions are verb-led (`list`, `show`, `create`, `update`, `close`, `reopen`, `reject`).
+- **Secondary-Object Listing/Details:** Shorthand patterns for secondary objects are adhered to (`sinks`, `sink`, `schedules`, `schedule`).
+- **Flat Secondary Mutation Hierarchy:** Verb-noun naming structure (`create-sink`, `delete-sink`) is used for sinks, and flat configuration is handled with flags (`--todo`) rather than deep subcommands.
+- **No Dual Flags:** Short and long flags are not duplicated for the same action.
+- **Help/Version Support:** The CLI supports `--help` via Cobra defaults and exposes standard `version` and `status` commands.
+- **Table Formatting Standards:** Tabular data output in `list` strictly conforms to the 2-space column separator width, capitalized/left-aligned headers, and contains zero ASCII line decorations.
+- **Proper Empty State Handling:** The empty state for `list` is human-readable, routed to `stderr`, and terminates with a success exit code of 0.

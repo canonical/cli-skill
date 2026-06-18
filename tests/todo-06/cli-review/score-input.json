@@ -1,35 +1,10 @@
 {
-  "commands": 23,
+  "commands": 22,
   "issues": [
     {
       "severity": "Medium",
-      "category": "Parameters, Flags and Options",
-      "message": "Plural flag name '--sinks' for repeatable flag (should be singular '--sink')"
-    },
-    {
-      "severity": "Low",
-      "category": "Tabular Data",
-      "message": "Listing commands 'sinks' and 'schedules' output JSON formatting by default instead of a tabular structure"
-    },
-    {
-      "severity": "Low",
-      "category": "Tabular Data",
-      "message": "Table column headers printed by 'todo list' are not rendered in bold"
-    },
-    {
-      "severity": "Low",
-      "category": "Tabular Data",
-      "message": "Table column headers cannot be hidden via '--no-headers' flag"
-    },
-    {
-      "severity": "Low",
-      "category": "CLI Copy and Tone of Voice",
-      "message": "Daemon status and stop commands use 'failed' error messages instead of 'cannot'"
-    },
-    {
-      "severity": "Unrated",
-      "category": "Logging Output",
-      "message": "Non-standard exact time formatting"
+      "category": "Flags and Options",
+      "message": "The repeatable flag '--sinks' on 'add-schedule' is named in the plural, violating the CLI standard which requires repeatable flags to be singular ('--sink' instead of '--sinks')."
     }
   ]
 }

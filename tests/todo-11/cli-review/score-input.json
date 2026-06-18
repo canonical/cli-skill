@@ -1,0 +1,10 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "Low",
+      "category": "Parameters, Flags and Options",
+      "message": "The '--filter-state' flag on the 'list' command violates the consistent naming pattern for filter flags, which should reflect the attribute being filtered directly (e.g., '--state')."
+    }
+  ]
+}

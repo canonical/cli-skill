@@ -1,20 +1,26 @@
 # Canonical CLI automated review report
 *This report is AI-generated. Please [report issues with the cli-skill](https://github.com/canonical/cli-skill/issues/new/choose) so we can improve this report.*
 
-**Scope:** CLI standard compliance review of `/project/tests/todo-12`
+**Scope:** CLI standard compliance review of `/project/tests/todo-12/cmd/todo/main.go` and `/project/tests/todo-12/cmd/todod/main.go`
 
 ## Summary
 
 | **Severity** | **Count** | **Guideline Categories** |
 | --- | --- | --- |
-| High | 1 | Parameters, Flags and Options |
-| Medium | 2 | Grammar + Vocabulary |
-| Low | 4 | Tabular Data, Tone of Voice |
-| Unrated | 1 | Logging Output |
-| **Total** | **8** | |
+| High | 1 | Flags and arguments documentation |
+| Medium | 0 | — |
+| Low | 0 | — |
+| Unrated | 0 | — |
+| **Total** | **1** | |
 
-**Overall rating:** 87.83 🟡 **Fair**
-> The scoring algorithm starts with 100%, number of commands N, weight W=100/N. For each High violation, reduce by W; Medium violation by 0.5*W; Low violation by 0.2*W. Clamp to 0-100%.
+**Overall rating:** 95.5 💚 **Excellent**
+
+---
+
+## CLI changes in this PR
+
+The latest variant introduces a non-compliance issue:
+* **Misleading Flag Help Documentation:** The required `--todo` flag under the `add-schedule` command is documented as `(optional)` in the CLI help text. However, it is functionally required at runtime, leading to a direct contradiction that violates clarity and option documentation standards.
 
 ---
 
@@ -22,134 +28,43 @@
 
 | Finding | Rule Summary | Evidence | Notes |
 |---------|--------------|----------|-------|
-| [HIGH-1](#high-1-required-flags-must-be-clearly-indicated-in-help) | Required flags like `--todo` in `add-schedule` must be marked required in cobra or documented, but it is currently marked/documented as optional. | [Canonical CLI help rules](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-help.md#5-flags-and-arguments-documentation) | Use `cmd.MarkFlagRequired("todo")` or document it clearly as required instead of `(optional)`. |
-| [MEDIUM-1](#medium-1-inconsistent-verbs-for-secondary-object-creation) | Inconsistent verbs are used to create secondary objects. Sinks use `create-sink` whereas schedules use `add-schedule`. | [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#commonly-used-commands) | Rename `add-schedule` to `create-schedule` for consistency. |
-| [MEDIUM-2](#medium-2-inconsistent-verbs-for-secondary-object-deletion) | Inconsistent verbs are used to delete secondary objects. Sinks use `delete-sink` whereas schedules use `remove-schedule`. | [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#commonly-used-commands) | Rename `remove-schedule` to `delete-schedule` for consistency. |
-| [LOW-1](#low-1-default-formatting-for-listing-commands-sinks-and-schedules-does-not-support-table-display) | Listing commands (`sinks`, `schedules`) output JSON formatting by default instead of a tabular structure. | [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) | Implement dedicated table print functions for these models. |
-| [LOW-2](#low-2-table-column-headers-are-not-bolded) | Table column headers printed by `todo list` are not rendered in bold. | [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) | Style column labels with `common.Bold` or ANSI tags. |
-| [LOW-3](#low-3-table-column-headers-cannot-be-hidden-via-no-headers-flag) | Command options do not support the `--no-headers` flag. | [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) | Add `--no-headers` to table output options. |
-| [LOW-4](#low-4-non-standard-tone-of-voice-in-daemon-error-messages) | Daemon status and stop commands use `"failed"` error messages instead of `"cannot"`. | [CLI Copy and Tone of Voice](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#cli-copy-and-tone-of-voice) | Change error formatting to use standard `"cannot"` phrase. |
-| [UNRATED-1](#unrated-1-non-standard-exact-time-formatting) | Exact time is formatted using a custom Go layout rather than ISO 8601 when `--rfc3339` is absent. | [Logging Output: Timestamps](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#timestamps) | Use RFC3339 format by default for exact timestamps. |
+| [HIGH-1](#high-1-todo-flag-in-add-schedule-is-marked-optional-in-help-but-is-functionally-required) | Usage MUST distinguish required from optional arguments. | `addScheduleCmd.Flags().String("todo", "", "Todo id (optional)")` but is functionally required at runtime. | The CLI standard requires that usage text clearly indicates whether options/flags are required or optional. Documenting a required flag as optional violates this. |
 
 ---
 
 ## Non-compliance Findings (with citations)
 
-### [HIGH-1] Required flags must be clearly indicated in help
-**CLI Standard citation:** [5. Flags and arguments documentation](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-help.md#5-flags-and-arguments-documentation) — *"Usage MUST distinguish required from optional arguments."*
+### [HIGH-1] --todo flag in add-schedule is marked optional in help but is functionally required
+**CLI Standard citation:** [Flags and arguments documentation](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-help.md#5-flags-and-arguments-documentation) — *"Usage MUST distinguish required from optional arguments."*
 **Evidence:**
+In `cmd/todo/main.go`, the `--todo` flag is registered as:
 ```go
 	addScheduleCmd.Flags().String("todo", "", "Todo id (optional)")  // VIOLATION: missing required marker
 ```
-The `--todo` flag for the `add-schedule` command is defined as `"Todo id (optional)"` in the help string, despite being programmatically required at runtime (where an error is returned if it is empty: `fmt.Errorf("--todo is required")`). It is also not marked as required using Cobra's `MarkFlagRequired`.
-**Remediation:** Mark the flag as required programmatically with `addScheduleCmd.MarkFlagRequired("todo")` and update its help description to clearly indicate that it is required rather than optional.
-
-### [MEDIUM-1] Inconsistent verbs for secondary object creation
-**CLI Standard citation:** [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#commonly-used-commands) — *"tool create-foo <id> | create a new instance of a secondary object"*
-**Evidence:**
+However, the command's `RunE` method enforces this flag as strictly required at runtime:
 ```go
-	createSinkCmd := &cobra.Command{
-		Use:   "create-sink <sink-id>",
-...
-	addScheduleCmd := &cobra.Command{
-		Use:   "add-schedule <schedule-id>",
-```
-The client CLI uses inconsistent verbs for adding secondary objects. `sinks` are added with `create-sink`, while `schedules` are added with `add-schedule`.
-**Remediation:** Rename the `add-schedule` command to `create-schedule` to align with the standard `create-foo` convention and match `create-sink`.
-
-### [MEDIUM-2] Inconsistent verbs for secondary object deletion
-**CLI Standard citation:** [Grammar + Vocabulary](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#commonly-used-commands) — *"tool delete-foo <id> | delete an instance of a secondary object"*
-**Evidence:**
-```go
-	deleteSinkCmd := &cobra.Command{
-		Use:   "delete-sink <sink-id>",
-...
-	removeScheduleCmd := &cobra.Command{
-		Use:   "remove-schedule <schedule-id>",
-```
-The client CLI uses inconsistent verbs for deleting secondary objects. `sinks` are deleted with `delete-sink`, while `schedules` are removed with `remove-schedule`.
-**Remediation:** Rename the `remove-schedule` command to `delete-schedule` to align with the standard `delete-foo` convention and match `delete-sink`.
-
-### [LOW-1] Default formatting for listing commands sinks and schedules does not support table display
-**CLI Standard citation:** [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) — *"Management of objects (machines, instances, packages, …) will often require processing of relational data. When rendering data to the output stream for users, tables are often used to structure the information."*
-**Evidence:**
-```go
-func printJSONOrTable(v any, format string, rfc3339 bool) error {
-	if format == "json" {
-		enc := json.NewEncoder(os.Stdout)
-		enc.SetIndent("", "  ")
-		return enc.Encode(v)
-	}
-	switch t := v.(type) {
-	case model.Todo:
-...
-	default:
-		enc := json.NewEncoder(os.Stdout)
-		enc.SetIndent("", "  ")
-		return enc.Encode(v)
-	}
-}
-```
-When listing `sinks` or `schedules`, the output format defaults to `"table"`, but because these arrays are not instances of `model.Todo`, they fall through to the JSON printer and output JSON by default rather than a tabular format.
-**Remediation:** Add switch-case support in `printJSONOrTable` for `[]model.Sink` and `[]model.Schedule` and define formatting functions to display them as standard tables.
-
-### [LOW-2] Table column headers are not bolded
-**CLI Standard citation:** [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) — *"If present, column headers should use upper case (e.g. NAME, STATUS, etc) and bold font."*
-**Evidence:**
-```go
-	// Print header with 2-space separator
-	sep := "  "
-	fmt.Printf("%-*s%s%-*s%s%-*s%s%s\n", idWidth, "ID", sep, stateWidth, "STATE", sep, dueWidth, "DUE", sep, "TITLE")
-```
-Table headers are printed in plain text without styling.
-**Remediation:** Apply bold formatting tags (such as `<b>` or `common.Bold`) to header column text before outputting.
-
-### [LOW-3] Table column headers cannot be hidden via `--no-headers` flag
-**CLI Standard citation:** [Feedback: Tabular Data](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#tabular-data) — *"Show column headers by default but allow them to be hidden with --no-headers."*
-**Evidence:**
-No `--no-headers` flag is defined on any list or output-related commands, preventing users from hiding headers.
-**Remediation:** Add the `--no-headers` flag to output flags and conditionally skip printing headers in tabular printer functions.
-
-### [LOW-4] Non-standard Tone of Voice in daemon error messages
-**CLI Standard citation:** [CLI Copy and Tone of Voice](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#cli-copy-and-tone-of-voice) — *"Use 'cannot' instead of 'didnt / couldnt / wouldnt / failed to / unable to / etc'."*
-**Evidence:**
-```go
-			if resp.StatusCode >= 300 {
-				return fmt.Errorf("status request failed: %s", resp.Status)
-			}
-...
-			if resp.StatusCode >= 300 {
-				return fmt.Errorf("shutdown request failed: %s", resp.Status)
+			if strings.TrimSpace(todoIDStr) == "" {
+				return fmt.Errorf("--todo is required")
 			}
 ```
-Error messages use `"failed"` instead of `"cannot"`.
-**Remediation:** Change error messages to use `"cannot request status"` and `"cannot shutdown"`.
-
-### [UNRATED-1] Non-standard exact time formatting
-**CLI Standard citation:** [Logging Output: Timestamps](https://github.com/canonical/cli-skill/blob/main/cli-skill/references/cli-standard.md#timestamps) — *"For communicating exact time, use the date and time format defined in ISO 8601."*
-**Evidence:**
+If `--todo` is omitted, the command fails and prints `--todo is required`. Since the flag is required, documenting it as `(optional)` is incorrect and misleading.
+**Remediation:** Update the help description to clarify that it is required, and use Cobra's `MarkFlagRequired` method to register it as required so that help documentation reflects this.
 ```go
-func FormatTime(t *time.Time, useRFC3339 bool) string {
-	if t == nil {
-		return ""
-	}
-	if useRFC3339 {
-		return t.Format(time.RFC3339)
-	}
-	return t.Local().Format("2006-01-02 15:04 MST")
-}
+	addScheduleCmd.Flags().String("todo", "", "Todo id")
+	_ = addScheduleCmd.MarkFlagRequired("todo")
 ```
-The default exact time format (when `useRFC3339` is false) is `"2006-01-02 15:04 MST"`, which does not conform to ISO 8601.
-**Remediation:** Use RFC3339 layout as the default format for exact timestamps, or fallback to it instead of custom layouts.
 
 ---
 
 ## Compliant Findings Summary
 
-- **Verbs represent actions**: All subcommands that act on primary or secondary objects are named using standard verbs (e.g., `list`, `show`, `create`, `update`, `close`, `reopen`, `reject`).
-- **Logical command grouping**: Commands are organized into intuitive categories/groups (`Todos`, `Sinks`, `Schedules`, `Other`) in help outputs.
-- **Single short/long flags avoided**: The tool does not duplicate flags with both short and long options for the same action, prioritizing clean and descriptive long flags.
-- **Color auto-detection and NO_COLOR support**: ANSI escape styling dynamically disables itself when the standard output is redirected or the `NO_COLOR` environment variable is defined.
-- **Concise messages and direct tone of voice**: System outputs and status information avoid chattiness and explain configuration and hints concisely.
-- **Tabular spacing rules**: Spacing between printed columns conforms to the two-space delimiter requirement.
-- **Empty state stderr output**: The `list` command successfully prints its empty state message (`No todos found`) to standard error rather than standard output while retaining a successful exit code (0).
+- **State-Display Shorthand Pattern:** The `reminder-status` command conforms perfectly with the standard's state-display shorthand (`foobar-status` pattern) for secondary objects.
+- **Standard Verbs (add/remove) for Secondary Objects:** Standard verbs `add` and `remove` are used appropriately for secondary-object state mutations (e.g., `add-schedule` and `remove-schedule` are fully compliant).
+- **TTY-aware Color and Formatting:** The formatting helpers (`common.Bold`, `common.ColorSection`) and help outputs use `RenderInlineTags` to safely render bold and colors only when termenv detects terminal capabilities and no environment overrides (`NO_COLOR`) are set.
+- **Primary-Object Command Structure:** Primary-object actions are verb-led (`list`, `show`, `create`, `update`, `close`, `reopen`, `reject`).
+- **Secondary-Object Listing/Details:** Shorthand patterns for secondary objects are adhered to (`sinks`, `sink`, `schedules`, `schedule`).
+- **Flat Secondary Mutation Hierarchy:** Verb-noun naming structure (`create-sink`, `delete-sink`) is used for sinks, and flat configuration is handled with flags rather than deep subcommands.
+- **No Dual Flags:** Short and long flags are not duplicated for the same action.
+- **Help/Version Support:** The CLI supports `--help` via Cobra defaults and exposes standard `version` and `status` commands.
+- **Table Formatting Standards:** Tabular data output in `list` strictly conforms to the 2-space column separator width, capitalized/left-aligned headers, and contains zero ASCII line decorations.
+- **Proper Empty State Handling:** The empty state for `list` is human-readable, routed to `stderr`, and terminates with a success exit code of 0.

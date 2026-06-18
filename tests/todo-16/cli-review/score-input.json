@@ -1,0 +1,20 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "High",
+      "category": "Command Naming",
+      "message": "The primary-object list command has been renamed to 'list-todos', violating the shorthand rule requiring 'list'."
+    },
+    {
+      "severity": "High",
+      "category": "Command Naming",
+      "message": "The state-display command for pending MOTD reminders has been renamed to 'reminders', violating the status suffix rule requiring 'reminder-status' or similar status-suffixed naming."
+    },
+    {
+      "severity": "High",
+      "category": "Positional Parameters",
+      "message": "The positional argument placeholder for the 'todo show' command was changed from '<todo-id>' to '<id>', violating positional argument clarity and consistency."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "Medium",
+      "category": "Flags and Options",
+      "message": "All query commands must consistently support output format flags. Some commands use '--output' instead of '--format'."
+    }
+  ]
+}

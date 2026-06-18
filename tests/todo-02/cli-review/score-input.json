@@ -1,0 +1,10 @@
+{
+  "commands": 22,
+  "issues": [
+    {
+      "severity": "Low",
+      "category": "Structure and Naming",
+      "message": "Use shorthand 'sinks' for listing secondary objects instead of 'list-sinks'."
+    }
+  ]
+}
