@@ -96,10 +96,8 @@ jobs:
   cli-review:
     uses: canonical/cli-skill/.github/workflows/cli-skill-review-reusable.yml@v1
     with:
-      command: /cli-review
       provider: openrouter
-      model: openrouter/gemini-3.5-flash
-      thinking_level: medium
+      model: google/gemini-3.5-flash
       pr_number: ${{ github.event.pull_request.number }}
       post_pr_comment: true
       fail_on_agent_error: true
@@ -107,15 +105,8 @@ jobs:
       # Optional input-based path filters (comma or newline separated globs)
       cli_paths_include: |
         cmd/**
-        internal/cli/**
-        scripts/demo_cli.py
       cli_paths_exclude: |
-        docs/archive/**
         **/*.md
-
-      # Optional strict mode. When true, knowledge_base/CLI.md is required
-      # if cli_paths_include is not provided.
-      enforce_cli_metadata: false
     secrets:
       llm_token: ${{ secrets.OPENROUTER_API_KEY }}
       gh_token: ${{ secrets.GITHUB_TOKEN }}

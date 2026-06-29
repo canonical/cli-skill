@@ -22,7 +22,7 @@ on:
         description: "Pi model"
         required: false
         type: string
-        default: "deepseek/deepseek-v4-pro"
+        default: "google/gemini-3.5-flash"
       thinking_level:
         description: "Pi thinking level (affects response depth and latency)"
         required: false
