@@ -1,5 +1,0 @@
-echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
-
-if [ -f /project/.envrc ]; then
-    direnv allow /project
-fi
