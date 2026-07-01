@@ -2,19 +2,6 @@ name: cli-skill
 base: ubuntu@24.04
 sdks:
   - name: system
-    plugs:
-      penpot:
-        interface: tunnel
-        endpoint: 4400
-      penpot-http:
-        interface: tunnel
-        endpoint: 4401
-      penpot-websocket:
-        interface: tunnel
-        endpoint: 4402
-      penpot-repl:
-        interface: tunnel
-        endpoint: 4403
   - name: vscode-remote
     channel: latest/stable
   - name: copilot
@@ -29,18 +16,3 @@ sdks:
     channel: latest/stable
   - name: uv
     channel: latest/stable
-  - name: project-mcps
-actions:
-  fetch-skills: |
-    if [ -d /home/workshop/.copilot/skills/.git ]; then
-      git -C /home/workshop/.copilot/skills pull
-    else
-      gh auth login
-      gh repo clone https://github.com/canonical/design-skills /home/workshop/.copilot/skills
-    fi
-  fetch-canonical-skills: |
-    npx skills add canonical/skills
-
-connections:
-  - plug: mcps:ssh-agent
-    slot: system:ssh-agent
