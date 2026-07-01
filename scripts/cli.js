@@ -345,25 +345,25 @@ function installSkill({ agentsArg, dryRun = false, force = false, postinstall = 
   const installs = {
     copilot: [
       {
-        src: path.join(packageRoot, ".github", "skills", "cli-skill", "SKILL.md"),
+        src: path.join(packageRoot, "cli-skill", "stubs", "entrypoints", "github-skill", "SKILL.md"),
         dst: path.join(targetDir, ".github", "skills", "cli-skill", "SKILL.md"),
       },
     ],
     pi: [
       {
-        src: path.join(packageRoot, ".pi", "skills", "cli-skill", "SKILL.md"),
+        src: path.join(packageRoot, "cli-skill", "stubs", "entrypoints", "pi-skill", "SKILL.md"),
         dst: path.join(targetDir, ".pi", "skills", "cli-skill", "SKILL.md"),
       },
     ],
     claude: [
       {
-        src: path.join(packageRoot, "cli-skill", "adapters", "claude-code", "commands.yaml"),
+        src: path.join(packageRoot, "cli-skill", "stubs", "agents", "claude-code", "commands.yaml"),
         dst: path.join(targetDir, ".claude", "commands", "cli-skill.yaml"),
       },
     ],
     opencode: [
       {
-        src: path.join(packageRoot, "cli-skill", "adapters", "opencode", "commands.json"),
+        src: path.join(packageRoot, "cli-skill", "stubs", "agents", "opencode", "commands.json"),
         dst: path.join(targetDir, ".opencode", "commands", "cli-skill.json"),
       },
     ],

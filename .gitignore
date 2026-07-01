@@ -11,3 +11,6 @@ session.jsonl
 todo/bin
 todo/cli-review
 .cli-skill-install-state.json
+cli-review
+.cli-skill-install-state.json
+workshop.lock

@@ -245,21 +245,21 @@ Canonical files are in \`cli-skill/\`.
 ${manifest.commands.map((c) => `- \`${c.name}\``).join('\n')}
 `;
 
-  writeFileSafe(path.join(ROOT, 'cli-skill', 'adapters', 'copilot', 'SKILL.md'), copilotAdapter);
-  writeFileSafe(path.join(ROOT, 'cli-skill', 'adapters', 'claude-code', 'commands.yaml'), claudeAdapter);
-  writeFileSafe(path.join(ROOT, 'cli-skill', 'adapters', 'pi-coding-agent', 'SKILL.md'), piAdapter);
-  writeFileSafe(path.join(ROOT, 'cli-skill', 'adapters', 'opencode', 'commands.json'), openCodeAdapter);
-  writeFileSafe(path.join(ROOT, '.github', 'skills', 'cli-skill', 'SKILL.md'), githubEntrypoint);
-  writeFileSafe(path.join(ROOT, '.pi', 'skills', 'cli-skill', 'SKILL.md'), piEntrypoint);
+  writeFileSafe(path.join(ROOT, 'cli-skill', 'stubs', 'agents', 'copilot', 'SKILL.md'), copilotAdapter);
+  writeFileSafe(path.join(ROOT, 'cli-skill', 'stubs', 'agents', 'claude-code', 'commands.yaml'), claudeAdapter);
+  writeFileSafe(path.join(ROOT, 'cli-skill', 'stubs', 'agents', 'pi-coding-agent', 'SKILL.md'), piAdapter);
+  writeFileSafe(path.join(ROOT, 'cli-skill', 'stubs', 'agents', 'opencode', 'commands.json'), openCodeAdapter);
+  writeFileSafe(path.join(ROOT, 'cli-skill', 'stubs', 'entrypoints', 'github-skill', 'SKILL.md'), githubEntrypoint);
+  writeFileSafe(path.join(ROOT, 'cli-skill', 'stubs', 'entrypoints', 'pi-skill', 'SKILL.md'), piEntrypoint);
 
   return {
     filesWritten: [
-      'cli-skill/adapters/copilot/SKILL.md',
-      'cli-skill/adapters/claude-code/commands.yaml',
-      'cli-skill/adapters/pi-coding-agent/SKILL.md',
-      'cli-skill/adapters/opencode/commands.json',
-      '.github/skills/cli-skill/SKILL.md',
-      '.pi/skills/cli-skill/SKILL.md',
+      'cli-skill/stubs/agents/copilot/SKILL.md',
+      'cli-skill/stubs/agents/claude-code/commands.yaml',
+      'cli-skill/stubs/agents/pi-coding-agent/SKILL.md',
+      'cli-skill/stubs/agents/opencode/commands.json',
+      'cli-skill/stubs/entrypoints/github-skill/SKILL.md',
+      'cli-skill/stubs/entrypoints/pi-skill/SKILL.md',
     ],
   };
 }
@@ -269,7 +269,7 @@ function main() {
   const manifest = parseManifest(manifestText);
   const result = sync(manifest);
 
-  console.log('Synced cli-skill adapters from manifest:');
+  console.log('Synced cli-skill stubs from manifest:');
   for (const file of result.filesWritten) {
     console.log(`- ${file}`);
   }

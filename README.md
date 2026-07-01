@@ -1,7 +1,7 @@
 
 # cli-skill
 
-cli-skill is a command based, cross agent CLI review framework. It uses one canonical command set and thin adapters so the same workflows can run in Copilot, Claude Code, Pi Coding Agent, and OpenCode.
+cli-skill is a command based, cross agent CLI review framework. It uses one canonical command set and thin stubs so the same workflows can run in Copilot, Claude Code, Pi Coding Agent, and OpenCode.
 
 ## Install via npm
 
@@ -18,9 +18,15 @@ Auto-detection is based on repository markers for the supported agents. Existing
 ## Project Structure
 
 - Canonical skill index: [cli-skill/SKILL.md](cli-skill/SKILL.md)
+- Generated skill stubs: [cli-skill/stubs/](cli-skill/stubs/)
 - Command manifest: [cli-skill/schemas/commands.manifest.yaml](cli-skill/schemas/commands.manifest.yaml)
 - Shared preflight module: [cli-skill/shared/cli-discovery-preflight.md](cli-skill/shared/cli-discovery-preflight.md)
 - Standard reference: [cli-skill/references/cli-standard.md](cli-skill/references/cli-standard.md)
+
+### Generated Stubs
+
+Agent-specific portability files are generated into [cli-skill/stubs/agents/](cli-skill/stubs/agents/) and entrypoint stubs are generated into [cli-skill/stubs/entrypoints/](cli-skill/stubs/entrypoints/).
+The installer copies from these generated stubs into runtime-specific destinations like `.github/skills`, `.pi/skills`, `.claude/commands`, and `.opencode/commands`.
 
 ## Commands
 

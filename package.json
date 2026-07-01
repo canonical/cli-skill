@@ -15,8 +15,6 @@
   "files": [
     "scripts/cli.js",
     "cli-skill",
-    ".github/skills/cli-skill/SKILL.md",
-    ".pi/skills/cli-skill/SKILL.md",
     "README.md"
   ],
   "keywords": [

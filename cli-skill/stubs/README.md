@@ -1,13 +1,13 @@
-# Cross-Agent Adapter Scaffolding
+# Cross-Agent Stub Scaffolding
 
-This directory contains thin adapter scaffolds for:
+This directory contains thin skill stubs for:
 
 - Copilot
 - Claude Code
 - Pi Coding Agent
 - OpenCode
 
-All adapters point to the same canonical command implementation under `cli-skill/`.
+All stubs point to the same canonical command implementation under `cli-skill/`.
 
 ## Canonical Source
 
@@ -24,11 +24,11 @@ The preflight module writes to:
 
 ## Notes
 
-These are scaffolds for portability. If a specific runtime needs strict schema fields, adapt the corresponding file under `adapters/` while keeping command targets unchanged.
+These are scaffolds for portability. If a specific runtime needs strict schema fields, adapt the corresponding file under `stubs/` while keeping command targets unchanged.
 
 ## Regeneration
 
-When command mappings change, regenerate all adapter files from the canonical manifest using the single maintained helper script:
+When command mappings change, regenerate all stub files from the canonical manifest using the single maintained helper script:
 
 ```bash
 node scripts/sync-cli-skill-adapters.js
@@ -47,8 +47,8 @@ A pre-commit hook is available at:
 The hook:
 
 1. Runs `node scripts/sync-cli-skill-adapters.js`
-2. Fails the commit if adapter files changed during sync
-3. Prompts you to stage regenerated adapter files before retrying commit
+2. Fails the commit if stub files changed during sync
+3. Prompts you to stage regenerated stub files before retrying commit
 
 To enable hooks in this repository:
 

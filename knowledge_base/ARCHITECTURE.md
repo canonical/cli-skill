@@ -1,8 +1,8 @@
 # Architecture Decisions
 
-1. Canonical-first, adapter-thin model
+1. Canonical-first, stub-thin model
 - `cli-skill/` is the single source of truth.
-- Agent-specific files are treated as generated adapters, not primary definitions.
+- Agent-specific files are treated as generated stubs under `cli-skill/stubs/`, not primary definitions.
 
 2. Command-per-file contract
 - Skill behavior is split by command file for on-demand loading (no monolithic skill prompt).
@@ -22,11 +22,11 @@
 
 6. Manifest-driven cross-agent sync
 - `cli-skill/schemas/commands.manifest.yaml` is the command routing contract.
-- Adapter entrypoints are regenerated from the manifest via `scripts/sync-cli-skill-adapters.js`.
+- Stub entrypoints are regenerated from the manifest via `scripts/sync-cli-skill-adapters.js`.
 
 7. Drift prevention at commit time
-- Pre-commit hook enforces adapter sync and blocks commit when generated adapter files changed but are unstaged.
-- This keeps canonical + adapter views synchronized.
+- Pre-commit hook enforces stub sync and blocks commit when generated stub files changed but are unstaged.
+- This keeps canonical + stub views synchronized.
 
 8. GitHub PR reporting strategy
 - Reusable workflow posts markdown report to PR and upserts (updates in place) using a stable hidden marker.
