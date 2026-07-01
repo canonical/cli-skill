@@ -1,7 +1,6 @@
-
 # cli-skill
 
-cli-skill is a command based, cross agent CLI review framework. It uses one canonical command set and thin stubs so the same workflows can run in Copilot, Claude Code, Pi Coding Agent, and OpenCode.
+cli-skill is a command based, cross agent CLI review and design skill. It can run in Copilot, Claude Code, Pi Coding Agent, and OpenCode. There is also a github workflow that will execute the /cli-review command using pi-coding-agent.
 
 ## Install via npm
 
@@ -15,7 +14,7 @@ By default, the installer resolves the target directory to the top-level of the 
 
 Auto-detection is based on repository markers for the supported agents. Existing unmanaged files are not overwritten unless `--force` is used, and managed files are only updated when they have not been edited since the last install.
 
-## Project Structure
+## Project structure
 
 - Canonical skill index: [cli-skill/SKILL.md](cli-skill/SKILL.md)
 - Generated skill stubs: [cli-skill/stubs/](cli-skill/stubs/)
@@ -23,22 +22,22 @@ Auto-detection is based on repository markers for the supported agents. Existing
 - Shared preflight module: [cli-skill/shared/cli-discovery-preflight.md](cli-skill/shared/cli-discovery-preflight.md)
 - Standard reference: [cli-skill/references/cli-standard.md](cli-skill/references/cli-standard.md)
 
-### Generated Stubs
+### Multi-agent compatibility: generated stubs
 
 Agent-specific portability files are generated into [cli-skill/stubs/agents/](cli-skill/stubs/agents/) and entrypoint stubs are generated into [cli-skill/stubs/entrypoints/](cli-skill/stubs/entrypoints/).
 The installer copies from these generated stubs into runtime-specific destinations like `.github/skills`, `.pi/skills`, `.claude/commands`, and `.opencode/commands`.
 
 ## Commands
 
-- [cli-skill/commands/cli-review.md](cli-skill/commands/cli-review.md)
-- [cli-skill/commands/cli-check-help.md](cli-skill/commands/cli-check-help.md)
-- [cli-skill/commands/cli-semantic-analysis.md](cli-skill/commands/cli-semantic-analysis.md)
-- [cli-skill/commands/cli-heuristic-analysis.md](cli-skill/commands/cli-heuristic-analysis.md)
+- CLI Review [cli-skill/commands/cli-review.md](cli-skill/commands/cli-review.md)
+- Semantic analysis of words used in commands and flags [cli-skill/commands/cli-semantic-analysis.md](cli-skill/commands/cli-semantic-analysis.md)
+- CLI Help analysis and considerations [cli-skill/commands/cli-check-help.md](cli-skill/commands/cli-check-help.md)
 
-Future scaffolds:
+### Planned future commands:
 
-- [cli-skill/future-commands/cli-propose-command.md](cli-skill/future-commands/cli-propose-command.md)
-- [cli-skill/future-commands/cli-rename-command.md](cli-skill/future-commands/cli-rename-command.md)
+- Analyze CLI using UX heuristics [cli-skill/commands/cli-heuristic-analysis.md](cli-skill/commands/cli-heuristic-analysis.md)
+- Proposition helper [cli-skill/future-commands/cli-propose-command.md](cli-skill/future-commands/cli-propose-command.md)
+- Renaming helper [cli-skill/future-commands/cli-rename-command.md](cli-skill/future-commands/cli-rename-command.md)
 
 ## Quick Start for GitHub Action: cli-skill-build
 
@@ -103,24 +102,23 @@ jobs:
     uses: canonical/cli-skill/.github/workflows/cli-skill-review-reusable.yml@v1
     with:
       provider: openrouter
-      model: google/gemini-3.5-flash
       pr_number: ${{ github.event.pull_request.number }}
-      post_pr_comment: true
-      fail_on_agent_error: true
+      # Optional customization, choosing a different model is likely to affect analysis results
+      model: google/gemini-3.5-flash
 
-      # Optional input-based path filters (comma or newline separated globs)
+      # Optional input-based path filters (comma or newline separated globs) to save on token cost
       cli_paths_include: |
         cmd/**
       cli_paths_exclude: |
         **/*.md
     secrets:
-      llm_token: ${{ secrets.OPENROUTER_API_KEY }}
+      llm_token: ${{ secrets.PROVIDER_API_KEY }}
       gh_token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### 2. Configure secrets in the consumer repository
 
-- OPENROUTER_API_KEY
+- PROVIDER_API_KEY: configure your provider's API key here for accessing models
 
 The workflow uses the repository-provided GITHUB_TOKEN for PR APIs.
 
@@ -150,6 +148,8 @@ Required secrets:
 - llm_token
 - gh_token
 
-### 4. Version pinning
+### 4. Version pinning and version history
 
 Use a tagged major version (for example, @v1) for a stable interface. Use a commit SHA pin for maximum reproducibility.
+
+v1 - current stable version <-- use this
