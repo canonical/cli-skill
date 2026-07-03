@@ -16,7 +16,7 @@ CLI standard compliance review only.
   - `.cli-skill-infra/scripts/calculate_cli_score.py`
   - `scripts/calculate_cli_score.py`
   Execute: `python3 <resolved_script_path> <json_file>`.
-10. Use the script JSON output values (`score`, `rating`, `rating_badge`, counts) in the summary. **Do not compute score manually.**
+10. Use the script JSON output values (`score`, and counts) in the summary. **Do not compute score manually.**
 
 ### Hard Constraints
 
@@ -61,40 +61,41 @@ The output **must** use exactly these top-level headings in this order:
 
 ```
 # Canonical CLI automated review report
-## Summary          (violation table + rating badge returned by the scoring script)
+## Findings (table with columns: Severity | Rule Summary | Evidence | How to fix)
+## Detailed analysis (with citations) (this section is encased in <detail> tag per cli-review-output-format.md)
 ## CLI changes in this PR (include only if the workflow was triggered from a PR creation/update)
-## Compliance matrix  (table with columns: Finding | Rule Summary | Evidence | Notes)
-## Non-compliance Findings (with citations)
-## Compliant Findings Summary (concise, without citations)
+## Summary (violation table + score returned by the scoring script)
 ```
+
+The final review file MUST begin with first character of the required report title: `# Canonical CLI automated review report`
 
 Write:
 - `cli-review/cli-review.md`
 
 ### Summary Requirements
-The summary should list the number of violations, and their severity. It shall include these in a table. It shall give an overall score. This score is calculated by a script, DO NOT REASON ABOUT IT, AND DO NOT CHANGE THE ALGORITHM. 
+The summary should list the number of violations, and their severity. It shall include these in a table. It shall give an overall score. This score is calculated by a script, DO NOT REASON ABOUT IT, AND DO NOT CHANGE THE ALGORITHM.
 
 To calculate the score:
 1. Create a JSON table with structure: `{"commands": <int>, "issues": [{"severity": "High|Medium|Low|Unrated", "category": <str>, "message": <str>}, ...]}`
 2. Execute: `python3 <resolved_script_path> <json_file>` using the path resolution defined in `Execution Order`
-3. This script returns JSON with `score` (0-100), `passed` (boolean), `rating badge`, and severity counts
-4. Use this `score` and `rating badge` in the summary section of the markdown output to report the compliance score
+3. This script returns JSON with `score` (0-100), `passed` (boolean), and severity counts
+4. Use this `score` in the summary section of the markdown output to report the compliance score
 
 The script implements the standard algorithm: Start with 100%, weight W=100/#commands. For each High violation, reduce by W; Medium violation by 0.5*W; Low violation by 0.2*W. Clamp to 0-100%.
 
 ### CLI Change Requirements
 Analyze the files that have been changes as part of this PR. Create a list of changes, each with a detailed summary of how each change affects the compliance of the CLI.
 
-### Compliance Matrix Requirements
+### Findings Table Requirements
 
-The `Compliance Matrix` section must include a table with these columns:
+The `Findings` section must include a table with these columns:
 
-- `Finding` - In the form of `[SEVERITY-N]`, link to non-compliance finding in the `Non-compliance findings` section
+- `Severity` - In the form of `[SEVERITY-N]`, link to non-compliance finding in the `Detailed analysis` section
 - `Rule Summary`
-- `Evidence`, include the name of the relevant section of the cli standard by using `reference to cli standard`
-- `Notes`
+- `Evidence`, include the name of the relevant section of the CLI standard by using `reference to cli standard`
+- `How to fix`
 
-### Non-compliance findings requirements
+### Detailed analysis Requirements
 Every non-compliance finding must use this exact heading format:
 
 ```
@@ -111,6 +112,6 @@ Each finding:
 4. Should include whenever possible a remediation action that restores compliance
 5. Cite the code block in markdown code format where the violation is detected
 
-**Non-compliance findings checkpoint**: Verify that each non-compliance finding is linked in the compliance matrix, and that each row in the compliance matrix links to a finding. Do not proceed until confirmed.
+**Detailed analysis checkpoint**: Verify that each non-compliance finding from `Detailed analysis` section is linked in the `Findings` table, and that each row in the `Findings` table has one corresponding non-compliance finding in `Detailed analysis` section. Do not proceed until confirmed.
 
-**Command completion checkpoint**: Verify that the review file exists in `cli-review/cli-review.md` and is non-empty. Do not proceed until confirmed.
+**Command completion checkpoint**: Verify that the review file exists in `cli-review/cli-review.md` and is non-empty, and its first non-empty line is exactly `# Canonical CLI automated review report`. Do not proceed until confirmed.
