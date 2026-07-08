@@ -124,9 +124,12 @@ jobs:
           model: ${{ inputs.model }}
           token: ${{ secrets.llm_token }}
           thinking_level: ${{ inputs.thinking_level }}
+          export_session_html: true
+          export_session_jsonl: true
           prompt: |
             Run ${{ inputs.command }} from `.cli-skill-infra/cli-skill/commands` in this repository. 
             Do not report thinking/reasoning output.
+            Follow the exact execution instructions in the command file.
             Add ONLY the final review output `cli_review/cli_review.md` as a comment to the PR. 
             If the command fails, report the error and any relevant context. 
             Do not attempt to fix errors or modify the repository.
@@ -141,6 +144,24 @@ jobs:
             - The overall score MUST be computed by running `python3 .cli-skill-infra/scripts/calculate_cli_score.py <json_file>` — do not calculate or estimate it manually.
             - Keep findings evidence-based and standards-mapped.
             - Only report the final review output in `cli_review/cli_review.md`. Do not include any other output or reasoning in the PR comment.
+
+      - name: List Files
+        id: list-files
+        uses: step-security/list-files-action@v3
+        with:
+          repo: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          path: "."
+          ext: ".md"
+
+      - name: List Files
+        id: list-files
+        uses: step-security/list-files-action@v3
+        with:
+          repo: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          path: "."
+          ext: ".html"
 
       - name: Upload Pi session HTML artifact
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_html_path != '' }}

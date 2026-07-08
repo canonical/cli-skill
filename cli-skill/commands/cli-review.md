@@ -4,11 +4,11 @@ CLI standard compliance review only.
 
 ## Execution Order
 
-1. Check for the existence of `cli-review/0-cli-discovery-preflight/`. If it does not exist, run `cli-skill/shared/cli-discovery-preflight.md`
+1. Check for the existence of `cli-review/0-cli-discovery-preflight/`. If it does not exist, run `cli-skill/shared/cli-discovery-preflight.md` as the very first step.
 2. Use preflight outputs from `cli-review/0-cli-discovery-preflight/`
 3. Checkpoint: Before going to Phase 1, make sure that preflight analysis is complete. Do not proceed before it is done.
 4. Read `cli-skill/references/cli-standard.md` in full
-5. **Phase 1 — Collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[problem description] [evidence] [reference to code] [reference to cli standard]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
+5. **Phase 1 — Analyse the CLI and collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[problem description] [evidence] [reference to code] [reference to cli standard]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
 6. Checkpoint: Before going to Phase 2, make sure that no duplicate findings are listed, DO THIS ONLY by analysing the `reference to code`. 
 7. **Phase 2 — Assign severity.** For each finding collected in Phase 1, assign exactly one severity (`High`, `Medium`, `Low`, or `Unrated`) using the rules in the `## Scope` section. Do not add or remove findings in this phase.
 8. Build the score JSON `{"commands": <int>, "issues": [...]}` from the complete, severity-annotated list.
@@ -45,6 +45,7 @@ CLI standard compliance review only.
 - Command-family verb consistency findings (for example add/create, remove/delete) MUST be scored only when at least one command in that specific family was changed in the variant. ONLY inconsistencies that use any of the standard verbs are UNRATED. 
 - Findings missing any required evidence field MUST be dropped from scored output.
 - If a planned mutation is not present in the source code, reviewer MUST mark the finding as UNRATED.
+- If a finding could be wrong as the analysis was not including the CLI libraries used for input or output, continue and analyse the finding including the CLI libraries used, e.g. for formatting purposes. 
 
 ## Out Of Scope
 
