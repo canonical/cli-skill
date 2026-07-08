@@ -145,15 +145,6 @@ jobs:
             - Keep findings evidence-based and standards-mapped.
             - Only report the final review output in `cli_review/cli_review.md`. Do not include any other output or reasoning in the PR comment.
 
-      - name: List Files
-        id: list-files
-        uses: step-security/list-files-action@v3
-        with:
-          repo: ${{ github.repository }}
-          ref: ${{ github.ref }}
-          path: "."
-          ext: ".md, *.html, *.jsonl"
-
       - name: Upload Pi session HTML artifact
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_html_path != '' }}
         id: upload_session_html
@@ -177,8 +168,7 @@ jobs:
         id: upload_report
         uses: actions/upload-artifact@v7
         with:
-          name: cli-review.md
-          path: cli-review
+          name: cli-review/cli-review.md
           if-no-files-found: ignore
 
       - name: Fail when agent run is unsuccessful
