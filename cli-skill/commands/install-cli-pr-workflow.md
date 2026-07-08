@@ -17,26 +17,8 @@ Install or refresh a pull-request workflow that runs the CLI review reusable wor
 The file must contain, at minimum:
 
 ```markdown
-# CLI metadata
+# CLI scope
 
-## Review workflow
-
-- workflow_file: .github/workflows/cli-review.yml
-- reusable_workflow: ./.github/workflows/cli-skill-review-reusable.yml
-- trigger: pull_request (opened, synchronize, reopened, ready_for_review)
+This repository <describe the role of the CLI here>.
+paths: [<paths where CLI source code resides>]
 ```
-
-If the file already exists, append this section only when missing; do not remove unrelated existing sections.
-
-## Required Output
-
-Write or update:
-
-- `knowledge_base/CLI.md`
-- `.github/workflows/cli-review.yml`
-
-## Constraints
-
-- The workflow file content must match `cli-skill/references/cli-skill-review-pr.yml` exactly.
-- Do not modify `cli-skill/references/cli-skill-review-pr.yml`.
-- Do not add extra jobs or triggers to `.github/workflows/cli-review.yml`.

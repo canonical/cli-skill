@@ -125,7 +125,7 @@ jobs:
           token: ${{ secrets.llm_token }}
           thinking_level: ${{ inputs.thinking_level }}
           prompt: |
-            Run ${{ inputs.command }} from the cli-skill in this repository.
+            Run ${{ inputs.command }} from the cli-skill in this repository. Do not report thinking/reasoning output, only the final review output. If the command fails, report the error and any relevant context. Do not attempt to fix errors or modify the repository.
 
             Scope rules:
             - Use .cli-skill-infra/cli-skill/references/cli-standard.md as the sole review standard.
