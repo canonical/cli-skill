@@ -125,7 +125,11 @@ jobs:
           token: ${{ secrets.llm_token }}
           thinking_level: ${{ inputs.thinking_level }}
           prompt: |
-            Run ${{ inputs.command }} from the cli-skill in this repository. Do not report thinking/reasoning output, only the final review output. If the command fails, report the error and any relevant context. Do not attempt to fix errors or modify the repository.
+            Run ${{ inputs.command }} from `.cli-skill-infra/cli-skill/commands` in this repository. 
+            Do not report thinking/reasoning output.
+            Add ONLY the final review output `cli_review/cli_review.md` as a comment to the PR. 
+            If the command fails, report the error and any relevant context. 
+            Do not attempt to fix errors or modify the repository.
 
             Scope rules:
             - Use .cli-skill-infra/cli-skill/references/cli-standard.md as the sole review standard.
@@ -134,8 +138,9 @@ jobs:
 
             Output requirements:
             - Follow the section structure defined in `.cli-skill-infra/cli-skill/references/cli-review-output-format.md` exactly.
-            - The overall score MUST be computed by running `python3 .cli-skill-infra/scripts/calculate_cli_score.py <json_file>` (fallback: `python3 scripts/calculate_cli_score.py <json_file>`) — do not calculate or estimate it manually.
+            - The overall score MUST be computed by running `python3 .cli-skill-infra/scripts/calculate_cli_score.py <json_file>` — do not calculate or estimate it manually.
             - Keep findings evidence-based and standards-mapped.
+            - Only report the final review output in `cli_review/cli_review.md`. Do not include any other output or reasoning in the PR comment.
 
       - name: Upload Pi session HTML artifact
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_html_path != '' }}

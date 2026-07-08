@@ -17,6 +17,7 @@ CLI standard compliance review only.
   - `scripts/calculate_cli_score.py`
   Execute: `python3 <resolved_script_path> <json_file>`.
 10. Use the script JSON output values (`score`, `rating`, `rating_badge`, counts) in the summary. **Do not compute score manually.**
+11. Write the report into `cli_review/cli_review.md`
 
 ### Hard Constraints
 
