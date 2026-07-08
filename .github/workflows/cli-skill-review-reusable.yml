@@ -152,16 +152,7 @@ jobs:
           repo: ${{ github.repository }}
           ref: ${{ github.ref }}
           path: "."
-          ext: ".md"
-
-      - name: List Files
-        id: list-files
-        uses: step-security/list-files-action@v3
-        with:
-          repo: ${{ github.repository }}
-          ref: ${{ github.ref }}
-          path: "."
-          ext: ".html"
+          ext: ".md, *.html, *.jsonl"
 
       - name: Upload Pi session HTML artifact
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && steps.pi.outputs.session_html_path != '' }}
