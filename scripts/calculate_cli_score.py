@@ -1,3 +1,5 @@
+
+
 #!/usr/bin/env python3
 """
 Calculate CLI standards compliance score from a JSON issues table.
@@ -11,12 +13,27 @@ Input: JSON file with structure:
   ]
 }
 
-Output: JSON with score, pass/fail status, and severity counts.
+Output: JSON with score, rating, and GitHub markdown badge.
 """
 
 import json
 import sys
 from pathlib import Path
+
+
+def acceptance_rating(score: float) -> tuple[str, str]:
+    """Return (label, github_markdown_badge) for a given score."""
+    if score > 95:
+        return "Excellent", "💚 **Excellent**"
+    elif score > 90:
+        return "Good", "🟢 **Good**"
+    elif score > 80:
+        return "Fair", "🟡 **Fair**"
+    elif score > 60:
+        return "Room for Improvement", "🟠 **Room for Improvement**"
+    else:
+        return "Need for Action", "🔴 **Need for Action**"
+
 
 def calculate_score(issues_data: dict) -> dict:
     """Calculate compliance score from issues table."""
@@ -24,8 +41,11 @@ def calculate_score(issues_data: dict) -> dict:
     num_commands = issues_data.get("commands", 0)
 
     if not issues:
+        label, badge = acceptance_rating(100)
         return {
             "score": 100,
+            "rating": label,
+            "rating_badge": badge,
             "passed": True,
             "summary": "No issues found",
             "command_count": num_commands,
@@ -52,10 +72,13 @@ def calculate_score(issues_data: dict) -> dict:
 
     score = max(0.0, min(100.0, score))  # Clamp to 0-100
 
+    label, badge = acceptance_rating(score)
     passed = score > 80
 
     return {
         "score": score,
+        "rating": label,
+        "rating_badge": badge,
         "passed": passed,
         "summary": f"{high_count} High, {medium_count} Medium, {low_count} Low",
         "command_count": num_commands,

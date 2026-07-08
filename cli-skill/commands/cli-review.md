@@ -40,7 +40,7 @@ CLI standard compliance review only.
 
 ## Additional rules that amend the CLI standard
 - In addition to the verbs listed in the CLI standard, these are standard verbs that can be used in full compliance with the CLI standard: add / remove, submit, request, revoke, init, enable / disable, save, refresh, switch, restore, forget, report, set / remove, try, download, clean, pull, build, stage, prime, pack, test, abort, validate, watch
-- If a new verb not listed in the standard or the additional rules is used, only add an UNRATED finding if (1) there is a similar word in the list AND the chosen word is not clearly better, or (2) the chosen word is difficult to understand, ambiguous, or not standard english
+- If a new verb not listed in the standard or the additional rules is used, only add an UNRATED finding if (1) there is a similar word in the list AND the chosen word is not clearly better, or (2) the chosen word is difficult to understand, ambiguous, or not standard english. If there is NO SIMILAR WORD in the list AND the chosen word is NOT difficult to understand, DROP THE FINDING and DO NOT INCLUDE IT IN THE REPORT.
 - Command-family verb consistency findings (for example add/create, remove/delete) MUST be scored only when at least one command in that specific family was changed in the variant. ONLY inconsistencies that use any of the standard verbs are UNRATED. 
 - Findings missing any required evidence field MUST be dropped from scored output.
 - If a planned mutation is not present in the source code, reviewer MUST mark the finding as UNRATED.
