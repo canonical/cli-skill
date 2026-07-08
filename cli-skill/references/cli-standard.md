@@ -1,15 +1,5 @@
 # Canonical CLI standards
 
-|||||
-|--- |--- |--- |--- |
-|Index|DE013|||
-|Title|Canonical CLI Standards|||
-|Type|Author(s)|Status|Created|
-|Standard|Hartmut Obendorf, Amy Pattanasethanon|Approved|Feb 1, 2024|
-||Reviewer(s)|Status|Date|
-||Gustavo Niemeyer|Approved|2025-08-12|
-
-
 This is a list of standards which originate from both discussions with Canonical’s senior tech leads and Design best practice. All points listed here must be strongly considered before contributing code at Canonical. Individually, everything written here may seem trivial or not consequential, but every single guideline is a crucial building block for creating a great user experience for our products.
 
 Ideally, this document would be accompanied by a library providing the described functionality for all the languages we are using but at present we must rely on the diligence of humans as we have a python implementation focused on craft-tools, but no other standard libraries.

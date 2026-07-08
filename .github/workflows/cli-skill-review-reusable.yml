@@ -181,6 +181,15 @@ jobs:
           path: ${{ steps.pi.outputs.session_jsonl_path }}
           if-no-files-found: ignore
 
+      - name: Upload report
+        if: ${{ steps.cli_scope.outputs.proceed == 'true' }}
+        id: upload_report
+        uses: actions/upload-artifact@v7
+        with:
+          name: cli-review.md
+          path: cli-review
+          if-no-files-found: ignore
+
       - name: Fail when agent run is unsuccessful
         if: ${{ steps.cli_scope.outputs.proceed == 'true' && inputs.fail_on_agent_error && steps.pi.outputs.success != 'true' }}
         run: |
