@@ -100,7 +100,7 @@ The `Summary` section must include a table with these columns:
 Every non-compliance finding must use this exact heading format:
 
 ```
-<a id="[SEVERITY-N]"></a>
+<a name="[SEVERITY-N]"></a>
 ### [SEVERITY-N] <short description>
 ```
 

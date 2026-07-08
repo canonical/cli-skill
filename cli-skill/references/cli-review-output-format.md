@@ -13,7 +13,7 @@
 |---------|--------------|----------|-------|
 <findings>
 Example:
-${| HIGH-1 | Commands are verbs - every command acting on a primary object must be a verb. | `registration-csv` is a noun phrase, not a verb. | Should use a verb such as `generate-registration-csv`. |}
+${| [HIGH-1](#HIGH-1) | Commands are verbs - every command acting on a primary object must be a verb. | `registration-csv` is a noun phrase, not a verb. | Should use a verb such as `generate-registration-csv`. |}
 
 ---
 </findings>
@@ -21,6 +21,7 @@ ${| HIGH-1 | Commands are verbs - every command acting on a primary object must 
 <details>
 <summary><H2>Detailed analysis</H2></summary>
 
+Each finding is preceded by a custom anchor: `<a name="[SEVERITY-N]"></a>
 Each finding heading must follow this exact format: `### [SEVERITY-N] <short description>`, where `SEVERITY` is `HIGH`, `MEDIUM`, `LOW`, or `UNRATED` (uppercase) and `N` is a per-severity counter starting at 1 (HIGH-1, HIGH-2, MEDIUM-1, LOW-1, …).
 
 Example:
