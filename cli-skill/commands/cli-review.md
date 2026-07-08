@@ -75,15 +75,7 @@ Write:
 - `cli-review/cli-review.md`
 
 ### Summary Requirements
-The summary should list the number of violations, and their severity. It shall include these in a table. It shall give an overall score. This score is calculated by a script, DO NOT REASON ABOUT IT, AND DO NOT CHANGE THE ALGORITHM.
-
-To calculate the score:
-1. Create a JSON table with structure: `{"commands": <int>, "issues": [{"severity": "High|Medium|Low|Unrated", "category": <str>, "message": <str>}, ...]}`
-2. Execute: `python3 <resolved_script_path> <json_file>` using the path resolution defined in `Execution Order`
-This script returns JSON with `score` (0-100), `passed` (boolean), `rating badge`, and severity counts
-4. Use this `score` and `rating badge` in the summary section of the markdown output to report the compliance score
-
-The script implements the standard algorithm: Start with 100%, weight W=100/#commands. For each High violation, reduce by W; Medium violation by 0.5*W; Low violation by 0.2*W. Clamp to 0-100%.
+The summary should list the number of violations, and their severity. It shall include these in a table. 
 
 ### CLI Change Requirements
 Analyze the files that have been changes as part of this PR. Create a list of changes, each with a detailed summary of how each change affects the compliance of the CLI.
@@ -115,9 +107,19 @@ Each finding:
 4. Should include whenever possible a remediation action that restores compliance
 5. Cite the code block in markdown code format where the violation is detected
 
-**Detailed analysis checkpoint**: Verify that each non-compliance finding from `Detailed analysis` section is linked in the `Findings` table, and that each row in the `Findings` table has one corresponding non-compliance finding in `Detailed analysis` section. Do not proceed until confirmed.
+**Detailed analysis checkpoint**: Verify that each finding from `Detailed analysis` section is linked in the `Findings` table, and that each row in the `Findings` table has one corresponding non-compliance finding in `Detailed analysis` section AND verify that each finding is preceded by a link anchor. Do not proceed until confirmed.
 
 ### Compliance report
 Use the exact format from `cli-review-output-format.md`
+
+It shall give an overall score. This score is calculated by a script, DO NOT REASON ABOUT IT, AND DO NOT CHANGE THE ALGORITHM.
+
+To calculate the score:
+1. Create a JSON table with structure: `{"commands": <int>, "issues": [{"severity": "High|Medium|Low|Unrated", "category": <str>, "message": <str>}, ...]}`
+2. Execute: `python3 <resolved_script_path> <json_file>` using the path resolution defined in `Execution Order`
+This script returns JSON with `score` (0-100), `passed` (boolean), `rating badge`, and severity counts
+4. Use this `score` and `rating badge` in the summary section of the markdown output to report the compliance score
+
+The script implements the standard algorithm: Start with 100%, weight W=100/#commands. For each High violation, reduce by W; Medium violation by 0.5*W; Low violation by 0.2*W. Clamp to 0-100%.
 
 **Command completion checkpoint**: Verify that the review file exists in `cli-review/cli-review.md` and is non-empty, and its first non-empty line is exactly `# Canonical CLI automated review report`. Do not proceed until confirmed.
