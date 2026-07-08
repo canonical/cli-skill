@@ -3,38 +3,26 @@
 
 **Scope:** CLI standard compliance review of <paths for examined files>
 
-## Summary
+**Workflow:** [CLI skill version v.X](url)
 
-| **Severity** | **Count** | **Guideline Categories** |
-| --- | --- | --- |
-| High | <# high> | <main categories for high issues> |
-| Medium | <# medium> | <main categories for medium issues> |
-| Low | <# low> | <main categories for low issues> |
-| Unrated | <# unrated> | <main categories for unrated issues> |
-| **Total** | **<# total>** | |
+**Reference:** [Canonical CLI standards](url)
 
-**Overall rating:** <score> <rating badge>
-> The scoring algorithm starts with 100%, number of commands N, weight W=100/N. For each High violation, reduce by 2*W; Medium violation by 1*W; Low violation by 0.5*W. Clamp to 0-100.
+**Limitations:** Detection of clear CLI standards violations. Does not guarantee full compliance with CLI standards
 
 ---
 
-## CLI changes in this PR
+## Findings
 
-<describe findings: what code changes improve or decrease the CLI>
-
----
-
-## Compliance matrix
-
-| Finding | Rule Summary | Evidence | Notes |
+| Severity | Rule Summary | Evidence | How to fix |
 |---------|--------------|----------|-------|
 <findings>
 Example:
-${| HIGH-1 | Every command acting on a primary object must be a verb. | `registration-csv` is a noun phrase, not a verb. | Should use a verb such as `generate-registration-csv`. |}
+${| HIGH-1 | Commands are verbs - every command acting on a primary object must be a verb. | `registration-csv` is a noun phrase, not a verb. | Should use a verb such as `generate-registration-csv`. |}
 
 ---
 
-## Non-compliance Findings (with citations)
+<details>
+<summary><H2>Detailed analysis</H2></summary>
 
 Each finding heading must follow this exact format: `### [SEVERITY-N] <short description>`, where `SEVERITY` is `HIGH`, `MEDIUM`, `LOW`, or `UNRATED` (uppercase) and `N` is a per-severity counter starting at 1 (HIGH-1, HIGH-2, MEDIUM-1, LOW-1, …).
 
@@ -48,10 +36,28 @@ app.command(
 )(_registration_csv_cmd)
 ```
 The command name is a noun phrase. It should be a verb-noun compound (e.g. `generate-registration-csv`).
+
 **Remediation:** Rename to `generate-registration-csv` or `export-registration-csv`.}
 
 ---
 
-## Compliant Findings Summary
+## CLI changes in this PR
 
-<list of short bullet points of compliant findings>
+<describe findings: what code changes improve or decrease the CLI>
+
+---
+
+## Summary
+
+| **Severity** | **Count** | **Guideline Categories** |
+| --- | --- | --- |
+| High | <# high> | <main categories for high issues> |
+| Medium | <# medium> | <main categories for medium issues> |
+| Low | <# low> | <main categories for low issues> |
+| Unrated | <# unrated> | <main categories for unrated issues> |
+| **Total** | **<# total>** | |
+
+**Overall score:** <score>
+> The scoring algorithm starts with 100%, number of commands N, weight W=100/N. For each High violation, reduce by 1*W; Medium violation by 0.5*W; Low violation by 0.2*W. Clamp to 0-100.
+
+</details>
