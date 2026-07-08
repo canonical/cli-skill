@@ -1,0 +1,9 @@
+{
+  "provider": "openrouter",
+  "model": "google/gemini-3-flash",
+  "variation_dir": "/project/tests/todo-03",
+  "session_file": "/project/tests/todo-03/session.json",
+  "returncode": 1,
+  "stdout_chars": 0,
+  "stderr_chars": 20
+}

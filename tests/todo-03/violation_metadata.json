@@ -1,0 +1,14 @@
+{
+  "variation_id": 3,
+  "violations": [
+    {
+      "rule_id": "schedule-list-shorthand",
+      "rule_title": "Schedule listing must use 'schedules' not 'list-schedules'",
+      "description": "Use shorthand 'schedules' for listing secondary objects",
+      "file_path": "cmd/todo/main.go",
+      "change_description": "Renamed 'schedules' to 'list-schedules' (violates list shorthand)",
+      "severity": "LOW",
+      "expected_detection": true
+    }
+  ]
+}

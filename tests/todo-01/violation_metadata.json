@@ -1,0 +1,14 @@
+{
+  "variation_id": 1,
+  "violations": [
+    {
+      "rule_id": "todo-list-command-verb",
+      "rule_title": "Todo list command must use shorthand (not 'list-todos')",
+      "description": "The 'list' command for todos should be named 'list' following standard shorthand for primary objects",
+      "file_path": "cmd/todo/main.go",
+      "change_description": "Renamed 'list' command to 'list-todos' (violates shorthand rule)",
+      "severity": "HIGH",
+      "expected_detection": true
+    }
+  ]
+}

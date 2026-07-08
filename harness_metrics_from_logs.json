@@ -1,0 +1,2717 @@
+{
+  "source": "data.csv",
+  "runs": [
+    {
+      "run_label": "run_0_2026_06_6",
+      "overall": {
+        "total_variations_tested": 19,
+        "violations_injected": 16,
+        "violations_detected": null,
+        "false_positives": null,
+        "false_negatives": 13
+      },
+      "severity_levels": {
+        "HIGH": {
+          "injected": null,
+          "detected": null,
+          "false_positives": null,
+          "false_negatives": null
+        },
+        "MEDIUM": {
+          "injected": null,
+          "detected": null,
+          "false_positives": null,
+          "false_negatives": null
+        },
+        "LOW": {
+          "injected": null,
+          "detected": null,
+          "false_positives": null,
+          "false_negatives": null
+        },
+        "UNRATED": {
+          "injected": null,
+          "detected": null,
+          "false_positives": null,
+          "false_negatives": null
+        }
+      },
+      "per_test": [
+        {
+          "test_id": "todo-01",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-02",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-03",
+          "violations_injected": 1,
+          "false_negatives": 1,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-04",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-05",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-06",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-07",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-08",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-09",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-10",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-11",
+          "violations_injected": 1,
+          "false_negatives": 1,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-12",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-13",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-14",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-15",
+          "violations_injected": 2,
+          "false_negatives": 1,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-16",
+          "violations_injected": 2,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-17",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-18",
+          "violations_injected": 2,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-19",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        },
+        {
+          "test_id": "todo-20",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_positives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": null,
+              "MEDIUM": null,
+              "LOW": null,
+              "UNRATED": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run_label": "run_1_2026_06_18_initial",
+      "overall": {
+        "total_variations_tested": 20,
+        "violations_injected": 24,
+        "violations_detected": 127,
+        "false_positives": 103,
+        "false_negatives": 0
+      },
+      "severity_levels": {
+        "HIGH": {
+          "injected": 8,
+          "detected": 8,
+          "false_positives": 0,
+          "false_negatives": 0
+        },
+        "MEDIUM": {
+          "injected": 8,
+          "detected": 36,
+          "false_positives": 28,
+          "false_negatives": 0
+        },
+        "LOW": {
+          "injected": 8,
+          "detected": 68,
+          "false_positives": 60,
+          "false_negatives": 0
+        },
+        "UNRATED": {
+          "injected": 0,
+          "detected": 15,
+          "false_positives": 15,
+          "false_negatives": 0
+        }
+      },
+      "per_test": [
+        {
+          "test_id": "todo-01",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-02",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-03",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-04",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 1,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-05",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 1,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-06",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 5,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-07",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 3,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-08",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-09",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-10",
+          "violations_injected": 2,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 3,
+              "LOW": 5,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-11",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 5,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-12",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 1,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-13",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 3,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-14",
+          "violations_injected": 2,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 2,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 6,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-15",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-16",
+          "violations_injected": 3,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 3,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 3,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-17",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 3,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-18",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 3,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-19",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 5,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-20",
+          "violations_injected": 3,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run_label": "run_2_2026_06_18_almost_perfect",
+      "overall": {
+        "total_variations_tested": 20,
+        "violations_injected": 24,
+        "violations_detected": 24,
+        "false_positives": 16,
+        "false_negatives": 0
+      },
+      "severity_levels": {
+        "HIGH": {
+          "injected": 8,
+          "detected": 8,
+          "false_positives": 0,
+          "false_negatives": 0
+        },
+        "MEDIUM": {
+          "injected": 8,
+          "detected": 12,
+          "false_positives": 4,
+          "false_negatives": 0
+        },
+        "LOW": {
+          "injected": 8,
+          "detected": 16,
+          "false_positives": 8,
+          "false_negatives": 0
+        },
+        "UNRATED": {
+          "injected": 0,
+          "detected": 4,
+          "false_positives": 4,
+          "false_negatives": 0
+        }
+      },
+      "per_test": [
+        {
+          "test_id": "todo-01",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-02",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-03",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-04",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-05",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 1,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-06",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-07",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-08",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-09",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-10",
+          "violations_injected": 2,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-11",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-12",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-13",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 2,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 2
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 2
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-14",
+          "violations_injected": 2,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 2,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 2,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-15",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-16",
+          "violations_injected": 3,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 3,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 3,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-17",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 7,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 3,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 4,
+              "UNRATED": 1
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-18",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-19",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-20",
+          "violations_injected": 3,
+          "false_negatives": 0,
+          "false_positives": 0,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run_label": "run_3_2026_06_19_prefinal",
+      "overall": {
+        "total_variations_tested": 19,
+        "violations_injected": 16,
+        "violations_detected": null,
+        "false_positives": null,
+        "false_negatives": 13
+      },
+      "severity_levels": {
+        "HIGH": {
+          "injected": 0,
+          "detected": 0,
+          "false_positives": 0,
+          "false_negatives": 0
+        },
+        "MEDIUM": {
+          "injected": 0,
+          "detected": 0,
+          "false_positives": 0,
+          "false_negatives": 0
+        },
+        "LOW": {
+          "injected": 0,
+          "detected": 0,
+          "false_positives": 0,
+          "false_negatives": 0
+        },
+        "UNRATED": {
+          "injected": null,
+          "detected": null,
+          "false_positives": null,
+          "false_negatives": 0
+        }
+      },
+      "per_test": [
+        {
+          "test_id": "todo-01",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-02",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-03",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-04",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-05",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-06",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-07",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-08",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-09",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-10",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 1,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-11",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-12",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-13",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-14",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 2,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 2
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-15",
+          "violations_injected": 2,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 1,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-16",
+          "violations_injected": 2,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 3,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 3,
+              "LOW": 0,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-17",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-18",
+          "violations_injected": 2,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 1,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": 0
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-19",
+          "violations_injected": 0,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 1,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        },
+        {
+          "test_id": "todo-20",
+          "violations_injected": 1,
+          "false_negatives": 0,
+          "false_positives": null,
+          "severity": {
+            "injected": {
+              "HIGH": 0,
+              "MEDIUM": 2,
+              "LOW": 1,
+              "UNRATED": null
+            },
+            "detected": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 2,
+              "UNRATED": 1
+            },
+            "false_positives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": null
+            },
+            "false_negatives": {
+              "HIGH": 0,
+              "MEDIUM": 0,
+              "LOW": 0,
+              "UNRATED": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

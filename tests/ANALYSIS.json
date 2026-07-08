@@ -1,0 +1,288 @@
+{
+  "total_variations": 20,
+  "total_violations_injected": 24,
+  "average_detection_coverage": 0.8916666666666666,
+  "severity_breakdown": {
+    "HIGH": {
+      "injected": 8,
+      "detected": 6,
+      "coverage_percent": 75.0
+    },
+    "MEDIUM": {
+      "injected": 8,
+      "detected": 7,
+      "coverage_percent": 87.5
+    },
+    "LOW": {
+      "injected": 8,
+      "detected": 7,
+      "coverage_percent": 87.5
+    }
+  },
+  "results": [
+    {
+      "variation": "todo-01",
+      "violations_injected": 1,
+      "violations_detected": 0,
+      "false_negatives": [
+        {
+          "rule_id": "todo-list-command-verb",
+          "severity": "HIGH",
+          "description": "Renamed 'list' command to 'list-todos' (violates shorthand rule)"
+        }
+      ],
+      "severity_breakdown": {
+        "HIGH": 1,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "coverage_percent": 0.0
+    },
+    {
+      "variation": "todo-02",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 1
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-03",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 1
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-04",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 1,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-05",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 1,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-06",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 0
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-07",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 0
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-08",
+      "violations_injected": 0,
+      "violations_detected": 0,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-09",
+      "violations_injected": 0,
+      "violations_detected": 0,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-10",
+      "violations_injected": 2,
+      "violations_detected": 2,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 1
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-11",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 1
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-12",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 1,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-13",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 0
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-14",
+      "violations_injected": 2,
+      "violations_detected": 1,
+      "false_negatives": [
+        {
+          "rule_id": "group-labels-consistency",
+          "severity": "LOW",
+          "description": "Changed group label format (violates consistency)"
+        }
+      ],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 2
+      },
+      "coverage_percent": 50.0
+    },
+    {
+      "variation": "todo-15",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 1,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-16",
+      "violations_injected": 3,
+      "violations_detected": 2,
+      "false_negatives": [
+        {
+          "rule_id": "todo-list-command-verb",
+          "severity": "HIGH",
+          "description": "Renamed 'list' command to 'list-todos' (violates shorthand rule)"
+        }
+      ],
+      "severity_breakdown": {
+        "HIGH": 3,
+        "MEDIUM": 0,
+        "LOW": 0
+      },
+      "coverage_percent": 66.66666666666666
+    },
+    {
+      "variation": "todo-17",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 0
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-18",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 0
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-19",
+      "violations_injected": 1,
+      "violations_detected": 1,
+      "false_negatives": [],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 1
+      },
+      "coverage_percent": 100.0
+    },
+    {
+      "variation": "todo-20",
+      "violations_injected": 3,
+      "violations_detected": 2,
+      "false_negatives": [
+        {
+          "rule_id": "todo-todo-topic-clarity",
+          "severity": "MEDIUM",
+          "description": "Created ambiguity between list command and help topic"
+        }
+      ],
+      "severity_breakdown": {
+        "HIGH": 0,
+        "MEDIUM": 2,
+        "LOW": 1
+      },
+      "coverage_percent": 66.66666666666666
+    }
+  ]
+}

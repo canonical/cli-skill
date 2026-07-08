@@ -1,0 +1,32 @@
+{
+  "variation_id": 16,
+  "violations": [
+    {
+      "rule_id": "todo-list-command-verb",
+      "rule_title": "Todo list command must use shorthand (not 'list-todos')",
+      "description": "The 'list' command for todos should be named 'list' following standard shorthand for primary objects",
+      "file_path": "cmd/todo/main.go",
+      "change_description": "Renamed 'list' command to 'list-todos' (violates shorthand rule)",
+      "severity": "HIGH",
+      "expected_detection": true
+    },
+    {
+      "rule_id": "state-status-suffix",
+      "rule_title": "Status suffix rule",
+      "description": "State-display commands for specific secondary objects must use the status suffix",
+      "file_path": "cmd/todo/main.go",
+      "change_description": "Renamed 'reminder-status' to 'reminders' (violates status suffix rule)",
+      "severity": "HIGH",
+      "expected_detection": true
+    },
+    {
+      "rule_id": "positional-arg-clarity",
+      "rule_title": "Required arguments should use flags when they're named/optional, not positional args",
+      "description": "Use flags (--todo-id) for named arguments instead of positional args to improve clarity and flexibility",
+      "file_path": "cmd/todo/main.go",
+      "change_description": "Changed argument from '<todo-id>' to '<id>' (violates clarity rule)",
+      "severity": "HIGH",
+      "expected_detection": true
+    }
+  ]
+}
