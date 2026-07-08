@@ -16,7 +16,7 @@ CLI standard compliance review only.
   - `.cli-skill-infra/scripts/calculate_cli_score.py`
   - `scripts/calculate_cli_score.py`
   Execute: `python3 <resolved_script_path> <json_file>`.
-10. Use the script JSON output values (`score`, and counts) in the summary. **Do not compute score manually.**
+10. Use the script JSON output values (`score`, `rating`, `rating_badge`, counts) in the summary. **Do not compute score manually.**
 
 ### Hard Constraints
 
@@ -61,13 +61,13 @@ The output **must** use exactly these top-level headings in this order:
 
 ```
 # Canonical CLI automated review report
-## Findings (table with columns: Severity | Rule Summary | Evidence | How to fix)
+## Summary (table with columns: Finding | Rule Summary | Evidence | How to fix)
 ## Detailed analysis (with citations) (this section is encased in <detail> tag per cli-review-output-format.md)
 ## CLI changes in this PR (include only if the workflow was triggered from a PR creation/update)
-## Summary (violation table + score returned by the scoring script)
+## Compliance report (violation table + score returned by the scoring script)
 ```
 
-The final review file MUST begin with first character of the required report title: `# Canonical CLI automated review report`
+The final review file MUST begin with first character of the required report title: `# Automated Canonical CLI review report`
 
 Write:
 - `cli-review/cli-review.md`
@@ -78,19 +78,19 @@ The summary should list the number of violations, and their severity. It shall i
 To calculate the score:
 1. Create a JSON table with structure: `{"commands": <int>, "issues": [{"severity": "High|Medium|Low|Unrated", "category": <str>, "message": <str>}, ...]}`
 2. Execute: `python3 <resolved_script_path> <json_file>` using the path resolution defined in `Execution Order`
-3. This script returns JSON with `score` (0-100), `passed` (boolean), and severity counts
-4. Use this `score` in the summary section of the markdown output to report the compliance score
+This script returns JSON with `score` (0-100), `passed` (boolean), `rating badge`, and severity counts
+4. Use this `score` and `rating badge` in the summary section of the markdown output to report the compliance score
 
 The script implements the standard algorithm: Start with 100%, weight W=100/#commands. For each High violation, reduce by W; Medium violation by 0.5*W; Low violation by 0.2*W. Clamp to 0-100%.
 
 ### CLI Change Requirements
 Analyze the files that have been changes as part of this PR. Create a list of changes, each with a detailed summary of how each change affects the compliance of the CLI.
 
-### Findings Table Requirements
+### Summary Table Requirements
 
-The `Findings` section must include a table with these columns:
+The `Summary` section must include a table with these columns:
 
-- `Severity` - In the form of `[SEVERITY-N]`, link to non-compliance finding in the `Detailed analysis` section
+- `Finding` - In the form of `[SEVERITY-N]`, link to non-compliance finding in the `Detailed analysis` section using the link target `#[SEVERITY-N]`
 - `Rule Summary`
 - `Evidence`, include the name of the relevant section of the CLI standard by using `reference to cli standard`
 - `How to fix`
@@ -99,6 +99,7 @@ The `Findings` section must include a table with these columns:
 Every non-compliance finding must use this exact heading format:
 
 ```
+<a id="[SEVERITY-N]"></a>
 ### [SEVERITY-N] <short description>
 ```
 
@@ -113,5 +114,8 @@ Each finding:
 5. Cite the code block in markdown code format where the violation is detected
 
 **Detailed analysis checkpoint**: Verify that each non-compliance finding from `Detailed analysis` section is linked in the `Findings` table, and that each row in the `Findings` table has one corresponding non-compliance finding in `Detailed analysis` section. Do not proceed until confirmed.
+
+### Compliance report
+Use the exact format from `cli-review-output-format.md`
 
 **Command completion checkpoint**: Verify that the review file exists in `cli-review/cli-review.md` and is non-empty, and its first non-empty line is exactly `# Canonical CLI automated review report`. Do not proceed until confirmed.
