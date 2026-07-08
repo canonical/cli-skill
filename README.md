@@ -1,6 +1,21 @@
 # cli-skill
 
-cli-skill is a command based, cross agent CLI review and design skill. It can run in Copilot, Claude Code, Pi Coding Agent, and OpenCode. There is also a github workflow that will execute the /cli-review command using pi-coding-agent.
+Canonical cli-skill provides a CLI review and design skill. It can run in Copilot, Claude Code, Pi Coding Agent, and OpenCode. 
+Its main purpose is to provide a review against the [Canonical CLI standard](cli-skill/references/cli-standard.md). The review
+can be triggered locally from your agent, or as a github workflow that will execute the /cli-review command using pi-coding-agent.
+
+## Supported models
+
+The review will run on a wide range of models. Depending on the model, you will usually have different finding, especially unrated findings
+can vary due to the analytic capabilities of the model used.
+
+### Latest frontier models 
+These models (e.g. Opus, GPT, Gemini Pro) will usually perform well without further instructions.
+
+### Open weight and smaller special-purpose models
+Some open weight and smaller special-purpose models also run with reliable results. Examples are **DeepSeek V4 Pro, Gemini Flash 3.5+, Mimi2.5**
+
+Other models may perform less reliably, this includes some with excellent coding performance: qwen3-coder, gemma4, nemotron3, kimi2.7-code, minimax-m3
 
 ## Install via npm
 
@@ -10,34 +25,30 @@ This repository is also packaged as `canonical-cli-skill` for consumers that wan
 npx canonical-cli-skill install
 ```
 
-By default, the installer resolves the target directory to the top-level of the current Git repository, so generated paths are anchored at the repo root even when you run it from a subdirectory. If there is no Git repository, it falls back to the current directory. Use `--target <path>` to override this behavior.
+By default, the installer resolves the target directory to the top-level of the current Git repository, so generated paths are anchored at the repo root even when you run it from a subdirectory. If there is no Git repository, it falls back to the current directory. Use `--target <path>` to override this behavior. Existing unmanaged files are not overwritten unless `--force` is used, and managed files are only updated when they have not been edited since the last install.
 
-Auto-detection is based on repository markers for the supported agents. Existing unmanaged files are not overwritten unless `--force` is used, and managed files are only updated when they have not been edited since the last install.
-
-## Project structure
-
-- Canonical skill index: [cli-skill/SKILL.md](cli-skill/SKILL.md)
-- Generated skill stubs: [cli-skill/stubs/](cli-skill/stubs/)
-- Command manifest: [cli-skill/schemas/commands.manifest.yaml](cli-skill/schemas/commands.manifest.yaml)
-- Shared preflight module: [cli-skill/shared/cli-discovery-preflight.md](cli-skill/shared/cli-discovery-preflight.md)
-- Standard reference: [cli-skill/references/cli-standard.md](cli-skill/references/cli-standard.md)
-
-### Multi-agent compatibility: generated stubs
-
-Agent-specific portability files are generated into [cli-skill/stubs/agents/](cli-skill/stubs/agents/) and entrypoint stubs are generated into [cli-skill/stubs/entrypoints/](cli-skill/stubs/entrypoints/).
-The installer copies from these generated stubs into runtime-specific destinations like `.github/skills`, `.pi/skills`, `.claude/commands`, and `.opencode/commands`.
+Run the skill in your agent:
+```
+/cli-review
+```
 
 ## Commands
 
-- CLI Review [cli-skill/commands/cli-review.md](cli-skill/commands/cli-review.md)
-- Semantic analysis of words used in commands and flags [cli-skill/commands/cli-semantic-analysis.md](cli-skill/commands/cli-semantic-analysis.md)
-- CLI Help analysis and considerations [cli-skill/commands/cli-check-help.md](cli-skill/commands/cli-check-help.md)
+| Command | Description |
+|---------|-------------|
+| /cli-review | CLI Review [cli-skill/commands/cli-review.md](cli-skill/commands/cli-review.md) |
+| /cli-semantic-analysis | Semantic analysis of words used in commands and flags [cli-semantic-analysis.md](cli-skill/commands/cli-semantic-analysis.md) |
+| /cli-check-help | CLI Help analysis and considerations [cli-check-help.md](cli-skill/commands/cli-check-help.md) |
+| /cli-behavioral-analysis | Run some analysis on the architecture and setup of the CLI, [cli-behavioral-analysis.md](cli-skill/commands/cli-behavioral-analysis.md) |
+| /install-cli-pr-workflow | Install the Github workflow in your repository [install-cli-pr-workflow.md](cli-skill/commands/install-cli-pr-workflow.md) |
 
 ### Planned future commands:
 
-- Analyze CLI using UX heuristics [cli-skill/commands/cli-heuristic-analysis.md](cli-skill/commands/cli-heuristic-analysis.md)
-- Proposition helper [cli-skill/future-commands/cli-propose-command.md](cli-skill/future-commands/cli-propose-command.md)
-- Renaming helper [cli-skill/future-commands/cli-rename-command.md](cli-skill/future-commands/cli-rename-command.md)
+| Command | Description |
+|---------|-------------|
+| /cli-heuristic-analysis | Analyze CLI using UX heuristics [cli-heuristic-analysis.md](cli-skill/future-commands/cli-heuristic-analysis.md) |
+| /cli-propose-command | Proposition helper [cli-propose-command.md](cli-skill/future-commands/cli-propose-command.md) |
+| /cli-rename-command | Renaming helper [cli-rename-command.md](cli-skill/future-commands/cli-rename-command.md) |
 
 ## Quick Start for GitHub Action: cli-skill-build
 

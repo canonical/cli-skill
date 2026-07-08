@@ -7,7 +7,7 @@ CLI standard compliance review only.
 1. Check for the existence of `cli-review/0-cli-discovery-preflight/`. If it does not exist, run `cli-skill/shared/cli-discovery-preflight.md` as the very first step.
 2. Use preflight outputs from `cli-review/0-cli-discovery-preflight/`
 3. Checkpoint: Before going to Phase 1, make sure that preflight analysis is complete. Do not proceed before it is done.
-4. Read `cli-skill/references/cli-standard.md` in full
+4. Read `cli-skill/references/cli-standard.md` in full. This is a markdown file that contains the CLI standard, and includes examples in YAML and JSON format.
 5. **Phase 1 — Analyse the CLI and collect all findings (no severity yet).** Walk every rule in the standard. For each rule, check all CLI commands and flags. Record every violation as a plain list entry: `[problem description] [evidence] [reference to code] [reference to cli standard]`. Do not assign severity in this phase. Do not stop early. Complete the full standard before moving on.
 6. Checkpoint: Before going to Phase 2, make sure that no duplicate findings are listed, DO THIS ONLY by analysing the `reference to code`. 
 7. **Phase 2 — Assign severity.** For each finding collected in Phase 1, assign exactly one severity (`High`, `Medium`, `Low`, or `Unrated`) using the rules in the `## Scope` section. Do not add or remove findings in this phase.
@@ -40,9 +40,10 @@ CLI standard compliance review only.
 - All SHOULD rules must be unrated violations - report them, but don't include them in the scoring. This can be a use of non-standard verbs, or in cases where the standard says "you should", or "prefer".
 
 ## Additional rules that amend the CLI standard
-- In addition to the verbs listed in the CLI standard, these are standard verbs that can be used in full compliance with the CLI standard: add / remove, submit, request, revoke, init, enable / disable, save, refresh, switch, restore, forget, report, set / remove, try, download, clean, pull, build, stage, prime, pack, test, abort, validate, watch
+- In addition to the verbs listed in the CLI standard, these are standard verbs that can be used in full compliance with the CLI standard: add / remove, submit, request, revoke, init, enable / disable, save, refresh, switch, restore, forget, report, set / remove, try, download, clean, pull, build, stage, prime, pack, test, abort, validate, watch, prune
 - If a new verb not listed in the standard or the additional rules is used, only add an UNRATED finding if (1) there is a similar word in the list AND the chosen word is not clearly better, or (2) the chosen word is difficult to understand, ambiguous, or not standard english. If there is NO SIMILAR WORD in the list AND the chosen word is NOT difficult to understand, DROP THE FINDING and DO NOT INCLUDE IT IN THE REPORT.
-- Command-family verb consistency findings (for example add/create, remove/delete) MUST be scored only when at least one command in that specific family was changed in the variant. ONLY inconsistencies that use any of the standard verbs are UNRATED. 
+- Command-family verb consistency findings (for example add/create, remove/delete) MUST be scored AT LEAST LOW WHEN they are targeting the same object. ONLY inconsistencies that use any of the standard verbs are UNRATED. 
+- The use of list-foos is a HIGH severity violation, foos must be used instead.
 - Findings missing any required evidence field MUST be dropped from scored output.
 - If a planned mutation is not present in the source code, reviewer MUST mark the finding as UNRATED.
 - If a finding could be wrong as the analysis was not including the CLI libraries used for input or output, continue and analyse the finding including the CLI libraries used, e.g. for formatting purposes. 
