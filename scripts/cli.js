@@ -257,6 +257,24 @@ function copyManagedTree(srcRootDir, dstRootDir, options, logs, stateData) {
   }
 }
 
+function assertRequiredCliSkillPayload(packageRoot) {
+  const referencesDir = path.join(packageRoot, "cli-skill", "references");
+
+  if (!fs.existsSync(referencesDir) || !fs.statSync(referencesDir).isDirectory()) {
+    throw new Error("Package payload missing cli-skill/references directory.");
+  }
+
+  const referenceFiles = listFilesRecursive(referencesDir);
+  if (referenceFiles.length === 0) {
+    throw new Error("Package payload has empty cli-skill/references directory.");
+  }
+
+  const scoreScript = path.join(packageRoot, "scripts", "calculate_cli_score.py");
+  if (!fs.existsSync(scoreScript) || !fs.statSync(scoreScript).isFile()) {
+    throw new Error("Package payload missing scripts/calculate_cli_score.py.");
+  }
+}
+
 function findGitTopLevel(startDir) {
   try {
     const result = execSync("git rev-parse --show-toplevel", {
@@ -306,6 +324,8 @@ function installSkill({ agentsArg, dryRun = false, force = false, postinstall = 
     throw new Error("Package payload missing cli-skill directory.");
   }
 
+  assertRequiredCliSkillPayload(packageRoot);
+
   const envAgents = parseAgents(process.env.CLI_SKILL_AGENTS);
   const argAgents = parseAgents(agentsArg);
   const detection = detectAgents(targetDir);
@@ -341,6 +361,14 @@ function installSkill({ agentsArg, dryRun = false, force = false, postinstall = 
   const srcCliSkill = path.join(packageRoot, "cli-skill");
   const dstCliSkill = path.join(targetDir, "cli-skill");
   copyManagedTree(srcCliSkill, dstCliSkill, options, logs, state.data);
+
+  copyManagedFile(
+    path.join(packageRoot, "scripts", "calculate_cli_score.py"),
+    path.join(targetDir, "scripts", "calculate_cli_score.py"),
+    options,
+    logs,
+    state.data,
+  );
 
   const installs = {
     copilot: [
