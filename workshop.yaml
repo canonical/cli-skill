@@ -4,10 +4,6 @@ sdks:
   - name: system
   - name: vscode-remote
     channel: latest/stable
-  - name: copilot
-    channel: latest/stable
-  - name: opencode
-    channel: latest/stable
   - name: pi-coding-agent
     channel: latest/edge
   - name: go
